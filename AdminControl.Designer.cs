@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System.Windows.Forms; // Added for clarity, though implicitly used
 
 namespace GUI_DB
 {
@@ -22,7 +22,7 @@ namespace GUI_DB
         private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.ComboBox cmbScreenType; // Dropdown for screen type
         private System.Windows.Forms.Label lblScreenType;
-
+        private System.Windows.Forms.Label lblTopPanel; // Explicitly declare the label for the top panel
         // New Fields
         private System.Windows.Forms.TextBox txtAgeRating;
         private System.Windows.Forms.Label lblAgeRating;
@@ -50,8 +50,6 @@ namespace GUI_DB
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container(); // Ensure components is initialized properly.
-
             this.txtMovieTitle = new System.Windows.Forms.TextBox();
             this.cmbHalls = new System.Windows.Forms.ComboBox();
             this.cmbShowtimes = new System.Windows.Forms.ComboBox();
@@ -65,6 +63,7 @@ namespace GUI_DB
             this.lblSelectShowtime = new System.Windows.Forms.Label();
             this.lblHallName = new System.Windows.Forms.Label();
             this.topPanel = new System.Windows.Forms.Panel();
+            this.lblTopPanel = new System.Windows.Forms.Label();
             this.cmbScreenType = new System.Windows.Forms.ComboBox();
             this.lblScreenType = new System.Windows.Forms.Label();
             this.txtAgeRating = new System.Windows.Forms.TextBox();
@@ -73,237 +72,267 @@ namespace GUI_DB
             this.lblDirector = new System.Windows.Forms.Label();
             this.txtActors = new System.Windows.Forms.TextBox();
             this.lblActors = new System.Windows.Forms.Label();
-
-            // 
-            // topPanel
-            // 
-            this.topPanel.BackColor = System.Drawing.Color.FromArgb(76, 0, 153); // Darker purple
-            this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.topPanel.Height = 60;
-            this.topPanel.Controls.Add(new Label
-            {
-                Text = "Admin Control Panel",
-                Dock = DockStyle.Fill,
-                Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.White,
-                TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-            });
-
+            this.topPanel.SuspendLayout();
+            this.SuspendLayout();
             // 
             // txtMovieTitle
             // 
-            this.txtMovieTitle.Location = new System.Drawing.Point(50, 100);
-            this.txtMovieTitle.Name = "txtMovieTitle";
-            this.txtMovieTitle.Size = new System.Drawing.Size(400, 30);
+            this.txtMovieTitle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
+            this.txtMovieTitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMovieTitle.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtMovieTitle.ForeColor = System.Drawing.Color.White;
-            this.txtMovieTitle.BackColor = System.Drawing.Color.FromArgb(76, 0, 153); // Eggplant purple
-            this.txtMovieTitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-
+            this.txtMovieTitle.Location = new System.Drawing.Point(50, 100);
+            this.txtMovieTitle.Name = "txtMovieTitle";
+            this.txtMovieTitle.Size = new System.Drawing.Size(400, 34);
+            this.txtMovieTitle.TabIndex = 1;
+            // 
+            // cmbHalls
+            // 
+            this.cmbHalls.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbHalls.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cmbHalls.FormattingEnabled = true;
+            this.cmbHalls.Location = new System.Drawing.Point(50, 170);
+            this.cmbHalls.Name = "cmbHalls";
+            this.cmbHalls.Size = new System.Drawing.Size(400, 36);
+            this.cmbHalls.TabIndex = 3;
+            // 
+            // cmbShowtimes
+            // 
+            this.cmbShowtimes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbShowtimes.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cmbShowtimes.FormattingEnabled = true;
+            this.cmbShowtimes.Location = new System.Drawing.Point(50, 240);
+            this.cmbShowtimes.Name = "cmbShowtimes";
+            this.cmbShowtimes.Size = new System.Drawing.Size(400, 36);
+            this.cmbShowtimes.TabIndex = 5;
+            // 
+            // btnAddMovie
+            // 
+            this.btnAddMovie.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnAddMovie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddMovie.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnAddMovie.ForeColor = System.Drawing.Color.White;
+            this.btnAddMovie.Location = new System.Drawing.Point(470, 98);
+            this.btnAddMovie.Name = "btnAddMovie";
+            this.btnAddMovie.Size = new System.Drawing.Size(150, 40);
+            this.btnAddMovie.TabIndex = 13;
+            this.btnAddMovie.Text = "Add Movie";
+            this.btnAddMovie.UseVisualStyleBackColor = false;
+            // 
+            // btnRemoveMovie
+            // 
+            this.btnRemoveMovie.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnRemoveMovie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRemoveMovie.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnRemoveMovie.ForeColor = System.Drawing.Color.White;
+            this.btnRemoveMovie.Location = new System.Drawing.Point(640, 98);
+            this.btnRemoveMovie.Name = "btnRemoveMovie";
+            this.btnRemoveMovie.Size = new System.Drawing.Size(150, 40);
+            this.btnRemoveMovie.TabIndex = 14;
+            this.btnRemoveMovie.Text = "Remove Movie";
+            this.btnRemoveMovie.UseVisualStyleBackColor = false;
+            // 
+            // txtHallName
+            // 
+            this.txtHallName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
+            this.txtHallName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtHallName.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.txtHallName.ForeColor = System.Drawing.Color.White;
+            this.txtHallName.Location = new System.Drawing.Point(50, 579);
+            this.txtHallName.Name = "txtHallName";
+            this.txtHallName.Size = new System.Drawing.Size(400, 34);
+            this.txtHallName.TabIndex = 7;
+            // 
+            // btnAddHall
+            // 
+            this.btnAddHall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnAddHall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnAddHall.ForeColor = System.Drawing.Color.White;
+            this.btnAddHall.Location = new System.Drawing.Point(470, 577);
+            this.btnAddHall.Name = "btnAddHall";
+            this.btnAddHall.Size = new System.Drawing.Size(150, 40);
+            this.btnAddHall.TabIndex = 15;
+            this.btnAddHall.Text = "Add Hall";
+            this.btnAddHall.UseVisualStyleBackColor = false;
+            // 
+            // btnRemoveHall
+            // 
+            this.btnRemoveHall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnRemoveHall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRemoveHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnRemoveHall.ForeColor = System.Drawing.Color.White;
+            this.btnRemoveHall.Location = new System.Drawing.Point(640, 577);
+            this.btnRemoveHall.Name = "btnRemoveHall";
+            this.btnRemoveHall.Size = new System.Drawing.Size(150, 40);
+            this.btnRemoveHall.TabIndex = 16;
+            this.btnRemoveHall.Text = "Remove Hall";
+            this.btnRemoveHall.UseVisualStyleBackColor = false;
             // 
             // lblMovieTitle
             // 
             this.lblMovieTitle.AutoSize = true;
-            this.lblMovieTitle.Location = new System.Drawing.Point(50, 75);
-            this.lblMovieTitle.Name = "lblMovieTitle";
-            this.lblMovieTitle.Size = new System.Drawing.Size(85, 25);
             this.lblMovieTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblMovieTitle.ForeColor = System.Drawing.Color.White;
+            this.lblMovieTitle.Location = new System.Drawing.Point(50, 75);
+            this.lblMovieTitle.Name = "lblMovieTitle";
+            this.lblMovieTitle.Size = new System.Drawing.Size(120, 28);
+            this.lblMovieTitle.TabIndex = 2;
             this.lblMovieTitle.Text = "Movie Title";
-
-            // 
-            // cmbHalls
-            // 
-            this.cmbHalls.Location = new System.Drawing.Point(50, 170);
-            this.cmbHalls.Name = "cmbHalls";
-            this.cmbHalls.Size = new System.Drawing.Size(400, 30);
-            this.cmbHalls.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.cmbHalls.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-
             // 
             // lblSelectHall
             // 
             this.lblSelectHall.AutoSize = true;
-            this.lblSelectHall.Location = new System.Drawing.Point(50, 145);
-            this.lblSelectHall.Name = "lblSelectHall";
-            this.lblSelectHall.Size = new System.Drawing.Size(100, 25);
             this.lblSelectHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblSelectHall.ForeColor = System.Drawing.Color.White;
+            this.lblSelectHall.Location = new System.Drawing.Point(50, 145);
+            this.lblSelectHall.Name = "lblSelectHall";
+            this.lblSelectHall.Size = new System.Drawing.Size(113, 28);
+            this.lblSelectHall.TabIndex = 4;
             this.lblSelectHall.Text = "Select Hall";
-
-            // 
-            // cmbShowtimes
-            // 
-            this.cmbShowtimes.Location = new System.Drawing.Point(50, 240);
-            this.cmbShowtimes.Name = "cmbShowtimes";
-            this.cmbShowtimes.Size = new System.Drawing.Size(400, 30);
-            this.cmbShowtimes.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.cmbShowtimes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-
             // 
             // lblSelectShowtime
             // 
             this.lblSelectShowtime.AutoSize = true;
-            this.lblSelectShowtime.Location = new System.Drawing.Point(50, 215);
-            this.lblSelectShowtime.Name = "lblSelectShowtime";
-            this.lblSelectShowtime.Size = new System.Drawing.Size(140, 25);
             this.lblSelectShowtime.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblSelectShowtime.ForeColor = System.Drawing.Color.White;
+            this.lblSelectShowtime.Location = new System.Drawing.Point(50, 215);
+            this.lblSelectShowtime.Name = "lblSelectShowtime";
+            this.lblSelectShowtime.Size = new System.Drawing.Size(169, 28);
+            this.lblSelectShowtime.TabIndex = 6;
             this.lblSelectShowtime.Text = "Select Showtime";
-
-            // 
-            // btnAddMovie
-            // 
-            this.btnAddMovie.Location = new System.Drawing.Point(470, 100);
-            this.btnAddMovie.Name = "btnAddMovie";
-            this.btnAddMovie.Size = new System.Drawing.Size(150, 40);
-            this.btnAddMovie.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnAddMovie.Text = "Add Movie";
-            this.btnAddMovie.BackColor = System.Drawing.Color.FromArgb(70, 130, 180); // Steel blue
-            this.btnAddMovie.ForeColor = System.Drawing.Color.White;
-            this.btnAddMovie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-
-            // 
-            // btnRemoveMovie
-            // 
-            this.btnRemoveMovie.Location = new System.Drawing.Point(640, 100);
-            this.btnRemoveMovie.Name = "btnRemoveMovie";
-            this.btnRemoveMovie.Size = new System.Drawing.Size(150, 40);
-            this.btnRemoveMovie.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnRemoveMovie.Text = "Remove Movie";
-            this.btnRemoveMovie.BackColor = System.Drawing.Color.FromArgb(70, 130, 180); // Steel blue
-            this.btnRemoveMovie.ForeColor = System.Drawing.Color.White;
-            this.btnRemoveMovie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-
-            // 
-            // txtHallName
-            // 
-            this.txtHallName.Location = new System.Drawing.Point(50, 340);
-            this.txtHallName.Name = "txtHallName";
-            this.txtHallName.Size = new System.Drawing.Size(400, 30);
-            this.txtHallName.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.txtHallName.ForeColor = System.Drawing.Color.White;
-            this.txtHallName.BackColor = System.Drawing.Color.FromArgb(76, 0, 153); // Eggplant purple
-            this.txtHallName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-
             // 
             // lblHallName
             // 
             this.lblHallName.AutoSize = true;
-            this.lblHallName.Location = new System.Drawing.Point(50, 315);
-            this.lblHallName.Name = "lblHallName";
-            this.lblHallName.Size = new System.Drawing.Size(80, 25);
             this.lblHallName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblHallName.ForeColor = System.Drawing.Color.White;
+            this.lblHallName.Location = new System.Drawing.Point(50, 554);
+            this.lblHallName.Name = "lblHallName";
+            this.lblHallName.Size = new System.Drawing.Size(112, 28);
+            this.lblHallName.TabIndex = 8;
             this.lblHallName.Text = "Hall Name";
-
             // 
-            // btnAddHall
+            // topPanel
             // 
-            this.btnAddHall.Location = new System.Drawing.Point(470, 340);
-            this.btnAddHall.Name = "btnAddHall";
-            this.btnAddHall.Size = new System.Drawing.Size(150, 40);
-            this.btnAddHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnAddHall.Text = "Add Hall";
-            this.btnAddHall.BackColor = System.Drawing.Color.FromArgb(70, 130, 180); // Steel blue
-            this.btnAddHall.ForeColor = System.Drawing.Color.White;
-            this.btnAddHall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-
+            this.topPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
+            this.topPanel.Controls.Add(this.lblTopPanel);
+            this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.topPanel.Location = new System.Drawing.Point(0, 0);
+            this.topPanel.Name = "topPanel";
+            this.topPanel.Size = new System.Drawing.Size(850, 60);
+            this.topPanel.TabIndex = 0;
             // 
-            // btnRemoveHall
+            // lblTopPanel
             // 
-            this.btnRemoveHall.Location = new System.Drawing.Point(640, 340);
-            this.btnRemoveHall.Name = "btnRemoveHall";
-            this.btnRemoveHall.Size = new System.Drawing.Size(150, 40);
-            this.btnRemoveHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnRemoveHall.Text = "Remove Hall";
-            this.btnRemoveHall.BackColor = System.Drawing.Color.FromArgb(70, 130, 180); // Steel blue
-            this.btnRemoveHall.ForeColor = System.Drawing.Color.White;
-            this.btnRemoveHall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-
+            this.lblTopPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTopPanel.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTopPanel.ForeColor = System.Drawing.Color.White;
+            this.lblTopPanel.Location = new System.Drawing.Point(0, 0);
+            this.lblTopPanel.Name = "lblTopPanel";
+            this.lblTopPanel.Size = new System.Drawing.Size(850, 60);
+            this.lblTopPanel.TabIndex = 0;
+            this.lblTopPanel.Text = "Admin Control Panel";
+            this.lblTopPanel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cmbScreenType
+            // 
+            this.cmbScreenType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbScreenType.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cmbScreenType.FormattingEnabled = true;
+            this.cmbScreenType.Items.AddRange(new object[] {
+            "2D",
+            "3D",
+            "IMAX"});
+            this.cmbScreenType.Location = new System.Drawing.Point(50, 641);
+            this.cmbScreenType.Name = "cmbScreenType";
+            this.cmbScreenType.Size = new System.Drawing.Size(400, 36);
+            this.cmbScreenType.TabIndex = 10;
             // 
             // lblScreenType
             // 
             this.lblScreenType.AutoSize = true;
-            this.lblScreenType.Location = new System.Drawing.Point(50, 385);
-            this.lblScreenType.Name = "lblScreenType";
-            this.lblScreenType.Size = new System.Drawing.Size(110, 25);
             this.lblScreenType.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblScreenType.ForeColor = System.Drawing.Color.White;
+            this.lblScreenType.Location = new System.Drawing.Point(50, 616);
+            this.lblScreenType.Name = "lblScreenType";
+            this.lblScreenType.Size = new System.Drawing.Size(126, 28);
+            this.lblScreenType.TabIndex = 9;
             this.lblScreenType.Text = "Screen Type";
-
             // 
-            // cmbScreenType
+            // txtAgeRating
             // 
-            this.cmbScreenType.Location = new System.Drawing.Point(50, 410);
-            this.cmbScreenType.Name = "cmbScreenType";
-            this.cmbScreenType.Size = new System.Drawing.Size(400, 30);
-            this.cmbScreenType.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.cmbScreenType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbScreenType.Items.AddRange(new object[] { "2D", "3D", "IMAX" });
-
-            // 
-            // New Fields: Age Rating
-            // 
-            this.txtAgeRating.Location = new System.Drawing.Point(50, 480);
-            this.txtAgeRating.Name = "txtAgeRating";
-            this.txtAgeRating.Size = new System.Drawing.Size(400, 30);
+            this.txtAgeRating.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
+            this.txtAgeRating.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtAgeRating.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtAgeRating.ForeColor = System.Drawing.Color.White;
-            this.txtAgeRating.BackColor = System.Drawing.Color.FromArgb(76, 0, 153); // Eggplant purple
-            this.txtAgeRating.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-
+            this.txtAgeRating.Location = new System.Drawing.Point(50, 381);
+            this.txtAgeRating.Name = "txtAgeRating";
+            this.txtAgeRating.Size = new System.Drawing.Size(400, 34);
+            this.txtAgeRating.TabIndex = 11;
+            // 
+            // lblAgeRating
+            // 
             this.lblAgeRating.AutoSize = true;
-            this.lblAgeRating.Location = new System.Drawing.Point(50, 455);
-            this.lblAgeRating.Name = "lblAgeRating";
-            this.lblAgeRating.Size = new System.Drawing.Size(90, 25);
             this.lblAgeRating.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblAgeRating.ForeColor = System.Drawing.Color.White;
+            this.lblAgeRating.Location = new System.Drawing.Point(59, 350);
+            this.lblAgeRating.Name = "lblAgeRating";
+            this.lblAgeRating.Size = new System.Drawing.Size(117, 28);
+            this.lblAgeRating.TabIndex = 12;
             this.lblAgeRating.Text = "Age Rating";
-
             // 
-            // New Fields: Director
+            // txtDirector
             // 
-            this.txtDirector.Location = new System.Drawing.Point(50, 550);
-            this.txtDirector.Name = "txtDirector";
-            this.txtDirector.Size = new System.Drawing.Size(400, 30);
+            this.txtDirector.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
+            this.txtDirector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtDirector.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtDirector.ForeColor = System.Drawing.Color.White;
-            this.txtDirector.BackColor = System.Drawing.Color.FromArgb(76, 0, 153); // Eggplant purple
-            this.txtDirector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-
+            this.txtDirector.Location = new System.Drawing.Point(50, 313);
+            this.txtDirector.Name = "txtDirector";
+            this.txtDirector.Size = new System.Drawing.Size(400, 34);
+            this.txtDirector.TabIndex = 17;
+            // 
+            // lblDirector
+            // 
             this.lblDirector.AutoSize = true;
-            this.lblDirector.Location = new System.Drawing.Point(50, 525);
-            this.lblDirector.Name = "lblDirector";
-            this.lblDirector.Size = new System.Drawing.Size(75, 25);
             this.lblDirector.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblDirector.ForeColor = System.Drawing.Color.White;
+            this.lblDirector.Location = new System.Drawing.Point(50, 288);
+            this.lblDirector.Name = "lblDirector";
+            this.lblDirector.Size = new System.Drawing.Size(90, 28);
+            this.lblDirector.TabIndex = 18;
             this.lblDirector.Text = "Director";
-
             // 
-            // New Fields: Actors
+            // txtActors
             // 
-            this.txtActors.Location = new System.Drawing.Point(50, 620);
+            this.txtActors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
+            this.txtActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtActors.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.txtActors.ForeColor = System.Drawing.Color.White;
+            this.txtActors.Location = new System.Drawing.Point(45, 453);
             this.txtActors.Multiline = true;
             this.txtActors.Name = "txtActors";
             this.txtActors.Size = new System.Drawing.Size(400, 60);
-            this.txtActors.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.txtActors.ForeColor = System.Drawing.Color.White;
-            this.txtActors.BackColor = System.Drawing.Color.FromArgb(76, 0, 153); // Eggplant purple
-            this.txtActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-
+            this.txtActors.TabIndex = 19;
+            // 
+            // lblActors
+            // 
             this.lblActors.AutoSize = true;
-            this.lblActors.Location = new System.Drawing.Point(50, 595);
-            this.lblActors.Name = "lblActors";
-            this.lblActors.Size = new System.Drawing.Size(65, 25);
             this.lblActors.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblActors.ForeColor = System.Drawing.Color.White;
+            this.lblActors.Location = new System.Drawing.Point(45, 428);
+            this.lblActors.Name = "lblActors";
+            this.lblActors.Size = new System.Drawing.Size(73, 28);
+            this.lblActors.TabIndex = 20;
             this.lblActors.Text = "Actors";
-
-            // AdminControl Form
             // 
+            // AdminControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(35)))));
             this.ClientSize = new System.Drawing.Size(850, 700);
-            this.Controls.Add(this.topPanel);
             this.Controls.Add(this.txtMovieTitle);
             this.Controls.Add(this.lblMovieTitle);
             this.Controls.Add(this.cmbHalls);
@@ -324,31 +353,13 @@ namespace GUI_DB
             this.Controls.Add(this.cmbScreenType);
             this.Controls.Add(this.btnAddMovie);
             this.Controls.Add(this.btnRemoveMovie);
-            // Add all controls to the form
             this.Controls.Add(this.topPanel);
-            this.Controls.Add(this.txtMovieTitle);
-            this.Controls.Add(this.lblMovieTitle);
-            this.Controls.Add(this.cmbHalls);
-            this.Controls.Add(this.lblSelectHall);
-            this.Controls.Add(this.cmbShowtimes);
-            this.Controls.Add(this.lblSelectShowtime);
-            this.Controls.Add(this.txtAgeRating);
-            this.Controls.Add(this.lblAgeRating);
-            this.Controls.Add(this.txtDirector);
-            this.Controls.Add(this.lblDirector);
-            this.Controls.Add(this.txtActors);
-            this.Controls.Add(this.lblActors);
-            this.Controls.Add(this.txtHallName);
-            this.Controls.Add(this.lblHallName);
-            this.Controls.Add(this.btnAddHall);
-            this.Controls.Add(this.btnRemoveHall);
-            this.Controls.Add(this.lblScreenType);
-            this.Controls.Add(this.cmbScreenType);
-            this.Controls.Add(this.btnAddMovie);
-            this.Controls.Add(this.btnRemoveMovie);
             this.Name = "AdminControl";
             this.Text = "Admin Control Panel";
-            this.BackColor = System.Drawing.Color.FromArgb(25, 25, 35); // Dark background
+            this.topPanel.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
     }
 }
