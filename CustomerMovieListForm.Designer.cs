@@ -5,173 +5,115 @@ namespace GUI_DB
 {
     partial class CustomerMovieListForm
     {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private Panel panelLeft;
-        private Panel panelRight;
-        private FlowLayoutPanel flowLayoutPanelMovies;
-        private Label lblTitle;
-        private ComboBox cmbGenre;
-        private TextBox txtYear, txtDirector, txtActor;
-        private FlowLayoutPanel filterLayout;
-        private Label lblWelcome;
 
+        // Declare the controls that remain/are added back
+        private System.Windows.Forms.Panel filterLayout; // Holds filters and back button
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelMovies;
+        private System.Windows.Forms.Button btnBack; // *** The Back Button ***
+        private System.Windows.Forms.ComboBox cmbGenre; // *** ADDED BACK ***
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && components != null) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
+        #region Windows Form Designer generated code
 
-
-
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
-            this.panelLeft = new System.Windows.Forms.Panel();
-            this.filterLayout = new System.Windows.Forms.FlowLayoutPanel();
-            this.panelRight = new System.Windows.Forms.Panel();
+            this.filterLayout = new System.Windows.Forms.Panel();
+            this.btnBack = new System.Windows.Forms.Button();
             this.flowLayoutPanelMovies = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmbGenre = new System.Windows.Forms.ComboBox();
-            this.txtYear = new System.Windows.Forms.TextBox();
-            this.txtDirector = new System.Windows.Forms.TextBox();
-            this.txtActor = new System.Windows.Forms.TextBox();
-            this.panelLeft.SuspendLayout();
-            this.panelRight.SuspendLayout();
+            this.cmbGenre = new System.Windows.Forms.ComboBox(); // *** ADDED BACK Instantiation ***
+            this.filterLayout.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelLeft
-            // 
-            this.panelLeft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(40)))));
-            this.panelLeft.Controls.Add(this.filterLayout);
-            this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelLeft.Location = new System.Drawing.Point(0, 0);
-            this.panelLeft.Name = "panelLeft";
-            this.panelLeft.Padding = new System.Windows.Forms.Padding(10);
-            this.panelLeft.Size = new System.Drawing.Size(260, 700);
-            this.panelLeft.TabIndex = 1;
-            // 
+
+            //
             // filterLayout
-            // 
-            this.filterLayout.AutoScroll = true;
-            this.filterLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.filterLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.filterLayout.Location = new System.Drawing.Point(10, 10);
+            //
+            this.filterLayout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(50)))));
+            this.filterLayout.Controls.Add(this.btnBack);
+            // Note: Filter controls (Age Radio, Genre Combo) will be added dynamically via AddFilterControl
+            this.filterLayout.Dock = System.Windows.Forms.DockStyle.Left;
+            this.filterLayout.Location = new System.Drawing.Point(0, 0);
             this.filterLayout.Name = "filterLayout";
-            this.filterLayout.Size = new System.Drawing.Size(240, 680);
+            this.filterLayout.Padding = new System.Windows.Forms.Padding(10);
+            this.filterLayout.Size = new System.Drawing.Size(220, 600);
             this.filterLayout.TabIndex = 0;
-            this.filterLayout.WrapContents = false;
-            // 
-            // panelRight
-            // 
-            this.panelRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(60)))));
-            this.panelRight.Controls.Add(this.flowLayoutPanelMovies);
-            this.panelRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRight.Location = new System.Drawing.Point(260, 0);
-            this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(840, 700);
-            this.panelRight.TabIndex = 0;
-            // 
+
+            //
+            // btnBack
+            //
+            this.btnBack.BackColor = System.Drawing.Color.Gray;
+            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBack.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnBack.ForeColor = System.Drawing.Color.White;
+            this.btnBack.Location = new System.Drawing.Point(13, 13);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(120, 40);
+            this.btnBack.TabIndex = 0;
+            this.btnBack.Text = "Back";
+            this.btnBack.UseVisualStyleBackColor = false;
+            // Click event handler is attached in the main .cs file
+
+            //
             // flowLayoutPanelMovies
-            // 
+            //
             this.flowLayoutPanelMovies.AutoScroll = true;
+            this.flowLayoutPanelMovies.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(60)))));
             this.flowLayoutPanelMovies.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanelMovies.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanelMovies.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanelMovies.Location = new System.Drawing.Point(this.filterLayout.Width, 0);
             this.flowLayoutPanelMovies.Name = "flowLayoutPanelMovies";
-            this.flowLayoutPanelMovies.Padding = new System.Windows.Forms.Padding(15);
-            this.flowLayoutPanelMovies.Size = new System.Drawing.Size(840, 700);
-            this.flowLayoutPanelMovies.TabIndex = 0;
-            this.flowLayoutPanelMovies.WrapContents = false;
-            // 
-            // cmbGenre
-            // 
-            this.cmbGenre.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanelMovies.Padding = new System.Windows.Forms.Padding(10);
+            this.flowLayoutPanelMovies.Size = new System.Drawing.Size(780, 600);
+            this.flowLayoutPanelMovies.TabIndex = 1;
+
+            //
+            // cmbGenre (Configuration mainly happens in .cs AddFilterControl)
+            // *** ADDED BACK basic properties for consistency ***
+            //
+            this.cmbGenre.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(75)))));
+            this.cmbGenre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; // Prevent typing
+            this.cmbGenre.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbGenre.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cmbGenre.ForeColor = System.Drawing.Color.White;
+            this.cmbGenre.FormattingEnabled = true;
             this.cmbGenre.Name = "cmbGenre";
-            this.cmbGenre.Size = new System.Drawing.Size(121, 28);
-            this.cmbGenre.TabIndex = 0;
-            // 
-            // txtYear
-            // 
-            this.txtYear.Location = new System.Drawing.Point(0, 0);
-            this.txtYear.Name = "txtYear";
-            this.txtYear.Size = new System.Drawing.Size(100, 26);
-            this.txtYear.TabIndex = 0;
-            // 
-            // txtDirector
-            // 
-            this.txtDirector.Location = new System.Drawing.Point(0, 0);
-            this.txtDirector.Name = "txtDirector";
-            this.txtDirector.Size = new System.Drawing.Size(100, 26);
-            this.txtDirector.TabIndex = 0;
-            // 
-            // txtActor
-            // 
-            this.txtActor.Location = new System.Drawing.Point(0, 0);
-            this.txtActor.Name = "txtActor";
-            this.txtActor.Size = new System.Drawing.Size(100, 26);
-            this.txtActor.TabIndex = 0;
-            // 
+            this.cmbGenre.Size = new System.Drawing.Size(180, 28); // Example size, can be adjusted in AddFilterControl
+
+            //
             // CustomerMovieListForm
-            // 
-            this.ClientSize = new System.Drawing.Size(1100, 700);
-            this.Controls.Add(this.panelRight);
-            this.Controls.Add(this.panelLeft);
+            //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1000, 600);
+            this.Controls.Add(this.flowLayoutPanelMovies);
+            this.Controls.Add(this.filterLayout);
             this.Name = "CustomerMovieListForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Movie Listings";
-            this.panelLeft.ResumeLayout(false);
-            this.panelRight.ResumeLayout(false);
+            this.Text = "Select Movie and Showtime";
+            this.Load += new System.EventHandler(this.CustomerMovieListForm_Load_1);
+            this.filterLayout.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
 
-
-
-        void AddFilterControl(string labelText, Control control)
-        {
-            var label = new Label
-            {
-                Text = labelText,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                Height = 20,
-                AutoSize = false
-            };
-            control.Width = 220;
-            control.Margin = new Padding(0, 0, 0, 10);
-            filterLayout.Controls.Add(label);
-            filterLayout.Controls.Add(control);
-        }
-
-        private Panel CreateRadioGroup(string[] options, string tagPrefix)
-        {
-            var panel = new Panel
-            {
-                Width = 220,
-                Height = options.Length * 25,
-                BackColor = Color.Transparent
-            };
-
-            int y = 0;
-            foreach (var opt in options)
-            {
-                var rb = new RadioButton
-                {
-                    Text = opt,
-                    Tag = tagPrefix + opt.Replace(" ", ""),
-                    ForeColor = Color.White,
-                    Location = new Point(0, y),
-                    Width = 220
-                };
-                if (opt == "All" || opt == "All Times") rb.Checked = true;
-                panel.Controls.Add(rb);
-                y += 25;
-            }
-
-            return panel;
-        }
-
-
-
+        #endregion
 
     }
 }
