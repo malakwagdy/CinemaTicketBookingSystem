@@ -49,12 +49,8 @@ namespace GUI_DB
             this.filterLayout.AutoScroll = true;
 
             AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
-            AddFilterControl("Star Actor", this.txtActor);
-            AddFilterControl("Director", this.txtDirector);
+           
 
-            this.txtYear.Text = "e.g. 2024";
-            this.txtYear.ForeColor = Color.Gray;
-            AddFilterControl("Year", this.txtYear);
 
             this.cmbGenre.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cmbGenre.Items.AddRange(new object[] { "All", "Action", "Comedy", "Drama", "Fantasy", "Sci-Fi" });

@@ -36,6 +36,7 @@ namespace GUI_DB
             LoadMovies();
         }
 
+
         private void LoadMovies()
         {
             flowLayoutPanelMovies.Controls.Clear();
@@ -63,14 +64,29 @@ namespace GUI_DB
                     Height = 28
                 };
 
-                Label lblShowtimes = new Label
+                FlowLayoutPanel showtimesPanel = new FlowLayoutPanel
                 {
-                    Text = $"Showtimes: {string.Join(", ", movie.Showtimes)}",
-                    Font = new Font("Segoe UI", 10F),
-                    ForeColor = Color.LightGray,
                     Dock = DockStyle.Top,
-                    Height = 22
+                    AutoSize = true,
+                    FlowDirection = FlowDirection.LeftToRight
                 };
+
+                foreach (var showtime in movie.Showtimes)
+                {
+                    LinkLabel linkShowtime = new LinkLabel
+                    {
+                        Text = showtime,
+                        AutoSize = true,
+                        Font = new Font("Segoe UI", 9F, FontStyle.Underline), // Underlined text
+                        LinkColor = Color.LightGray, // Grey color
+                        ActiveLinkColor = Color.White, // Slightly brighter color when active
+                        VisitedLinkColor = Color.Gray, // Subtle grey for visited
+                        Margin = new Padding(0, 0, 2, 0)
+                    };
+
+                    linkShowtime.Click += (s, e) => OpenSeatingChart(movie.Title, showtime);
+                    showtimesPanel.Controls.Add(linkShowtime);
+                }
 
                 Label lblDetails = new Label
                 {
@@ -82,11 +98,20 @@ namespace GUI_DB
                 };
 
                 moviePanel.Controls.Add(lblDetails);
-                moviePanel.Controls.Add(lblShowtimes);
+                moviePanel.Controls.Add(showtimesPanel);
                 moviePanel.Controls.Add(lblTitle);
                 flowLayoutPanelMovies.Controls.Add(moviePanel);
             }
         }
+
+
+        private void OpenSeatingChart(string movieTitle, string showtime)
+        {
+            SeatingChartForm seatingChart = new SeatingChartForm(mainForm, movieTitle, showtime);
+            mainForm.OpenChildForm(seatingChart);
+        }
+
+
 
         private bool PassesFilters(Movie movie)
         {
