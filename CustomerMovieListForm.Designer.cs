@@ -25,57 +25,105 @@ namespace GUI_DB
 
         private void InitializeComponent()
         {
-            // Initialize controls
-            this.panelLeft = new Panel();
-            this.panelRight = new Panel();
-            this.flowLayoutPanelMovies = new FlowLayoutPanel();
-            this.cmbGenre = new ComboBox();
-            this.txtYear = new TextBox();
-            this.txtDirector = new TextBox();
-            this.txtActor = new TextBox();
-            this.filterLayout = new FlowLayoutPanel();
-
-            // === PanelLeft ===
-            this.panelLeft.Dock = DockStyle.Left;
-            this.panelLeft.Width = 260;
-            this.panelLeft.BackColor = Color.FromArgb(25, 25, 40);
-            this.panelLeft.Padding = new Padding(10);
-            this.panelLeft.Controls.Add(filterLayout);
-
-            // === Filter Layout ===
-            this.filterLayout.Dock = DockStyle.Fill;
-            this.filterLayout.FlowDirection = FlowDirection.TopDown;
-            this.filterLayout.WrapContents = false;
+            this.panelLeft = new System.Windows.Forms.Panel();
+            this.filterLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.panelRight = new System.Windows.Forms.Panel();
+            this.flowLayoutPanelMovies = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmbGenre = new System.Windows.Forms.ComboBox();
+            this.txtYear = new System.Windows.Forms.TextBox();
+            this.txtDirector = new System.Windows.Forms.TextBox();
+            this.txtActor = new System.Windows.Forms.TextBox();
+            this.panelLeft.SuspendLayout();
+            this.panelRight.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // panelLeft
+            // 
+            this.panelLeft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(40)))));
+            this.panelLeft.Controls.Add(this.filterLayout);
+            this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelLeft.Location = new System.Drawing.Point(0, 0);
+            this.panelLeft.Name = "panelLeft";
+            this.panelLeft.Padding = new System.Windows.Forms.Padding(10);
+            this.panelLeft.Size = new System.Drawing.Size(260, 700);
+            this.panelLeft.TabIndex = 1;
+            // 
+            // filterLayout
+            // 
             this.filterLayout.AutoScroll = true;
-
-            AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
-           
-
-
-            this.cmbGenre.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.cmbGenre.Items.AddRange(new object[] { "All", "Action", "Comedy", "Drama", "Fantasy", "Sci-Fi" });
-            this.cmbGenre.SelectedIndex = 0;
-            AddFilterControl("Genre", this.cmbGenre);
-
-            // === PanelRight ===
-            this.panelRight.Dock = DockStyle.Fill;
-            this.panelRight.BackColor = Color.FromArgb(45, 45, 60);
-            this.panelRight.Controls.Add(flowLayoutPanelMovies);
-
-            // === Movie Panel ===
-            this.flowLayoutPanelMovies.Dock = DockStyle.Fill;
+            this.filterLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.filterLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.filterLayout.Location = new System.Drawing.Point(10, 10);
+            this.filterLayout.Name = "filterLayout";
+            this.filterLayout.Size = new System.Drawing.Size(240, 680);
+            this.filterLayout.TabIndex = 0;
+            this.filterLayout.WrapContents = false;
+            // 
+            // panelRight
+            // 
+            this.panelRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(60)))));
+            this.panelRight.Controls.Add(this.flowLayoutPanelMovies);
+            this.panelRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelRight.Location = new System.Drawing.Point(260, 0);
+            this.panelRight.Name = "panelRight";
+            this.panelRight.Size = new System.Drawing.Size(840, 700);
+            this.panelRight.TabIndex = 0;
+            // 
+            // flowLayoutPanelMovies
+            // 
             this.flowLayoutPanelMovies.AutoScroll = true;
-            this.flowLayoutPanelMovies.FlowDirection = FlowDirection.TopDown;
+            this.flowLayoutPanelMovies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanelMovies.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanelMovies.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanelMovies.Name = "flowLayoutPanelMovies";
+            this.flowLayoutPanelMovies.Padding = new System.Windows.Forms.Padding(15);
+            this.flowLayoutPanelMovies.Size = new System.Drawing.Size(840, 700);
+            this.flowLayoutPanelMovies.TabIndex = 0;
             this.flowLayoutPanelMovies.WrapContents = false;
-            this.flowLayoutPanelMovies.Padding = new Padding(15);
-
-            // === Form ===
+            // 
+            // cmbGenre
+            // 
+            this.cmbGenre.Location = new System.Drawing.Point(0, 0);
+            this.cmbGenre.Name = "cmbGenre";
+            this.cmbGenre.Size = new System.Drawing.Size(121, 28);
+            this.cmbGenre.TabIndex = 0;
+            // 
+            // txtYear
+            // 
+            this.txtYear.Location = new System.Drawing.Point(0, 0);
+            this.txtYear.Name = "txtYear";
+            this.txtYear.Size = new System.Drawing.Size(100, 26);
+            this.txtYear.TabIndex = 0;
+            // 
+            // txtDirector
+            // 
+            this.txtDirector.Location = new System.Drawing.Point(0, 0);
+            this.txtDirector.Name = "txtDirector";
+            this.txtDirector.Size = new System.Drawing.Size(100, 26);
+            this.txtDirector.TabIndex = 0;
+            // 
+            // txtActor
+            // 
+            this.txtActor.Location = new System.Drawing.Point(0, 0);
+            this.txtActor.Name = "txtActor";
+            this.txtActor.Size = new System.Drawing.Size(100, 26);
+            this.txtActor.TabIndex = 0;
+            // 
+            // CustomerMovieListForm
+            // 
+            this.ClientSize = new System.Drawing.Size(1100, 700);
+            this.Controls.Add(this.panelRight);
+            this.Controls.Add(this.panelLeft);
+            this.Name = "CustomerMovieListForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Movie Listings";
-            this.ClientSize = new Size(1100, 700);
-            this.Controls.Add(panelRight);
-            this.Controls.Add(panelLeft);
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.panelLeft.ResumeLayout(false);
+            this.panelRight.ResumeLayout(false);
+            this.ResumeLayout(false);
+
         }
+
+
 
         void AddFilterControl(string labelText, Control control)
         {
@@ -120,5 +168,9 @@ namespace GUI_DB
 
             return panel;
         }
+
+
+
+
     }
 }

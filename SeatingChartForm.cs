@@ -220,6 +220,8 @@ namespace GUI_DB
                 return;
             }
 
+            TicketConfirmationForm ticketConfirmationForm = new TicketConfirmationForm(mainForm, movieTitle, showtime, selectedSeats);
+            mainForm.OpenChildForm(ticketConfirmationForm); 
             // === BACKEND PLACEHOLDER ===
             MessageBox.Show($"Seats selected: {string.Join(", ", selectedSeats)}\n(Ticket screen not yet implemented)", "Continue");
         }
