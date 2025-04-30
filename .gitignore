@@ -361,3 +361,26 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/SeatingChartForm.cs
+/SeatingChartForm.Designer.cs
+/SeatingChartForm.resx
+/AdminControl.cs
+/AdminControl.Designer.cs
+/AdminControl.resx
+/App.config
+/CustomerMovieListForm.cs
+/CustomerMovieListForm.Designer.cs
+/CustomerMovieListForm.resx
+/Form1.cs
+/Form1.Designer.cs
+/Form1.resx
+/LogInPage.cs
+/LogInPage.Designer.cs
+/LogInPage.resx
+/MainForm.cs
+/MainForm.Designer.cs
+/MainForm.resx
+/Program.cs
+/SeatingChartForm.cs
+/SeatingChartForm.Designer.cs
+/SeatingChartForm.resx
