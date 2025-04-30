@@ -13,6 +13,7 @@ namespace GUI_DB
         private ComboBox cmbGenre;
         private TextBox txtYear, txtDirector, txtActor;
         private FlowLayoutPanel filterLayout;
+        private Label lblWelcome;
 
         protected override void Dispose(bool disposing)
         {

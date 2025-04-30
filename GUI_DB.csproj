@@ -52,6 +52,12 @@
     <Compile Include="AdminControl.Designer.cs">
       <DependentUpon>AdminControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CinemaListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CinemaListForm.Designer.cs">
+      <DependentUpon>CinemaListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomerMovieListForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +99,9 @@
     <Compile Include="SeatingChartForm.Designer.cs">
       <DependentUpon>SeatingChartForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CinemaListForm.resx">
+      <DependentUpon>CinemaListForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomerMovieListForm.resx">
       <DependentUpon>CustomerMovieListForm.cs</DependentUpon>
     </EmbeddedResource>
