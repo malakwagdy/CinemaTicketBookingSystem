@@ -103,6 +103,7 @@ namespace GUI_DB
             this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 277F));
             this.panelForm.Size = new System.Drawing.Size(900, 923);
             this.panelForm.TabIndex = 0;
+            this.panelForm.Paint += new System.Windows.Forms.PaintEventHandler(this.panelForm_Paint);
             // 
             // lblTitle
             // 
@@ -241,6 +242,12 @@ namespace GUI_DB
             this.panelForm.PerformLayout();
             this.ResumeLayout(false);
 
+        }
+
+        private void pictureBoxLeft_Click_1(object sender, EventArgs e)
+        {
+            // Optional: Add functionality for the picture box click event here
+            // For now, it's empty to resolve the error
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using GUI_DB;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,9 +6,22 @@ namespace GUI_DB
 {
     public partial class LogInPage : Form
     {
-        public LogInPage()
+        private MainForm mainForm;
+
+        public LogInPage(MainForm form)
         {
             InitializeComponent();
+            mainForm = form;
+
+            // Add placeholder event handlers
+            txtEmailOrUsername.Enter += RemovePlaceholderText;
+            txtEmailOrUsername.Leave += AddPlaceholderText;
+            txtPassword.Enter += RemovePlaceholderText;
+            txtPassword.Leave += AddPlaceholderText;
+
+            // Initialize placeholder text
+            AddPlaceholderText(txtEmailOrUsername, EventArgs.Empty);
+            AddPlaceholderText(txtPassword, EventArgs.Empty);
         }
 
         private void RemovePlaceholderText(object sender, EventArgs e)
@@ -37,16 +49,32 @@ namespace GUI_DB
 
         private void BtnLogIn_Click(object sender, EventArgs e)
         {
-            // Logic for logging in (to be implemented)
-            MessageBox.Show("Log In button clicked!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Hardcoded credentials
+            string hardCodedUsername = "user";
+            string hardCodedPassword = "user123";
+
+            // Check if entered credentials match the hardcoded ones
+            if (txtEmailOrUsername.Text == hardCodedUsername && txtPassword.Text == hardCodedPassword)
+            {
+                // Navigate to the CustomerMovieList form
+                mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+            }
+            else
+            {
+                // Show error message
+                MessageBox.Show("Invalid username or password. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void LinkRegister_Click(object sender, EventArgs e)
         {
-            // Logic to navigate to the Register Page
-            Form1 registerPage = new Form1(); // Assuming Form1 is the Register Page
-            registerPage.Show();
-            this.Hide(); // Hide the Login Page while showing the Register Page
+            // Navigate to the Registration Form using MainForm
+            mainForm.OpenChildForm(new Form1(mainForm));
+        }
+
+        private void panelForm_Paint(object sender, PaintEventArgs e)
+        {
+            // Optional: Add any custom painting logic here if needed
         }
     }
 }

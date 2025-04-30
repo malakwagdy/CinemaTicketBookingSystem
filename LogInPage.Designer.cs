@@ -93,6 +93,7 @@ namespace GUI_DB
             this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.panelForm.Size = new System.Drawing.Size(900, 923);
             this.panelForm.TabIndex = 0;
+            this.panelForm.Paint += new System.Windows.Forms.PaintEventHandler(this.panelForm_Paint);
             // 
             // lblTitle
             // 

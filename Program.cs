@@ -16,7 +16,7 @@ namespace GUI_DB
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CustomerMovieListForm());
+            Application.Run(new MainForm());
         }
     }
 }

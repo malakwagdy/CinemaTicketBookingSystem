@@ -20,12 +20,15 @@ namespace GUI_DB
             base.Dispose(disposing);
         }
 
+
+
+
         private void InitializeComponent()
         {
+            // Initialize controls
             this.panelLeft = new Panel();
             this.panelRight = new Panel();
             this.flowLayoutPanelMovies = new FlowLayoutPanel();
-            this.lblTitle = new Label();
             this.cmbGenre = new ComboBox();
             this.txtYear = new TextBox();
             this.txtDirector = new TextBox();
@@ -45,23 +48,6 @@ namespace GUI_DB
             this.filterLayout.WrapContents = false;
             this.filterLayout.AutoScroll = true;
 
-            void AddFilterControl(string labelText, Control control)
-            {
-                var label = new Label
-                {
-                    Text = labelText,
-                    ForeColor = Color.White,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                    Height = 20,
-                    AutoSize = false
-                };
-                control.Width = 220;
-                control.Margin = new Padding(0, 0, 0, 10);
-                filterLayout.Controls.Add(label);
-                filterLayout.Controls.Add(control);
-            }
-
-            AddFilterControl("Time of Day", CreateRadioGroup(new[] { "All Times", "Morning", "Afternoon", "Evening" }, "Time_"));
             AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
             AddFilterControl("Star Actor", this.txtActor);
             AddFilterControl("Director", this.txtDirector);
@@ -79,15 +65,6 @@ namespace GUI_DB
             this.panelRight.Dock = DockStyle.Fill;
             this.panelRight.BackColor = Color.FromArgb(45, 45, 60);
             this.panelRight.Controls.Add(flowLayoutPanelMovies);
-            this.panelRight.Controls.Add(lblTitle);
-
-            // === lblTitle ===
-            this.lblTitle.Text = "Available Movies";
-            this.lblTitle.Dock = DockStyle.Top;
-            this.lblTitle.Height = 60;
-            this.lblTitle.TextAlign = ContentAlignment.MiddleCenter;
-            this.lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            this.lblTitle.ForeColor = Color.White;
 
             // === Movie Panel ===
             this.flowLayoutPanelMovies.Dock = DockStyle.Fill;
@@ -102,6 +79,22 @@ namespace GUI_DB
             this.Controls.Add(panelRight);
             this.Controls.Add(panelLeft);
             this.StartPosition = FormStartPosition.CenterScreen;
+        }
+
+        void AddFilterControl(string labelText, Control control)
+        {
+            var label = new Label
+            {
+                Text = labelText,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Height = 20,
+                AutoSize = false
+            };
+            control.Width = 220;
+            control.Margin = new Padding(0, 0, 0, 10);
+            filterLayout.Controls.Add(label);
+            filterLayout.Controls.Add(control);
         }
 
         private Panel CreateRadioGroup(string[] options, string tagPrefix)

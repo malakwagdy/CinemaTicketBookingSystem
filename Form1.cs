@@ -6,19 +6,41 @@ namespace GUI_DB
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        private MainForm mainForm;
+
+        public Form1(MainForm form)
         {
             InitializeComponent();
+            mainForm = form;
+
+            // Hook up placeholder events
+            txtFirstName.Enter += RemovePlaceholderText;
+            txtFirstName.Leave += AddPlaceholderText;
+            txtLastName.Enter += RemovePlaceholderText;
+            txtLastName.Leave += AddPlaceholderText;
+            txtPassword.Enter += RemovePlaceholderText;
+            txtPassword.Leave += AddPlaceholderText;
+            txtConfirmPassword.Enter += RemovePlaceholderText;
+            txtConfirmPassword.Leave += AddPlaceholderText;
+            txtEmail.Enter += RemovePlaceholderText;
+            txtEmail.Leave += AddPlaceholderText;
+
+            // Initialize placeholder text
+            AddPlaceholderText(txtFirstName, EventArgs.Empty);
+            AddPlaceholderText(txtLastName, EventArgs.Empty);
+            AddPlaceholderText(txtPassword, EventArgs.Empty);
+            AddPlaceholderText(txtConfirmPassword, EventArgs.Empty);
+            AddPlaceholderText(txtEmail, EventArgs.Empty);
         }
 
         private void BtnCreateAccount_Click(object sender, EventArgs e)
         {
             // Validate input fields
-            if (string.IsNullOrEmpty(txtFirstName.Text) || txtFirstName.Text == "First Name" ||
-                string.IsNullOrEmpty(txtLastName.Text) || txtLastName.Text == "Last Name" ||
-                string.IsNullOrEmpty(txtPassword.Text) || txtPassword.Text == "Password" ||
-                string.IsNullOrEmpty(txtConfirmPassword.Text) || txtConfirmPassword.Text == "Confirm Password" ||
-                string.IsNullOrEmpty(txtEmail.Text) || txtEmail.Text == "Email Address")
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text) || txtFirstName.Text == "First Name" ||
+                string.IsNullOrWhiteSpace(txtLastName.Text) || txtLastName.Text == "Last Name" ||
+                string.IsNullOrWhiteSpace(txtPassword.Text) || txtPassword.Text == "Password" ||
+                string.IsNullOrWhiteSpace(txtConfirmPassword.Text) || txtConfirmPassword.Text == "Confirm Password" ||
+                string.IsNullOrWhiteSpace(txtEmail.Text) || txtEmail.Text == "Email Address")
             {
                 MessageBox.Show("Please fill in all fields.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -39,8 +61,8 @@ namespace GUI_DB
             // Simulate saving the user's registration details (e.g., save to a database)
             MessageBox.Show("Registration successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // Close the form after successful registration
-            Close();
+            // Navigate back to the Login Page
+            mainForm.OpenChildForm(new LogInPage(mainForm));
         }
 
         private void RemovePlaceholderText(object sender, EventArgs e)
@@ -69,17 +91,13 @@ namespace GUI_DB
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void BtnBackToLogin_Click(object sender, EventArgs e)
         {
-
+            // Navigate back to the Login Page
+            mainForm.OpenChildForm(new LogInPage(mainForm));
         }
 
-        private void pictureBoxLeft_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBoxLeft_Click_1(object sender, EventArgs e)
+        private void panelForm_Paint(object sender, PaintEventArgs e)
         {
 
         }

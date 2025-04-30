@@ -8,6 +8,8 @@ namespace GUI_DB
 {
     public partial class CustomerMovieListForm : Form
     {
+        private MainForm mainForm; // Reference to the parent MainForm
+
         private string currentTimeFilter = "All";
         private string currentAgeFilter = "All";
         private string selectedGenre = "All";
@@ -15,10 +17,22 @@ namespace GUI_DB
         private string selectedDirector = "";
         private string selectedActor = "";
 
-        public CustomerMovieListForm()
+        // Constructor with MainForm reference
+        public CustomerMovieListForm(MainForm form)
         {
+            mainForm = form; // Store the reference to MainForm
             InitializeComponent();
-            InitializeFilterEvents();
+
+            // Ensure controls are initialized before setting up events
+            if (cmbGenre != null && txtYear != null && txtDirector != null && txtActor != null)
+            {
+                InitializeFilterEvents();
+            }
+            else
+            {
+                MessageBox.Show("One or more controls are not initialized properly.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             LoadMovies();
         }
 
@@ -91,7 +105,6 @@ namespace GUI_DB
                 }
                 return false;
             });
-
 
             bool ageOk = currentAgeFilter == "All" || movie.AgeRating == currentAgeFilter;
             bool genreOk = selectedGenre == "All" || movie.Genre == selectedGenre;
@@ -176,6 +189,11 @@ namespace GUI_DB
                         };
                 }
             }
+        }
+
+        private void CustomerMovieListForm_Load(object sender, EventArgs e)
+        {
+            // Optional: Add logic for form load if needed
         }
     }
 
