@@ -23,6 +23,10 @@ namespace GUI_DB
             mainForm = form; // Store the reference to MainForm
             InitializeComponent();
 
+            AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
+            AddFilterControl("Genre", cmbGenre);
+
+
             // Ensure controls are initialized before setting up events
             if (cmbGenre != null && txtYear != null && txtDirector != null && txtActor != null)
             {
