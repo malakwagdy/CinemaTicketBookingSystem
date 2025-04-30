@@ -40,7 +40,7 @@ namespace GUI_DB
             if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text))
             {
                 // Restore placeholder text
-                if (textBox == txtEmailOrUsername) textBox.Text = "Email or Username";
+                if (textBox == txtEmailOrUsername) textBox.Text = "Email";
                 else if (textBox == txtPassword) textBox.Text = "Password";
 
                 textBox.ForeColor = Color.Gray; // Set text color to gray for placeholder
@@ -59,7 +59,7 @@ namespace GUI_DB
             if (txtEmailOrUsername.Text == hardCodedUsername && txtPassword.Text == hardCodedPassword)
             {
                 // Navigate to the CustomerMovieList form
-                mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+                mainForm.OpenChildForm(new CinemaListForm(mainForm));
             }
             else if (txtEmailOrUsername.Text == adminUsername && txtPassword.Text == adminPassword)
             {
