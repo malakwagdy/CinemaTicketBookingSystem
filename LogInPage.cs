@@ -50,6 +50,8 @@ namespace GUI_DB
         private void BtnLogIn_Click(object sender, EventArgs e)
         {
             // Hardcoded credentials
+            string adminUsername = "admin";
+            string adminPassword = "admin123";
             string hardCodedUsername = "user";
             string hardCodedPassword = "user123";
 
@@ -58,6 +60,11 @@ namespace GUI_DB
             {
                 // Navigate to the CustomerMovieList form
                 mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+            }
+            else if (txtEmailOrUsername.Text == adminUsername && txtPassword.Text == adminPassword)
+            {
+                // Navigate to the AdminControl form
+                mainForm.OpenChildForm(new AdminControl(mainForm));
             }
             else
             {
@@ -75,6 +82,11 @@ namespace GUI_DB
         private void panelForm_Paint(object sender, PaintEventArgs e)
         {
             // Optional: Add any custom painting logic here if needed
+        }
+
+        private void LogInPage_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
