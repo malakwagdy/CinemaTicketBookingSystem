@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using static GUI_DB.DatabaseManager;
 
 namespace GUI_DB
 {
@@ -13,7 +14,7 @@ namespace GUI_DB
     public class DatabaseManager
     {
         //InitializeComponent();
-        public string connectionString = "Data Source=MALAK;Initial Catalog=CinemaTicketBookingSystem;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+        public string connectionString = "Data Source=AMR;Initial Catalog=Test_Project_DB;Integrated Security=True;Trust Server Certificate=True";
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
         public struct Seat
@@ -1057,7 +1058,48 @@ namespace GUI_DB
 
             return returnstring;
         }
-        
+
+
+        public Showtime[] GetShowtimesForMovie(int movieID)
+        {
+            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
+            List<Showtime> showtimes = new List<Showtime>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieID", movieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Showtime showtime = new Showtime
+                                {
+                                    startTime = Convert.ToDateTime(reader["StartTime"]),
+                                    adminID = reader["AdminID"].ToString(),
+                                    price = Convert.ToDouble(reader["Price"]),
+                                    hallID = Convert.ToInt32(reader["HallID"]),
+                                    movieID = Convert.ToInt32(reader["MovieID"])
+                                };
+                                showtimes.Add(showtime);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return showtimes.ToArray();
+        }
+
+
         public string AddCinema(int cinemaID, string cinemaName, string cLocation)
         {
             string returnstring = null;

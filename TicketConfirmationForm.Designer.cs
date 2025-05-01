@@ -47,7 +47,7 @@ namespace GUI_DB
             // 
             this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblHeader.ForeColor = System.Drawing.Color.White;
-            this.lblHeader.Location = new System.Drawing.Point(131, 0);
+            this.lblHeader.Location = new System.Drawing.Point(186, -1);
             this.lblHeader.Name = "lblHeader";
             this.lblHeader.Size = new System.Drawing.Size(350, 40);
             this.lblHeader.TabIndex = 0;
@@ -58,6 +58,7 @@ namespace GUI_DB
             // 
             this.contentPanel.BackColor = System.Drawing.Color.Transparent;
             this.contentPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.contentPanel.Controls.Add(this.lblReservationDate);
             this.contentPanel.Controls.Add(this.lblHeader);
             this.contentPanel.Controls.Add(this.lblMovie);
             this.contentPanel.Controls.Add(this.lblShowtime);
@@ -69,7 +70,7 @@ namespace GUI_DB
             this.contentPanel.Controls.Add(this.btnCancel);
             this.contentPanel.Location = new System.Drawing.Point(331, 12);
             this.contentPanel.Name = "contentPanel";
-            this.contentPanel.Size = new System.Drawing.Size(602, 578);
+            this.contentPanel.Size = new System.Drawing.Size(686, 662);
             this.contentPanel.TabIndex = 0;
             // 
             // lblMovie
@@ -79,7 +80,7 @@ namespace GUI_DB
             this.lblMovie.ForeColor = System.Drawing.Color.White;
             this.lblMovie.Location = new System.Drawing.Point(10, 50);
             this.lblMovie.Name = "lblMovie";
-            this.lblMovie.Size = new System.Drawing.Size(0, 23);
+            this.lblMovie.Size = new System.Drawing.Size(0, 28);
             this.lblMovie.TabIndex = 1;
             // 
             // lblShowtime
@@ -89,7 +90,7 @@ namespace GUI_DB
             this.lblShowtime.ForeColor = System.Drawing.Color.White;
             this.lblShowtime.Location = new System.Drawing.Point(10, 80);
             this.lblShowtime.Name = "lblShowtime";
-            this.lblShowtime.Size = new System.Drawing.Size(0, 23);
+            this.lblShowtime.Size = new System.Drawing.Size(0, 28);
             this.lblShowtime.TabIndex = 2;
             // 
             // lblTicketId
@@ -99,7 +100,7 @@ namespace GUI_DB
             this.lblTicketId.ForeColor = System.Drawing.Color.White;
             this.lblTicketId.Location = new System.Drawing.Point(10, 110);
             this.lblTicketId.Name = "lblTicketId";
-            this.lblTicketId.Size = new System.Drawing.Size(0, 23);
+            this.lblTicketId.Size = new System.Drawing.Size(0, 28);
             this.lblTicketId.TabIndex = 3;
             // 
             // lstSeats
@@ -107,10 +108,10 @@ namespace GUI_DB
             this.lstSeats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(60)))));
             this.lstSeats.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lstSeats.ForeColor = System.Drawing.Color.White;
-            this.lstSeats.ItemHeight = 23;
-            this.lstSeats.Location = new System.Drawing.Point(179, 152);
+            this.lstSeats.ItemHeight = 28;
+            this.lstSeats.Location = new System.Drawing.Point(222, 153);
             this.lstSeats.Name = "lstSeats";
-            this.lstSeats.Size = new System.Drawing.Size(250, 73);
+            this.lstSeats.Size = new System.Drawing.Size(250, 60);
             this.lstSeats.TabIndex = 4;
             // 
             // lblUnitPrice
@@ -120,7 +121,7 @@ namespace GUI_DB
             this.lblUnitPrice.ForeColor = System.Drawing.Color.White;
             this.lblUnitPrice.Location = new System.Drawing.Point(10, 250);
             this.lblUnitPrice.Name = "lblUnitPrice";
-            this.lblUnitPrice.Size = new System.Drawing.Size(0, 23);
+            this.lblUnitPrice.Size = new System.Drawing.Size(0, 28);
             this.lblUnitPrice.TabIndex = 5;
             // 
             // lblTotalPrice
@@ -130,7 +131,7 @@ namespace GUI_DB
             this.lblTotalPrice.ForeColor = System.Drawing.Color.White;
             this.lblTotalPrice.Location = new System.Drawing.Point(10, 280);
             this.lblTotalPrice.Name = "lblTotalPrice";
-            this.lblTotalPrice.Size = new System.Drawing.Size(0, 23);
+            this.lblTotalPrice.Size = new System.Drawing.Size(0, 28);
             this.lblTotalPrice.TabIndex = 6;
             // 
             // btnConfirm
@@ -138,7 +139,7 @@ namespace GUI_DB
             this.btnConfirm.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.btnConfirm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConfirm.ForeColor = System.Drawing.Color.White;
-            this.btnConfirm.Location = new System.Drawing.Point(231, 396);
+            this.btnConfirm.Location = new System.Drawing.Point(278, 396);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(140, 40);
             this.btnConfirm.TabIndex = 7;
@@ -150,27 +151,23 @@ namespace GUI_DB
             this.btnCancel.BackColor = System.Drawing.Color.Gray;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.ForeColor = System.Drawing.Color.White;
-            this.btnCancel.Location = new System.Drawing.Point(231, 469);
+            this.btnCancel.Location = new System.Drawing.Point(278, 465);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(140, 40);
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = false;
-
-
-            //Label ReservationDate
+            // 
+            // lblReservationDate
+            // 
             this.lblReservationDate.AutoSize = true;
             this.lblReservationDate.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblReservationDate.ForeColor = System.Drawing.Color.White;
-            this.lblReservationDate.Location = new System.Drawing.Point(10, 80); // Adjust location as needed
+            this.lblReservationDate.Location = new System.Drawing.Point(419, 50);
             this.lblReservationDate.Name = "lblReservationDate";
-            this.lblReservationDate.Size = new System.Drawing.Size(0, 23);
+            this.lblReservationDate.Size = new System.Drawing.Size(168, 28);
             this.lblReservationDate.TabIndex = 5;
             this.lblReservationDate.Text = "Reservation Date: ";
-
-            this.Controls.Add(this.lblReservationDate);
-
-
             // 
             // TicketConfirmationForm
             // 
