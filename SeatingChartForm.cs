@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GUI_DB
@@ -9,13 +11,13 @@ namespace GUI_DB
     {
         private MainForm mainForm;
         private string movieTitle;
-        private string showtime;
+        private DateTime showtime;
         private HashSet<string> reservedSeats;
         private List<string> selectedSeats = new List<string>();
         private HashSet<string> premiumSeatsSet;
         private DateTime reservationDate; // *** NEW Field ***
 
-        public SeatingChartForm(MainForm mainForm, string movieTitle, string showtime, DateTime reservationDate)
+        public SeatingChartForm(MainForm mainForm, string movieTitle, DateTime showtime, DateTime reservationDate)
         {
             this.mainForm = mainForm;
             this.movieTitle = movieTitle;
@@ -26,7 +28,7 @@ namespace GUI_DB
             SetDynamicValues();
             FetchReservedSeats();
             FetchPremiumSeats();
-            GenerateSeatLayout();
+            GenerateSeatLayout(showtime ,GlobalVariable.getCurrentMovie(), GlobalVariable.getCurrentHallId());
             CreateLegend(); // Add the legend
         }
 
@@ -52,59 +54,92 @@ namespace GUI_DB
             };
         }
 
-        private void GenerateSeatLayout()
+        private async Task GenerateSeatLayout(DateTime showtime, int movieID, int hallID)
         {
             seatLayout.Controls.Clear();
+
+            // Get all seat data
+            var dbManager = new DatabaseManager();
+            var allSeats = dbManager.GetSeatsByHallCombined(hallID);
+            var reservedSeats = dbManager.GetReservedSeatsCombined(showtime, hallID, movieID);
+
+            // Generate premium seats list
+            var premiumSeatsSet = allSeats
+                .Where(s => s.Value.Equals("Premium", StringComparison.OrdinalIgnoreCase))
+                .Select(s => s.Key)
+                .ToHashSet();
+
+            // Create the grid
             seatLayout.RowCount = 8;
             seatLayout.ColumnCount = 10;
-            seatLayout.ColumnStyles.Clear();
-            seatLayout.RowStyles.Clear();
-
-            for (int i = 0; i < seatLayout.ColumnCount; i++)
-                seatLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
-            for (int i = 0; i < seatLayout.RowCount; i++)
-                seatLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-
+                        
             for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 10; col++)
                 {
                     string seatId = $"{(char)('A' + row)}{col + 1}";
-                    Button btn = new Button
-                    {
-                        Text = seatId,
-                        Width = 55,
-                        Height = 55,
-                        Margin = new Padding(2),
-                        Dock = DockStyle.Fill,
-                        FlatStyle = FlatStyle.Flat,
-                        FlatAppearance = { BorderColor = Color.Gray }
-                    };
+                    var btn = new Button { Text = seatId, Tag = seatId };
 
-                    // Highlight premium rows H, G, F in gold
+                    // Style based on seat status
                     if (premiumSeatsSet.Contains(seatId))
                     {
-                        btn.BackColor = Color.Gold; // Gold for premium seats
-                        btn.ForeColor = Color.Black; // Black text for better contrast
+                        StyleAsPremium(btn);
                         btn.Click += (s, e) => PremiumSeatButton_Click(s, e, seatId, btn);
+                        
+                        
                     }
                     else if (reservedSeats.Contains(seatId))
                     {
-                        btn.BackColor = Color.DarkRed; // Dark red for reserved seats
-                        btn.ForeColor = Color.White;
-                        btn.Enabled = false;
-                        btn.Cursor = Cursors.No;
+                        StyleAsReserved(btn);
                     }
                     else
                     {
-                        btn.BackColor = Color.FromArgb(60, 60, 75); // Default gray for standard seats
-                        btn.ForeColor = Color.White;
-                        btn.Click += SeatButton_Click;
+                        StyleAsAvailable(btn);
+                        btn.Click += (s, e) => SeatButton_Click(s,e); 
                     }
 
                     seatLayout.Controls.Add(btn, col, row);
                 }
             }
+        }
+
+
+
+        private void StyleAsPremium(Button btn)
+        {
+            btn.BackColor = Color.Gold;
+            btn.ForeColor = Color.Black;
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderColor = Color.DarkGoldenrod;
+            btn.FlatAppearance.BorderSize = 2;
+            btn.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+            btn.Cursor = Cursors.Hand;
+            btn.Margin = new Padding(2);
+        }
+
+        private void StyleAsReserved(Button btn)
+        {
+            btn.BackColor = Color.DarkRed;
+            btn.ForeColor = Color.WhiteSmoke;
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderColor = Color.Red;
+            btn.FlatAppearance.BorderSize = 1;
+            btn.Font = new Font("Segoe UI", 9f, FontStyle.Strikeout);
+            btn.Enabled = false;
+            btn.Cursor = Cursors.No;
+            btn.Margin = new Padding(2);
+        }
+
+        private void StyleAsAvailable(Button btn)
+        {
+            btn.BackColor = Color.FromArgb(60, 60, 75); // Dark slate gray
+            btn.ForeColor = Color.WhiteSmoke;
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderColor = Color.Gray;
+            btn.FlatAppearance.BorderSize = 1;
+            btn.Font = new Font("Segoe UI", 9f, FontStyle.Regular);
+            btn.Cursor = Cursors.Hand;
+            btn.Margin = new Padding(2);
         }
 
         private void CreateLegend()

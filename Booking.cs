@@ -13,7 +13,7 @@ namespace GUI_DB
         // --- Properties ---
         public string TicketId { get; private set; }
         public string MovieTitle { get; private set; }
-        public string Showtime { get; private set; }
+        public DateTime Showtime { get; private set; }
         public List<string> SelectedSeats { get; private set; }
         public decimal TotalPrice { get; private set; }
         public DateTime BookingTime { get; private set; }   // When the booking was *made*
@@ -29,15 +29,14 @@ namespace GUI_DB
         /// <param name="reservationDate">The date the movie showing is on.</param> // *** NEW Parameter ***
         /// <param name="selectedSeats">The list of seats booked.</param>
         /// <param name="totalPrice">The total price for all seats in this booking.</param>
-        public Booking(string ticketId, string movieTitle, string showtime, DateTime reservationDate, List<string> selectedSeats, decimal totalPrice) // *** Signature Updated ***
+        public Booking(string ticketId, string movieTitle, DateTime showtime, DateTime reservationDate, List<string> selectedSeats, decimal totalPrice) // *** Signature Updated ***
         {
             // Basic validation
             if (string.IsNullOrWhiteSpace(ticketId))
                 throw new ArgumentNullException(nameof(ticketId), "Ticket ID cannot be empty.");
             if (string.IsNullOrWhiteSpace(movieTitle))
                 throw new ArgumentNullException(nameof(movieTitle), "Movie Title cannot be empty.");
-            if (string.IsNullOrWhiteSpace(showtime))
-                throw new ArgumentNullException(nameof(showtime), "Showtime cannot be empty.");
+            
             if (selectedSeats == null)
                 throw new ArgumentNullException(nameof(selectedSeats), "Selected seats list cannot be null.");
             if (!selectedSeats.Any())

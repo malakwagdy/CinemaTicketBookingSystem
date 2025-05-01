@@ -1355,6 +1355,87 @@ namespace GUI_DB
             return bookings.ToArray();
         }
 
+
+
+
+
+        private string ConvertToSeatId(char rowNumber, int seatNumber)
+        {
+            return $"{rowNumber}{seatNumber}";
+        }
+        public HashSet<string> GetReservedSeatsCombined(DateTime startTime, int hallID, int movieID)
+        {
+            var reservedSeats = new HashSet<string>();
+            string query = @"SELECT SeatNumber, RowNumber FROM Ticket 
+                   WHERE StartTime=@startTime AND HallID=@HallID AND MovieID=@movieID";
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@startTime", startTime);
+                        command.Parameters.AddWithValue("@HallID", hallID);
+                        command.Parameters.AddWithValue("@MovieID", movieID);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                char row = Convert.ToChar(reader["RowNumber"]);
+                                int number = Convert.ToInt32(reader["SeatNumber"]);
+                                reservedSeats.Add(ConvertToSeatId(row, number));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading reserved seats: {ex.Message}");
+            }
+
+            return reservedSeats;
+        }
+
+        public Dictionary<string, string> GetSeatsByHallCombined(int hallID) // <seatId, seatType>
+        {
+            var seats = new Dictionary<string, string>();
+            string query = @"SELECT SeatNumber, RowNumber, SeatType FROM Seat WHERE HallID = @hallID";
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@hallID", hallID);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                char row = Convert.ToChar(reader["RowNumber"]);
+                                int number = Convert.ToInt32(reader["SeatNumber"]);
+                                string type = reader["SeatType"].ToString();
+
+                                seats.Add(ConvertToSeatId(row, number), type);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading seats: {ex.Message}");
+            }
+
+            return seats;
+        }
+
     }
     
 
