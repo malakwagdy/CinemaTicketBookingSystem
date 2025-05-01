@@ -1,11 +1,11 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Windows.Forms;
 
 namespace GUI_DB
@@ -15,8 +15,7 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=AMR;Initial Catalog=Test_Project_DB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
-           
+            "Data Source=MALAK;Initial Catalog = CinemaTicketBookingSystem; Integrated Security = True; Trust Server Certificate=True";
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
@@ -72,6 +71,83 @@ namespace GUI_DB
                 this.Age = age;
             }
         }
+        
+        public struct Movie
+        {
+            public int MovieID;
+            public string Director;
+            public string Title;
+            public string Genre;
+            public int AgeRating;
+            public DateTime ReleaseDate;
+            public string adminID;
+            
+            public Movie(int movieID, string director, string title, string genre, int ageRating, DateTime releaseDate)
+            {
+                this.MovieID = movieID;
+                this.Director = director;
+                this.Title = title;
+                this.Genre = genre;
+                this.AgeRating = ageRating;
+                this.ReleaseDate = releaseDate;
+                this.adminID = "admin@email.com";
+            }
+        }
+
+        public struct Hall
+        {
+            public int hallID;
+            public string hallName;
+            public string screenType;
+            public int cinemaID;
+            public string adminID;
+
+            public Hall(int hallID, string hallName, string screentype,int cinemaID)
+            {
+                this.hallID = hallID;
+                this.hallName = hallName;
+                this.screenType = screentype;
+                this.cinemaID = cinemaID;
+                this.adminID = "admin@email.com";
+            }
+        }
+
+        public struct Booking
+        {
+            public int bookingID;
+            public float totalPrice;
+            public DateTime bookingDate;
+            public string customerID;
+
+            public Booking(int bookingID, float totalPrice, DateTime bookingDate, string customerID)
+            {
+                this.bookingID = bookingID;
+                this.totalPrice = totalPrice;
+                this.bookingDate = bookingDate;
+                this.customerID = customerID;
+            }
+        }
+
+        public struct Ticket
+        {
+            public int ticketID;
+            public string bookingID;
+            public DateTime startTime;
+            public int seatNumber;
+            public char rowNumber;
+            public int movieID;
+            public int hallID;
+            public float Price;
+        }
+
+        public struct Showtime
+        {
+            public DateTime startTime;
+            public string adminID;
+            public double price;
+            public int hallID;
+            public int movieID;
+        }
 
         public int calculateAge(DateTime birthDate)
         {
@@ -83,7 +159,43 @@ namespace GUI_DB
 
             return age;
         }
+        public Hall[] getAllHalls()
+        {
+            string query = @"SELECT * FROM Hall WHERE CinemaID= @CinemaID";
+            List<Hall> halls = new List<Hall>();
 
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@CinemaID", 1);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                // Use the constructor to initialize the Movie struct
+                                Hall hall = new Hall(
+                                    Convert.ToInt32(reader["HallID"]),
+                                    reader["HallName"].ToString(),
+                                    reader["ScreenType"].ToString(),
+                                    Convert.ToInt32(reader["CinemaID"])
+                                );
+                                halls.Add(hall);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+            return halls.ToArray();
+        }
         public User GetUserById(string email)
         {
             string query = @"SELECT * FROM Users WHERE Email= @email";
@@ -125,78 +237,46 @@ namespace GUI_DB
 
             return user;
         }
-        public struct Movie
+        
+        public Showtime[] GetShowtimesForMovie(int movieID)
         {
-            public int MovieID;
-            public string Director;
-            public string Title;
-            public string Genre;
-            public int AgeRating;
-            public DateTime ReleaseDate;
-            public Movie(int movieID, string director, string title, string genre, int ageRating, DateTime releaseDate)
+            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
+            List<Showtime> showtimes = new List<Showtime>();
+
+            try
             {
-                this.MovieID = movieID;
-                this.Director = director;
-                this.Title = title;
-                this.Genre = genre;
-                this.AgeRating = ageRating;
-                this.ReleaseDate = releaseDate;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieID", movieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Showtime showtime = new Showtime
+                                {
+                                    startTime = Convert.ToDateTime(reader["StartTime"]),
+                                    adminID = reader["AdminID"].ToString(),
+                                    // price = Convert.ToDouble(reader["Price"]),
+                                    hallID = Convert.ToInt32(reader["HallID"]),
+                                    movieID = Convert.ToInt32(reader["MovieID"])
+                                };
+                                showtimes.Add(showtime);
+                            }
+                        }
+                    }
+                }
             }
-        }
-
-        public struct Hall
-        {
-            public int hallID;
-            public string hallName;
-            public string screenType;
-            public int cinemaID;
-
-            public Hall(int hallID, string hallName, string screentype,int cinemaID)
+            catch (Exception ex)
             {
-                this.hallID = hallID;
-                this.hallName = hallName;
-                this.screenType = screentype;
-                this.cinemaID = cinemaID;
+                Console.WriteLine($"An error occurred: {ex.Message}");
             }
+
+            return showtimes.ToArray();
         }
-
-        public struct Booking
-        {
-            public int bookingID;
-            public float totalPrice;
-            public DateTime bookingDate;
-            public string customerID;
-
-            public Booking(int bookingID, float totalPrice, DateTime bookingDate, string customerID)
-            {
-                this.bookingID = bookingID;
-                this.totalPrice = totalPrice;
-                this.bookingDate = bookingDate;
-                this.customerID = customerID;
-            }
-        }
-
-        public struct Ticket
-        {
-            public int ticketID;
-            public string bookingID;
-            public DateTime startTime;
-            public int seatNumber;
-            public char rowNumber;
-            public int movieID;
-            public int hallID;
-            public float Price;
-        }
-
-        public struct Showtime
-        {
-            public DateTime startTime;
-            public string adminID;
-            public double price;
-            public int hallID;
-            public int movieID;
-        }
-
+        
         public Movie[] getAllMovies()
         {
             string query = @"SELECT * FROM Movie";
@@ -214,12 +294,12 @@ namespace GUI_DB
                         {
                             // Use the constructor to initialize the Movie struct
                             Movie movie = new Movie(
-                                Convert.ToInt32(reader["movieID"]),
-                                reader["director"].ToString(),
-                                reader["title"].ToString(),
-                                reader["genre"].ToString(),
-                                Convert.ToInt32(reader["ageRating"]),
-                                Convert.ToDateTime(reader["releaseDate"])
+                                Convert.ToInt32(reader["MovieID"]),
+                                reader["Director"].ToString(),
+                                reader["Title"].ToString(),
+                                reader["Genre"].ToString(),
+                                Convert.ToInt32(reader["AgeRating"]),
+                                Convert.ToDateTime(reader["ReleaseDate"])
                             );
                             movies.Add(movie);
                         }
@@ -234,7 +314,7 @@ namespace GUI_DB
             return movies.ToArray();
         }
 
-public void calculatePrice(Ticket ticket)
+        public void calculatePrice(Ticket ticket)
         {
             string seatType = null;
             string screenType = null;
@@ -327,6 +407,7 @@ public void calculatePrice(Ticket ticket)
                 }
             }   
         }
+        
         public Movie[] getMoviesByGenre(string genre)
         {
             string query = @"SELECT * FROM Movie WHERE Genre= @genre";
@@ -346,12 +427,12 @@ public void calculatePrice(Ticket ticket)
                             {
                                 // Use the constructor to initialize the Movie struct
                                 Movie movie = new Movie(
-                                    Convert.ToInt32(reader["movieID"]),
-                                    reader["director"].ToString(),
-                                    reader["title"].ToString(),
-                                    reader["genre"].ToString(),
-                                    Convert.ToInt32(reader["ageRating"]),
-                                    Convert.ToDateTime(reader["releaseDate"])
+                                    Convert.ToInt32(reader["MovieID"]),
+                                    reader["Director"].ToString(),
+                                    reader["Title"].ToString(),
+                                    reader["Genre"].ToString(),
+                                    Convert.ToInt32(reader["AgeRating"]),
+                                    Convert.ToDateTime(reader["ReleaseDate"])
                                 );
                                 movies.Add(movie);
                             }
@@ -386,12 +467,12 @@ public void calculatePrice(Ticket ticket)
                             {
                                 // Use the constructor to initialize the Movie struct
                                 Movie movie = new Movie(
-                                    Convert.ToInt32(reader["movieID"]),
-                                    reader["director"].ToString(),
-                                    reader["title"].ToString(),
-                                    reader["genre"].ToString(),
-                                    Convert.ToInt32(reader["ageRating"]),
-                                    Convert.ToDateTime(reader["releaseDate"])
+                                    Convert.ToInt32(reader["MovieID"]),
+                                    reader["Director"].ToString(),
+                                    reader["Title"].ToString(),
+                                    reader["Genre"].ToString(),
+                                    Convert.ToInt32(reader["AgeRating"]),
+                                    Convert.ToDateTime(reader["ReleaseDate"])
                                 );
                                 movies.Add(movie);
                             }
@@ -433,7 +514,7 @@ public void calculatePrice(Ticket ticket)
                 //return firstName;
                 if (firstName == null)
                 {
-                    return"Invalid email or password.";
+                    return "Invalid email or password.";
                 }
                 else
                 {
@@ -467,7 +548,7 @@ public void calculatePrice(Ticket ticket)
                                 Seat seat = new Seat(
                                     Convert.ToInt32(reader["SeatNumber"]),
                                     Convert.ToChar(reader["RowNumber"]),
-                                    reader["seatType"].ToString(),
+                                    reader["SeatType"].ToString(),
                                     Convert.ToInt32(reader["HallID"])
                                 );
                                 seats.Add(seat);
@@ -632,7 +713,7 @@ public void calculatePrice(Ticket ticket)
 
             return returnstring;
         }
-        //it is what it isss.......
+        
         public Seat[] getReservedSeats(DateTime startTime, int HallID, int MovieID)
         {   List<Seat> seats = new List<Seat>();
              string query = @"SELECT SeatNumber, RowNumber FROM Ticket WHERE StartTime=@startTime AND HallID=@HallID AND MovieID = @movieID";
@@ -653,7 +734,7 @@ public void calculatePrice(Ticket ticket)
                                  Seat seat = new Seat(
                                      Convert.ToInt32(reader["SeatNumber"]),
                                      Convert.ToChar(reader["RowNumber"]),
-                                     reader["seatType"].ToString(),
+                                     reader["SeatType"].ToString(),
                                     Convert.ToInt32(reader["HallID"])
                                  );
                                  seats.Add(seat);
@@ -676,8 +757,8 @@ public void calculatePrice(Ticket ticket)
         public string AddMovie(int movieID, string director, string title, string genre, int ageRating, DateTime releaseDate)
         {
             string returnstring = null;
-            string query = @"INSERT INTO Movie (MovieID, Director, Title, Genre, AgeRating, ReleaseDate) 
-                     VALUES (@MovieID, @Director, @Title, @Genre, @AgeRating, @ReleaseDate)";
+            string query = @"INSERT INTO Movie (MovieID, Director, Title, Genre, AgeRating, ReleaseDate, AdminID) 
+                     VALUES (@MovieID, @Director, @Title, @Genre, @AgeRating, @ReleaseDate, 'admin@email.com')";
 
             try
             {
@@ -801,7 +882,7 @@ public void calculatePrice(Ticket ticket)
                         command.Parameters.AddWithValue("@HallName", hallName);
                         command.Parameters.AddWithValue("@ScreenType", ScreenType);
                         command.Parameters.AddWithValue("@CinemaID", 1);
-                        command.Parameters.AddWithValue("@AdminID", "admin@gmail.com");
+                        command.Parameters.AddWithValue("@AdminID", "admin@email.com");
                         command.Parameters.AddWithValue("@NumRows", NumOfRows);
                         command.Parameters.AddWithValue("@SeatsPerRow", SeatsPerRow);
                         command.Parameters.AddWithValue("@IsPremiumHall", IsPremium);
@@ -861,46 +942,7 @@ public void calculatePrice(Ticket ticket)
 
             return returnstring;
         }
-        public Showtime[] GetShowtimesForMovie(int movieID)
-        {
 
-
-            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
-            List<Showtime> showtimes = new List<Showtime>();
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@movieID", movieID);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                Showtime showtime = new Showtime
-                                {
-                                    startTime = Convert.ToDateTime(reader["StartTime"]),
-                                    adminID = reader["AdminID"].ToString(),
-                                    //price = Convert.ToDouble(reader["Price"]),
-                                    hallID = Convert.ToInt32(reader["HallID"]),
-                                    movieID = Convert.ToInt32(reader["MovieID"])
-                                };
-                                showtimes.Add(showtime);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-
-            return showtimes.ToArray();
-        }
         public string AddMoviesActors(string movieID, string actor)
         {
             string returnstring = null;
@@ -1242,8 +1284,8 @@ public void calculatePrice(Ticket ticket)
         public string AddCinema(int cinemaID, string cinemaName, string cLocation)
         {
             string returnstring = null;
-            string query = @"INSERT INTO Cinema (CinemaID, CinemaName, CLocation) 
-                     VALUES (@CinemaID, @CinemaName, @CLocation)";
+            string query = @"INSERT INTO Cinema (CinemaID, CinemaName, CLocation, AdminID) 
+                     VALUES (@CinemaID, @CinemaName, @CLocation, 'admin@email.com')";
 
             try
             {
@@ -1335,7 +1377,7 @@ public void calculatePrice(Ticket ticket)
                         command.Parameters.AddWithValue("@SeatsPerRow", seatsPerRow);
                         command.Parameters.AddWithValue("@IsPremiumHall", isPremiumHall); // Convert bool to bit
                         command.Parameters.AddWithValue("@PremiumRowsFromEnd", premiumRowsFromEnd);
-                        command.Parameters.AddWithValue("@AdminID"," admin@gmail.com");
+                        command.Parameters.AddWithValue("@AdminID"," admin@email.com");
 
                         // Execute the stored procedure
                         command.ExecuteNonQuery();
@@ -1352,10 +1394,8 @@ public void calculatePrice(Ticket ticket)
 
             return returnString;
         }
-
-
-
-        public Booking[] GetBookingsByUser(string customerEmail)
+    
+     public Booking[] GetBookingsByUser(string customerEmail)
         {
             List<Booking> bookings = new List<Booking>();
 
@@ -1372,12 +1412,12 @@ public void calculatePrice(Ticket ticket)
                         // Make sure customerEmail is not null or empty
                         if (string.IsNullOrEmpty(customerEmail))
                         {
-                            //MessageBox.Show("No customer email provided", "Error");
+                            MessageBox.Show("No customer email provided", "Error");
                             return bookings.ToArray();
                         }
 
                         // Explicitly specify parameter type and size
-                        command.Parameters.Add("@CustomerID", SqlDbType.NVarChar, 255).Value = customerEmail;
+                        command.Parameters.AddWithValue("@CustomerID", customerEmail);
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -1401,15 +1441,12 @@ public void calculatePrice(Ticket ticket)
 
             return bookings.ToArray();
         }
-
-
-
-
-
+        
         private string ConvertToSeatId(char rowNumber, int seatNumber)
         {
             return $"{rowNumber}{seatNumber}";
         }
+        
         public HashSet<string> GetReservedSeatsCombined(DateTime startTime, int hallID, int movieID)
         {
             var reservedSeats = new HashSet<string>();
@@ -1484,12 +1521,5 @@ public void calculatePrice(Ticket ticket)
         }
 
     }
-    
-
-
-
-
-
-    
 
 }
