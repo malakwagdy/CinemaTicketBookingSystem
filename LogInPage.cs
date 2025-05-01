@@ -59,7 +59,7 @@ namespace GUI_DB
             if (txtEmailOrUsername.Text == hardCodedUsername && txtPassword.Text == hardCodedPassword)
             {
                 // Navigate to the CustomerMovieList form
-                mainForm.OpenChildForm(new CinemaListForm(mainForm));
+                mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
             }
             else if (txtEmailOrUsername.Text == adminUsername && txtPassword.Text == adminPassword)
             {

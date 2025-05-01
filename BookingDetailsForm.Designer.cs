@@ -33,6 +33,7 @@ namespace GUI_DB
         private System.Windows.Forms.Button btnBack;       // Only Back button needed
         private System.Windows.Forms.Panel contentPanel;   // Panel to hold controls
         private System.Windows.Forms.Label lblSeatsHeader; // Label for the seats list
+        private System.Windows.Forms.Label lblReservationDate; // Added label for reservation date
 
         /// <summary>
         /// Clean up any resources being used.
@@ -55,6 +56,7 @@ namespace GUI_DB
         /// </summary>
         private void InitializeComponent()
         {
+           
             this.lblHeader = new System.Windows.Forms.Label();
             this.contentPanel = new System.Windows.Forms.Panel();
             this.lblMovie = new System.Windows.Forms.Label();
@@ -210,6 +212,22 @@ namespace GUI_DB
             this.btnBack.TabIndex = 8; // Only interactive element besides form closing
             this.btnBack.Text = "Back";
             this.btnBack.UseVisualStyleBackColor = false;
+
+            //
+            // Initialize lblReservationDate
+            //
+            this.lblReservationDate = new System.Windows.Forms.Label();
+            this.lblReservationDate.AutoSize = true;
+            this.lblReservationDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblReservationDate.ForeColor = System.Drawing.Color.White;
+            this.lblReservationDate.Location = new System.Drawing.Point(10, 120); // Adjust location as needed
+            this.lblReservationDate.Name = "lblReservationDate";
+            this.lblReservationDate.Size = new System.Drawing.Size(0, 23);
+            this.lblReservationDate.TabIndex = 5;
+            this.lblReservationDate.Text = "Reservation Date: ";
+            this.Controls.Add(this.lblReservationDate);
+
+
             // Click event handler attached in BookingDetailsForm.cs
             //
             // BookingDetailsForm

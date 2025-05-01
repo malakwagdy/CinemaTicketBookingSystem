@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -61,6 +62,7 @@ namespace GUI_DB
             this.panelReservations = new System.Windows.Forms.Panel(); // Initialize reservations panel
             this.lblReservationsHeader = new System.Windows.Forms.Label(); // Initialize header label
             this.lstReservations = new System.Windows.Forms.ListBox(); // Initialize list box
+            this.dtpReservationDate = new System.Windows.Forms.DateTimePicker();
             this.flowLayoutPanelMovies = new System.Windows.Forms.FlowLayoutPanel();
             this.filterLayout.SuspendLayout(); // Suspend layout for filterLayout
             this.panelFilterControlsContainer.SuspendLayout(); // Suspend layout for filter container
@@ -149,6 +151,19 @@ namespace GUI_DB
             this.lblReservationsHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft; // Align text
 
             //
+            //DateTimePicker (NEW - Inside panelReservations)
+            //
+            this.dtpReservationDate.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dtpReservationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpReservationDate.Location = new System.Drawing.Point(20, 50); // Adjust location as needed
+            this.dtpReservationDate.Name = "dtpReservationDate";
+            this.dtpReservationDate.Size = new System.Drawing.Size(200, 23);
+            this.dtpReservationDate.TabIndex = 1;
+            this.dtpReservationDate.Value = DateTime.Today;
+
+
+
+            //
             // lstReservations (NEW - Inside panelReservations)
             //
             this.lstReservations.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(65))))); // List background
@@ -191,6 +206,8 @@ namespace GUI_DB
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Movie and Showtime";
             this.Load += new System.EventHandler(this.CustomerMovieListForm_Load_1); // Keep existing load event
+            this.Controls.Add(this.dtpReservationDate);
+
 
             // Resume Layouts
             this.filterLayout.ResumeLayout(false);

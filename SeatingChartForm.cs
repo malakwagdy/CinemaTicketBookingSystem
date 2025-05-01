@@ -13,12 +13,14 @@ namespace GUI_DB
         private HashSet<string> reservedSeats;
         private List<string> selectedSeats = new List<string>();
         private HashSet<string> premiumSeatsSet;
+        private DateTime reservationDate; // *** NEW Field ***
 
-        public SeatingChartForm(MainForm mainForm, string movieTitle, string showtime)
+        public SeatingChartForm(MainForm mainForm, string movieTitle, string showtime, DateTime reservationDate)
         {
             this.mainForm = mainForm;
             this.movieTitle = movieTitle;
             this.showtime = showtime;
+            this.reservationDate = reservationDate;
 
             InitializeComponent();
             SetDynamicValues();
@@ -220,7 +222,7 @@ namespace GUI_DB
                 return;
             }
 
-            TicketConfirmationForm ticketConfirmationForm = new TicketConfirmationForm(mainForm, movieTitle, showtime, selectedSeats);
+            TicketConfirmationForm ticketConfirmationForm = new TicketConfirmationForm(mainForm, movieTitle, showtime, reservationDate, selectedSeats);
             mainForm.OpenChildForm(ticketConfirmationForm); 
             // === BACKEND PLACEHOLDER ===
             MessageBox.Show($"Seats selected: {string.Join(", ", selectedSeats)}\n(Ticket screen not yet implemented)", "Continue");

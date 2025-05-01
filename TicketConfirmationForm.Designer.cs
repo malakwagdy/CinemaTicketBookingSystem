@@ -17,6 +17,7 @@ namespace GUI_DB
         private Button btnConfirm;
         private Button btnCancel;
         private Panel contentPanel;
+        private Label lblReservationDate;
 
 
         protected override void Dispose(bool disposing)
@@ -38,6 +39,7 @@ namespace GUI_DB
             this.lblTotalPrice = new System.Windows.Forms.Label();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblReservationDate = new System.Windows.Forms.Label();
             this.contentPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -154,6 +156,21 @@ namespace GUI_DB
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = false;
+
+
+            //Label ReservationDate
+            this.lblReservationDate.AutoSize = true;
+            this.lblReservationDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblReservationDate.ForeColor = System.Drawing.Color.White;
+            this.lblReservationDate.Location = new System.Drawing.Point(10, 80); // Adjust location as needed
+            this.lblReservationDate.Name = "lblReservationDate";
+            this.lblReservationDate.Size = new System.Drawing.Size(0, 23);
+            this.lblReservationDate.TabIndex = 5;
+            this.lblReservationDate.Text = "Reservation Date: ";
+
+            this.Controls.Add(this.lblReservationDate);
+
+
             // 
             // TicketConfirmationForm
             // 

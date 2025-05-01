@@ -9,6 +9,8 @@ namespace GUI_DB
     public partial class CustomerMovieListForm : Form
     {
         private MainForm mainForm;
+        private DateTimePicker dtpReservationDate; // Date Picker for reservation date
+
 
         // Filters
         private string currentAgeFilter = "All";
@@ -100,7 +102,7 @@ namespace GUI_DB
         // --- Back Button Click Event Handler ---
         private void BtnBack_Click(object sender, EventArgs e)
         {
-            mainForm?.OpenChildForm(new CinemaListForm(mainForm));
+            mainForm?.OpenChildForm(new LogInPage(mainForm));
         }
 
         // --- Helper to Populate Genre ComboBox ---
