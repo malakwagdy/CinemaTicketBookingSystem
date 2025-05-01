@@ -61,6 +61,7 @@ namespace GUI_DB
             }
             else 
             {
+                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
                 MessageBox.Show("Login Successful!", "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
                 // Check user type and navigate accordingly
@@ -74,7 +75,6 @@ namespace GUI_DB
                     // Open Customer Movie List Form
                     mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
                 }
-                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
             }
             
 

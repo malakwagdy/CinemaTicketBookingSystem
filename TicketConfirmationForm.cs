@@ -10,20 +10,20 @@ namespace GUI_DB
     {
         private MainForm mainForm;
         private string movieTitle;
-        private string showtime;
+        private DateTime showtime;
         private DateTime reservationDate; // *** NEW Field ***
         private List<string> selectedSeats;
         private const decimal UnitPrice = 80.00m;
         private string ticketId;
 
         // *** MODIFIED Constructor Signature ***
-        public TicketConfirmationForm(MainForm mainForm, string movieTitle, string showtime, DateTime reservationDate, List<string> selectedSeats)
+        public TicketConfirmationForm(MainForm mainForm, string movieTitle, DateTime showtime, DateTime reservationDate, List<string> selectedSeats)
         {
             InitializeComponent();
 
             this.mainForm = mainForm ?? throw new ArgumentNullException(nameof(mainForm));
             this.movieTitle = movieTitle ?? throw new ArgumentNullException(nameof(movieTitle));
-            this.showtime = showtime ?? throw new ArgumentNullException(nameof(showtime));
+            this.showtime = showtime ;
             this.reservationDate = reservationDate; // *** Store the date ***
             this.selectedSeats = selectedSeats ?? new List<string>(); // Ensure list exists
 
