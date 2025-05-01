@@ -1,6 +1,4 @@
-﻿// AdminControl.Designer.cs - Full Code
-
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Drawing;
 
 namespace GUI_DB
@@ -9,7 +7,7 @@ namespace GUI_DB
     {
         private System.ComponentModel.IContainer components = null;
 
-        // UI Controls
+        // UI Controls (Existing)
         private System.Windows.Forms.TextBox txtMovieTitle;
         private System.Windows.Forms.ComboBox cmbHalls;
         private System.Windows.Forms.ComboBox cmbShowtimes;
@@ -26,14 +24,14 @@ namespace GUI_DB
         private System.Windows.Forms.ComboBox cmbScreenType;
         private System.Windows.Forms.Label lblScreenType;
         private System.Windows.Forms.Label lblTopPanel;
-        // REMOVED: private System.Windows.Forms.TextBox txtAgeRating;
         private System.Windows.Forms.Label lblAgeRating;
         private System.Windows.Forms.TextBox txtDirector;
         private System.Windows.Forms.Label lblDirector;
         private System.Windows.Forms.TextBox txtActors;
         private System.Windows.Forms.Label lblActors;
+        private System.Windows.Forms.ComboBox cmbAgeRating;
 
-        // Renamed and New Hall Controls
+        // Hall Controls (Existing)
         private System.Windows.Forms.TextBox txtTotalRows;
         private System.Windows.Forms.Label lblTotalRows;
         private System.Windows.Forms.TextBox txtSeatsPerRow;
@@ -42,8 +40,12 @@ namespace GUI_DB
         private System.Windows.Forms.Label lblPremiumRows;
         private System.Windows.Forms.TextBox txtPremiumRows;
 
-        // ADDED: ComboBox for Age Rating
-        private System.Windows.Forms.ComboBox cmbAgeRating;
+        // --- ADDED: Genre and Release Date Controls ---
+        private System.Windows.Forms.Label lblGenre;
+        private System.Windows.Forms.ComboBox cmbGenre;
+        private System.Windows.Forms.Label lblReleaseDate;
+        private System.Windows.Forms.DateTimePicker dtpReleaseDate;
+        // ---------------------------------------------
 
         /// <summary>
         /// Clean up any resources being used.
@@ -80,7 +82,6 @@ namespace GUI_DB
             this.lblTopPanel = new System.Windows.Forms.Label();
             this.cmbScreenType = new System.Windows.Forms.ComboBox();
             this.lblScreenType = new System.Windows.Forms.Label();
-            // REMOVED: this.txtAgeRating = new System.Windows.Forms.TextBox();
             this.lblAgeRating = new System.Windows.Forms.Label();
             this.txtDirector = new System.Windows.Forms.TextBox();
             this.lblDirector = new System.Windows.Forms.Label();
@@ -93,7 +94,11 @@ namespace GUI_DB
             this.chkIsPremium = new System.Windows.Forms.CheckBox();
             this.lblPremiumRows = new System.Windows.Forms.Label();
             this.txtPremiumRows = new System.Windows.Forms.TextBox();
-            this.cmbAgeRating = new System.Windows.Forms.ComboBox(); // ADDED Initialization
+            this.cmbAgeRating = new System.Windows.Forms.ComboBox();
+            this.lblGenre = new System.Windows.Forms.Label();          // ADDED Initialization
+            this.cmbGenre = new System.Windows.Forms.ComboBox();       // ADDED Initialization
+            this.lblReleaseDate = new System.Windows.Forms.Label();    // ADDED Initialization
+            this.dtpReleaseDate = new System.Windows.Forms.DateTimePicker(); // ADDED Initialization
             this.topPanel.SuspendLayout();
             this.SuspendLayout();
             //
@@ -134,10 +139,10 @@ namespace GUI_DB
             this.btnAddMovie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAddMovie.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnAddMovie.ForeColor = System.Drawing.Color.White;
-            this.btnAddMovie.Location = new System.Drawing.Point(470, 330);
+            this.btnAddMovie.Location = new System.Drawing.Point(574, 338); // Adjusted Y position
             this.btnAddMovie.Name = "btnAddMovie";
             this.btnAddMovie.Size = new System.Drawing.Size(170, 40);
-            this.btnAddMovie.TabIndex = 13; // TabIndex might need adjusting
+            this.btnAddMovie.TabIndex = 15; // TabIndex updated
             this.btnAddMovie.Text = "Add Movie";
             this.btnAddMovie.UseVisualStyleBackColor = false;
             //
@@ -147,10 +152,10 @@ namespace GUI_DB
             this.btnRemoveMovie.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRemoveMovie.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnRemoveMovie.ForeColor = System.Drawing.Color.White;
-            this.btnRemoveMovie.Location = new System.Drawing.Point(660, 330);
+            this.btnRemoveMovie.Location = new System.Drawing.Point(574, 384); // Adjusted Y position
             this.btnRemoveMovie.Name = "btnRemoveMovie";
             this.btnRemoveMovie.Size = new System.Drawing.Size(170, 40);
-            this.btnRemoveMovie.TabIndex = 14; // TabIndex might need adjusting
+            this.btnRemoveMovie.TabIndex = 16; // TabIndex updated
             this.btnRemoveMovie.Text = "Remove Movie";
             this.btnRemoveMovie.UseVisualStyleBackColor = false;
             //
@@ -160,10 +165,10 @@ namespace GUI_DB
             this.txtHallName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHallName.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtHallName.ForeColor = System.Drawing.Color.White;
-            this.txtHallName.Location = new System.Drawing.Point(50, 420);
+            this.txtHallName.Location = new System.Drawing.Point(50, 438); // Adjusted Y
             this.txtHallName.Name = "txtHallName";
             this.txtHallName.Size = new System.Drawing.Size(395, 34);
-            this.txtHallName.TabIndex = 7;
+            this.txtHallName.TabIndex = 17; // Adjusted TabIndex
             //
             // btnAddHall
             //
@@ -171,10 +176,10 @@ namespace GUI_DB
             this.btnAddHall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAddHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnAddHall.ForeColor = System.Drawing.Color.White;
-            this.btnAddHall.Location = new System.Drawing.Point(470, 638);
+            this.btnAddHall.Location = new System.Drawing.Point(470, 656); // Adjusted Y
             this.btnAddHall.Name = "btnAddHall";
             this.btnAddHall.Size = new System.Drawing.Size(170, 40);
-            this.btnAddHall.TabIndex = 28;
+            this.btnAddHall.TabIndex = 28; // Adjusted TabIndex
             this.btnAddHall.Text = "Add Hall";
             this.btnAddHall.UseVisualStyleBackColor = false;
             //
@@ -184,10 +189,10 @@ namespace GUI_DB
             this.btnRemoveHall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRemoveHall.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnRemoveHall.ForeColor = System.Drawing.Color.White;
-            this.btnRemoveHall.Location = new System.Drawing.Point(660, 638);
+            this.btnRemoveHall.Location = new System.Drawing.Point(660, 656); // Adjusted Y
             this.btnRemoveHall.Name = "btnRemoveHall";
             this.btnRemoveHall.Size = new System.Drawing.Size(170, 40);
-            this.btnRemoveHall.TabIndex = 29;
+            this.btnRemoveHall.TabIndex = 29; // Adjusted TabIndex
             this.btnRemoveHall.Text = "Remove Hall";
             this.btnRemoveHall.UseVisualStyleBackColor = false;
             //
@@ -229,10 +234,10 @@ namespace GUI_DB
             this.lblHallName.AutoSize = true;
             this.lblHallName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblHallName.ForeColor = System.Drawing.Color.White;
-            this.lblHallName.Location = new System.Drawing.Point(50, 395);
+            this.lblHallName.Location = new System.Drawing.Point(50, 413); // Adjusted Y
             this.lblHallName.Name = "lblHallName";
             this.lblHallName.Size = new System.Drawing.Size(112, 28);
-            this.lblHallName.TabIndex = 6;
+            this.lblHallName.TabIndex = 16; // Adjusted TabIndex
             this.lblHallName.Text = "Hall Name";
             //
             // topPanel
@@ -243,7 +248,7 @@ namespace GUI_DB
             this.topPanel.Location = new System.Drawing.Point(0, 0);
             this.topPanel.Name = "topPanel";
             this.topPanel.Size = new System.Drawing.Size(850, 60);
-            this.topPanel.TabIndex = 15;
+            this.topPanel.TabIndex = 30; // Adjusted TabIndex
             //
             // lblTopPanel
             //
@@ -266,20 +271,20 @@ namespace GUI_DB
             "2D",
             "3D",
             "IMAX"});
-            this.cmbScreenType.Location = new System.Drawing.Point(50, 484);
+            this.cmbScreenType.Location = new System.Drawing.Point(50, 502); // Adjusted Y
             this.cmbScreenType.Name = "cmbScreenType";
             this.cmbScreenType.Size = new System.Drawing.Size(395, 36);
-            this.cmbScreenType.TabIndex = 9;
+            this.cmbScreenType.TabIndex = 19; // Adjusted TabIndex
             //
             // lblScreenType
             //
             this.lblScreenType.AutoSize = true;
             this.lblScreenType.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblScreenType.ForeColor = System.Drawing.Color.White;
-            this.lblScreenType.Location = new System.Drawing.Point(50, 459);
+            this.lblScreenType.Location = new System.Drawing.Point(50, 477); // Adjusted Y
             this.lblScreenType.Name = "lblScreenType";
             this.lblScreenType.Size = new System.Drawing.Size(126, 28);
-            this.lblScreenType.TabIndex = 8;
+            this.lblScreenType.TabIndex = 18; // Adjusted TabIndex
             this.lblScreenType.Text = "Screen Type";
             //
             // lblAgeRating
@@ -287,10 +292,10 @@ namespace GUI_DB
             this.lblAgeRating.AutoSize = true;
             this.lblAgeRating.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblAgeRating.ForeColor = System.Drawing.Color.White;
-            this.lblAgeRating.Location = new System.Drawing.Point(470, 145); // Position remains same
+            this.lblAgeRating.Location = new System.Drawing.Point(470, 145);
             this.lblAgeRating.Name = "lblAgeRating";
             this.lblAgeRating.Size = new System.Drawing.Size(117, 28);
-            this.lblAgeRating.TabIndex = 10; // Same TabIndex for label
+            this.lblAgeRating.TabIndex = 8; // Adjusted TabIndex
             this.lblAgeRating.Text = "Age Rating";
             //
             // txtDirector
@@ -302,7 +307,7 @@ namespace GUI_DB
             this.txtDirector.Location = new System.Drawing.Point(470, 100);
             this.txtDirector.Name = "txtDirector";
             this.txtDirector.Size = new System.Drawing.Size(360, 34);
-            this.txtDirector.TabIndex = 17; // Keep TabIndex
+            this.txtDirector.TabIndex = 7; // Adjusted TabIndex
             //
             // lblDirector
             //
@@ -312,11 +317,12 @@ namespace GUI_DB
             this.lblDirector.Location = new System.Drawing.Point(470, 75);
             this.lblDirector.Name = "lblDirector";
             this.lblDirector.Size = new System.Drawing.Size(90, 28);
-            this.lblDirector.TabIndex = 16; // Keep TabIndex
+            this.lblDirector.TabIndex = 6; // Adjusted TabIndex
             this.lblDirector.Text = "Director";
             //
             // txtActors
             //
+            this.txtActors.AcceptsReturn = true;
             this.txtActors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
             this.txtActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtActors.Font = new System.Drawing.Font("Segoe UI", 12F);
@@ -326,7 +332,7 @@ namespace GUI_DB
             this.txtActors.Name = "txtActors";
             this.txtActors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtActors.Size = new System.Drawing.Size(360, 80);
-            this.txtActors.TabIndex = 12; // Keep TabIndex
+            this.txtActors.TabIndex = 10; // Adjusted TabIndex
             //
             // lblActors
             //
@@ -336,7 +342,7 @@ namespace GUI_DB
             this.lblActors.Location = new System.Drawing.Point(470, 215);
             this.lblActors.Name = "lblActors";
             this.lblActors.Size = new System.Drawing.Size(242, 28);
-            this.lblActors.TabIndex = 11; // Keep TabIndex
+            this.lblActors.TabIndex = 10; // Corrected label TabIndex
             this.lblActors.Text = "Actors (comma-separated)";
             //
             // txtTotalRows
@@ -345,11 +351,11 @@ namespace GUI_DB
             this.txtTotalRows.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtTotalRows.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtTotalRows.ForeColor = System.Drawing.Color.White;
-            this.txtTotalRows.Location = new System.Drawing.Point(50, 578);
+            this.txtTotalRows.Location = new System.Drawing.Point(50, 596); // Adjusted Y
             this.txtTotalRows.MaxLength = 3;
             this.txtTotalRows.Name = "txtTotalRows";
             this.txtTotalRows.Size = new System.Drawing.Size(60, 34);
-            this.txtTotalRows.TabIndex = 21;
+            this.txtTotalRows.TabIndex = 21; // Adjusted TabIndex
             this.txtTotalRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             //
             // lblTotalRows
@@ -357,10 +363,10 @@ namespace GUI_DB
             this.lblTotalRows.AutoSize = true;
             this.lblTotalRows.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTotalRows.ForeColor = System.Drawing.Color.White;
-            this.lblTotalRows.Location = new System.Drawing.Point(50, 547);
+            this.lblTotalRows.Location = new System.Drawing.Point(50, 565); // Adjusted Y
             this.lblTotalRows.Name = "lblTotalRows";
             this.lblTotalRows.Size = new System.Drawing.Size(113, 28);
-            this.lblTotalRows.TabIndex = 20;
+            this.lblTotalRows.TabIndex = 20; // Adjusted TabIndex
             this.lblTotalRows.Text = "Total Rows";
             //
             // lblSeatsPerRow
@@ -368,10 +374,10 @@ namespace GUI_DB
             this.lblSeatsPerRow.AutoSize = true;
             this.lblSeatsPerRow.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblSeatsPerRow.ForeColor = System.Drawing.Color.White;
-            this.lblSeatsPerRow.Location = new System.Drawing.Point(188, 547);
+            this.lblSeatsPerRow.Location = new System.Drawing.Point(188, 565); // Adjusted Y
             this.lblSeatsPerRow.Name = "lblSeatsPerRow";
             this.lblSeatsPerRow.Size = new System.Drawing.Size(145, 28);
-            this.lblSeatsPerRow.TabIndex = 22;
+            this.lblSeatsPerRow.TabIndex = 22; // Adjusted TabIndex
             this.lblSeatsPerRow.Text = "Seats Per Row";
             //
             // txtSeatsPerRow
@@ -380,11 +386,11 @@ namespace GUI_DB
             this.txtSeatsPerRow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSeatsPerRow.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtSeatsPerRow.ForeColor = System.Drawing.Color.White;
-            this.txtSeatsPerRow.Location = new System.Drawing.Point(193, 578);
+            this.txtSeatsPerRow.Location = new System.Drawing.Point(193, 596); // Adjusted Y
             this.txtSeatsPerRow.MaxLength = 3;
             this.txtSeatsPerRow.Name = "txtSeatsPerRow";
             this.txtSeatsPerRow.Size = new System.Drawing.Size(60, 34);
-            this.txtSeatsPerRow.TabIndex = 23;
+            this.txtSeatsPerRow.TabIndex = 23; // Adjusted TabIndex
             this.txtSeatsPerRow.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             //
             // chkIsPremium
@@ -392,10 +398,10 @@ namespace GUI_DB
             this.chkIsPremium.AutoSize = true;
             this.chkIsPremium.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.chkIsPremium.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.chkIsPremium.Location = new System.Drawing.Point(50, 638);
+            this.chkIsPremium.Location = new System.Drawing.Point(50, 656); // Adjusted Y
             this.chkIsPremium.Name = "chkIsPremium";
             this.chkIsPremium.Size = new System.Drawing.Size(162, 32);
-            this.chkIsPremium.TabIndex = 25;
+            this.chkIsPremium.TabIndex = 25; // Adjusted TabIndex
             this.chkIsPremium.Text = "Fully Premium";
             this.chkIsPremium.UseVisualStyleBackColor = true;
             //
@@ -404,10 +410,10 @@ namespace GUI_DB
             this.lblPremiumRows.AutoSize = true;
             this.lblPremiumRows.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblPremiumRows.ForeColor = System.Drawing.Color.White;
-            this.lblPremiumRows.Location = new System.Drawing.Point(270, 613);
+            this.lblPremiumRows.Location = new System.Drawing.Point(270, 631); // Adjusted Y
             this.lblPremiumRows.Name = "lblPremiumRows";
             this.lblPremiumRows.Size = new System.Drawing.Size(149, 28);
-            this.lblPremiumRows.TabIndex = 26;
+            this.lblPremiumRows.TabIndex = 26; // Adjusted TabIndex
             this.lblPremiumRows.Text = "Premium Rows";
             this.lblPremiumRows.Visible = false;
             //
@@ -417,36 +423,101 @@ namespace GUI_DB
             this.txtPremiumRows.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPremiumRows.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.txtPremiumRows.ForeColor = System.Drawing.Color.White;
-            this.txtPremiumRows.Location = new System.Drawing.Point(275, 644);
+            this.txtPremiumRows.Location = new System.Drawing.Point(275, 662); // Adjusted Y
             this.txtPremiumRows.MaxLength = 3;
             this.txtPremiumRows.Name = "txtPremiumRows";
             this.txtPremiumRows.Size = new System.Drawing.Size(60, 34);
-            this.txtPremiumRows.TabIndex = 27;
+            this.txtPremiumRows.TabIndex = 27; // Adjusted TabIndex
             this.txtPremiumRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtPremiumRows.Visible = false;
             //
-            // cmbAgeRating   <--- ADDED
+            // cmbAgeRating
             //
-            this.cmbAgeRating.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; // Prevent free text
+            this.cmbAgeRating.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbAgeRating.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.cmbAgeRating.FormattingEnabled = true;
             this.cmbAgeRating.Items.AddRange(new object[] {
-            "7",
-            "13",
-            "16",
-            "18"});
-            this.cmbAgeRating.Location = new System.Drawing.Point(470, 170); // Position where TextBox was
+            7,
+            13,
+            16,
+            18});
+            this.cmbAgeRating.Location = new System.Drawing.Point(470, 170);
             this.cmbAgeRating.Name = "cmbAgeRating";
-            this.cmbAgeRating.Size = new System.Drawing.Size(360, 36); // Size similar to TextBox/other ComboBoxes
-            this.cmbAgeRating.TabIndex = 11; // TabIndex where TextBox was
+            this.cmbAgeRating.Size = new System.Drawing.Size(360, 36);
+            this.cmbAgeRating.TabIndex = 9; // Adjusted TabIndex
+            //
+            // lblGenre      <--- ADDED
+            //
+            this.lblGenre.AutoSize = true;
+            this.lblGenre.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblGenre.ForeColor = System.Drawing.Color.White;
+            this.lblGenre.Location = new System.Drawing.Point(50, 285); // Position below Showtime
+            this.lblGenre.Name = "lblGenre";
+            this.lblGenre.Size = new System.Drawing.Size(69, 28);
+            this.lblGenre.TabIndex = 11; // Adjusted TabIndex
+            this.lblGenre.Text = "Genre";
+            //
+            // cmbGenre      <--- ADDED
+            //
+            this.cmbGenre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbGenre.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cmbGenre.FormattingEnabled = true;
+            this.cmbGenre.Items.AddRange(new object[] {
+            "Action",
+            "Adventure",
+            "Animation",
+            "Comedy",
+            "Crime",
+            "Documentary",
+            "Drama",
+            "Family",
+            "Fantasy",
+            "History",
+            "Horror",
+            "Music",
+            "Mystery",
+            "Romance",
+            "Sci-Fi",
+            "Thriller",
+            "War",
+            "Western"}); // Add more genres as needed
+            this.cmbGenre.Location = new System.Drawing.Point(50, 310); // Position below Genre label
+            this.cmbGenre.Name = "cmbGenre";
+            this.cmbGenre.Size = new System.Drawing.Size(395, 36);
+            this.cmbGenre.TabIndex = 12; // Adjusted TabIndex
+            //
+            // lblReleaseDate <--- ADDED
+            //
+            this.lblReleaseDate.AutoSize = true;
+            this.lblReleaseDate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblReleaseDate.ForeColor = System.Drawing.Color.White;
+            this.lblReleaseDate.Location = new System.Drawing.Point(50, 355); // Position below Genre
+            this.lblReleaseDate.Name = "lblReleaseDate";
+            this.lblReleaseDate.Size = new System.Drawing.Size(133, 28);
+            this.lblReleaseDate.TabIndex = 13; // Adjusted TabIndex
+            this.lblReleaseDate.Text = "Release Date";
+            //
+            // dtpReleaseDate <--- ADDED
+            //
+            this.dtpReleaseDate.CalendarFont = new System.Drawing.Font("Segoe UI", 10F);
+            this.dtpReleaseDate.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.dtpReleaseDate.Format = System.Windows.Forms.DateTimePickerFormat.Short; // Show only date
+            this.dtpReleaseDate.Location = new System.Drawing.Point(50, 380); // Position below Release Date label
+            this.dtpReleaseDate.Name = "dtpReleaseDate";
+            this.dtpReleaseDate.Size = new System.Drawing.Size(180, 34); // Adjust size as needed
+            this.dtpReleaseDate.TabIndex = 14; // Adjusted TabIndex
             //
             // AdminControl
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(35)))));
-            this.ClientSize = new System.Drawing.Size(850, 700);
-            this.Controls.Add(this.cmbAgeRating); // ADDED ComboBox to controls
+            this.ClientSize = new System.Drawing.Size(850, 720); // Increased height slightly
+            this.Controls.Add(this.dtpReleaseDate); // ADDED
+            this.Controls.Add(this.lblReleaseDate); // ADDED
+            this.Controls.Add(this.cmbGenre);       // ADDED
+            this.Controls.Add(this.lblGenre);       // ADDED
+            this.Controls.Add(this.cmbAgeRating);
             this.Controls.Add(this.txtPremiumRows);
             this.Controls.Add(this.lblPremiumRows);
             this.Controls.Add(this.chkIsPremium);
@@ -460,8 +531,7 @@ namespace GUI_DB
             this.Controls.Add(this.lblSelectHall);
             this.Controls.Add(this.cmbShowtimes);
             this.Controls.Add(this.lblSelectShowtime);
-            // REMOVED: this.Controls.Add(this.txtAgeRating);
-            this.Controls.Add(this.lblAgeRating); // Keep the label
+            this.Controls.Add(this.lblAgeRating);
             this.Controls.Add(this.txtDirector);
             this.Controls.Add(this.lblDirector);
             this.Controls.Add(this.txtActors);
@@ -475,7 +545,7 @@ namespace GUI_DB
             this.Controls.Add(this.btnAddMovie);
             this.Controls.Add(this.btnRemoveMovie);
             this.Controls.Add(this.topPanel);
-            this.MinimumSize = new System.Drawing.Size(868, 747);
+            this.MinimumSize = new System.Drawing.Size(868, 767); // Adjusted minimum height
             this.Name = "AdminControl";
             this.Text = "Admin Control Panel";
             this.Load += new System.EventHandler(this.AdminControl_Load);
@@ -485,7 +555,6 @@ namespace GUI_DB
 
         }
 
-        // Make sure the declaration for txtAgeRating is removed from the bottom too if it exists
-        // REMOVED: private TextBox txtAgeRating;
+        // Declarations added at the top
     }
 }
