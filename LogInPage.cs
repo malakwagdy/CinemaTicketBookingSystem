@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static GUI_DB.DatabaseManager;
 
 namespace GUI_DB
 {
@@ -50,6 +51,8 @@ namespace GUI_DB
         private void BtnLogIn_Click(object sender, EventArgs e)
         {
             string msg =db.Login(txtEmailOrUsername.Text,txtPassword.Text);
+            
+            
             if (msg == "Invalid Email or Password")
             {
                 MessageBox.Show(msg, "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -58,9 +61,20 @@ namespace GUI_DB
                 MessageBox.Show(msg, "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
                 GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
             }
-            
-            
-            mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+            User currentUser = db.GetUserById(txtEmailOrUsername.Text);
+            bool isAdmin = currentUser.userType;
+            // Check user type and navigate accordingly
+            if (!isAdmin)
+            {
+                // Open Admin Control Form
+                mainForm.OpenChildForm(new AdminControl(mainForm));
+            }
+            else
+            {
+                // Open Customer Movie List Form
+                mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+            }
+
         }
 
         private void LinkRegister_Click(object sender, EventArgs e)
