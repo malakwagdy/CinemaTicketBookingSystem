@@ -40,15 +40,6 @@ namespace GUI_DB
             // --- Setup & Add Date Picker ---
             ConfigureAndAddDatePicker(); // Encapsulate date picker setup
 
-            // --- Add Other Filters ---
-            var ageRatingLabels = new Dictionary<int, string>
-            {
-                { -1, "All" },
-                { 10, "PG" },
-                { 13, "PG-13" },
-                { 17, "R" }
-             };
-
             AddFilterControl("Genre", cmbGenre); // cmbGenre is instantiated in Designer
 
             // --- Populate Genre ComboBox ---
@@ -157,34 +148,6 @@ namespace GUI_DB
             panelFilterControlsContainer.Controls.Add(control); // Add control
         }
 
-        private FlowLayoutPanel CreateRadioGroup(int[] options, string tagPrefix)
-        {
-            FlowLayoutPanel radioPanel = new FlowLayoutPanel
-            {
-                FlowDirection = FlowDirection.TopDown,
-                AutoSize = true,
-                WrapContents = false,
-                BackColor = Color.Transparent
-            };
-            bool first = true;
-            foreach (int option in options)
-            {
-                RadioButton rb = new RadioButton
-                {
-                    Text = option.ToString(), // Display the numeric value as text
-                    Tag = tagPrefix + option.ToString(), // Store the numeric value in the tag
-                    ForeColor = Color.White,
-                    AutoSize = true,
-                    Checked = first,
-                    Margin = new Padding(3, 0, 3, 5) // Add some spacing
-                };
-                radioPanel.Controls.Add(rb);
-                first = false;
-            }
-            return radioPanel;
-        }
-
-
         // --- Core Logic ---
         private void LoadMovies()
         {
@@ -287,9 +250,14 @@ namespace GUI_DB
 
                 var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
 
-                if (showtimes != null && showtimes.Any())
+                DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today;
+                var filteredShowtimes = showtimes
+                    .Where(st => st.startTime.Date == selectedDate)
+                    .ToList();
+
+                if (filteredShowtimes.Any())
                 {
-                    foreach (var showtime in showtimes)
+                    foreach (var showtime in filteredShowtimes)
                     {
                         LinkLabel linkShowtime = new LinkLabel
                         {
@@ -303,7 +271,6 @@ namespace GUI_DB
                         };
                         linkShowtime.Click += (s, e) =>
                         {
-                            DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get the date part, default to today
                             OpenSeatingChart(movie.Title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);
