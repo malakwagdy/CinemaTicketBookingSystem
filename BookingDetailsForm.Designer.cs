@@ -56,191 +56,189 @@ namespace GUI_DB
         /// </summary>
         private void InitializeComponent()
         {
-           
             this.lblHeader = new System.Windows.Forms.Label();
             this.contentPanel = new System.Windows.Forms.Panel();
             this.lblMovie = new System.Windows.Forms.Label();
             this.lblShowtime = new System.Windows.Forms.Label();
             this.lblTicketId = new System.Windows.Forms.Label();
-            this.lblBookingTime = new System.Windows.Forms.Label(); // Initialize new label
+            this.lblBookingTime = new System.Windows.Forms.Label();
+            this.lblSeatsHeader = new System.Windows.Forms.Label();
             this.lstSeats = new System.Windows.Forms.ListBox();
-            this.lblSeatsHeader = new System.Windows.Forms.Label(); // Initialize seats header label
             this.lblUnitPrice = new System.Windows.Forms.Label();
             this.lblTotalPrice = new System.Windows.Forms.Label();
-            this.btnBack = new System.Windows.Forms.Button();       // Initialize Back button
+            this.btnBack = new System.Windows.Forms.Button();
+            this.lblReservationDate = new System.Windows.Forms.Label();
             this.contentPanel.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
+            // lblHeader
+            // 
+            this.lblHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblHeader.ForeColor = System.Drawing.Color.White;
+            this.lblHeader.Location = new System.Drawing.Point(20, 19);
+            this.lblHeader.Name = "lblHeader";
+            this.lblHeader.Size = new System.Drawing.Size(632, 50);
+            this.lblHeader.TabIndex = 0;
+            this.lblHeader.Text = "Booking Details";
+            this.lblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // contentPanel
-            //
-            this.contentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(60))))); // Match movie list panel color
+            // 
+            this.contentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(60)))));
             this.contentPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.contentPanel.Controls.Add(this.lblReservationDate);
             this.contentPanel.Controls.Add(this.lblHeader);
             this.contentPanel.Controls.Add(this.lblMovie);
             this.contentPanel.Controls.Add(this.lblShowtime);
             this.contentPanel.Controls.Add(this.lblTicketId);
-            this.contentPanel.Controls.Add(this.lblBookingTime); // Add booking time label
-            this.contentPanel.Controls.Add(this.lblSeatsHeader); // Add seats header label
+            this.contentPanel.Controls.Add(this.lblBookingTime);
+            this.contentPanel.Controls.Add(this.lblSeatsHeader);
             this.contentPanel.Controls.Add(this.lstSeats);
             this.contentPanel.Controls.Add(this.lblUnitPrice);
             this.contentPanel.Controls.Add(this.lblTotalPrice);
-            this.contentPanel.Controls.Add(this.btnBack);       // Add Back button
-            this.contentPanel.Location = new System.Drawing.Point(199, 25); // Position will be centered in Load event
+            this.contentPanel.Controls.Add(this.btnBack);
+            this.contentPanel.Location = new System.Drawing.Point(224, 31);
+            this.contentPanel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.contentPanel.Name = "contentPanel";
-            this.contentPanel.Padding = new System.Windows.Forms.Padding(15); // Add internal padding
-            this.contentPanel.Size = new System.Drawing.Size(600, 550); // Adjust size as needed
+            this.contentPanel.Padding = new System.Windows.Forms.Padding(17, 19, 17, 19);
+            this.contentPanel.Size = new System.Drawing.Size(675, 687);
             this.contentPanel.TabIndex = 0;
-            // Anchor will be set to None in Load event
-            //
-            // lblHeader
-            //
-            this.lblHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblHeader.ForeColor = System.Drawing.Color.White;
-            this.lblHeader.Location = new System.Drawing.Point(18, 15); // Use Panel Padding
-            this.lblHeader.Name = "lblHeader";
-            this.lblHeader.Size = new System.Drawing.Size(562, 40); // Span width inside padding
-            this.lblHeader.TabIndex = 0;
-            this.lblHeader.Text = "Booking Details"; // Updated text
-            this.lblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // lblMovie
-            //
+            // 
             this.lblMovie.AutoSize = true;
             this.lblMovie.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblMovie.ForeColor = System.Drawing.Color.White;
-            this.lblMovie.Location = new System.Drawing.Point(18, 75); // Adjust position below header
+            this.lblMovie.Location = new System.Drawing.Point(20, 69);
             this.lblMovie.Name = "lblMovie";
-            this.lblMovie.Size = new System.Drawing.Size(120, 23);
+            this.lblMovie.Size = new System.Drawing.Size(125, 28);
             this.lblMovie.TabIndex = 1;
-            this.lblMovie.Text = "Movie: [Title]"; // Placeholder
-            //
+            this.lblMovie.Text = "Movie: [Title]";
+            // 
             // lblShowtime
-            //
+            // 
             this.lblShowtime.AutoSize = true;
             this.lblShowtime.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblShowtime.ForeColor = System.Drawing.Color.White;
-            this.lblShowtime.Location = new System.Drawing.Point(18, 105); // Adjust position
+            this.lblShowtime.Location = new System.Drawing.Point(20, 108);
             this.lblShowtime.Name = "lblShowtime";
-            this.lblShowtime.Size = new System.Drawing.Size(150, 23);
+            this.lblShowtime.Size = new System.Drawing.Size(162, 28);
             this.lblShowtime.TabIndex = 2;
-            this.lblShowtime.Text = "Showtime: [Time]"; // Placeholder
-            //
+            this.lblShowtime.Text = "Showtime: [Time]";
+            // 
             // lblTicketId
-            //
+            // 
             this.lblTicketId.AutoSize = true;
             this.lblTicketId.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblTicketId.ForeColor = System.Drawing.Color.White;
-            this.lblTicketId.Location = new System.Drawing.Point(18, 135); // Adjust position
+            this.lblTicketId.Location = new System.Drawing.Point(22, 145);
             this.lblTicketId.Name = "lblTicketId";
-            this.lblTicketId.Size = new System.Drawing.Size(130, 23);
+            this.lblTicketId.Size = new System.Drawing.Size(127, 28);
             this.lblTicketId.TabIndex = 3;
-            this.lblTicketId.Text = "Ticket ID: [ID]"; // Placeholder
-            //
+            this.lblTicketId.Text = "Ticket ID: [ID]";
+            // 
             // lblBookingTime
-            //
+            // 
             this.lblBookingTime.AutoSize = true;
-            this.lblBookingTime.Font = new System.Drawing.Font("Segoe UI", 9F); // Slightly smaller maybe
-            this.lblBookingTime.ForeColor = System.Drawing.Color.LightGray; // Different color
-            this.lblBookingTime.Location = new System.Drawing.Point(18, 165); // Position below Ticket ID
+            this.lblBookingTime.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblBookingTime.ForeColor = System.Drawing.Color.LightGray;
+            this.lblBookingTime.Location = new System.Drawing.Point(20, 186);
             this.lblBookingTime.Name = "lblBookingTime";
-            this.lblBookingTime.Size = new System.Drawing.Size(200, 20);
-            this.lblBookingTime.TabIndex = 9; // Ensure unique TabIndex
-            this.lblBookingTime.Text = "Booked On: [DateTime]"; // Placeholder
-            //
+            this.lblBookingTime.Size = new System.Drawing.Size(196, 25);
+            this.lblBookingTime.TabIndex = 9;
+            this.lblBookingTime.Text = "Booked On: [DateTime]";
+            // 
             // lblSeatsHeader
-            //
+            // 
             this.lblSeatsHeader.AutoSize = true;
             this.lblSeatsHeader.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblSeatsHeader.ForeColor = System.Drawing.Color.White;
-            this.lblSeatsHeader.Location = new System.Drawing.Point(18, 210); // Position above list box
+            this.lblSeatsHeader.Location = new System.Drawing.Point(20, 262);
             this.lblSeatsHeader.Name = "lblSeatsHeader";
-            this.lblSeatsHeader.Size = new System.Drawing.Size(130, 23);
+            this.lblSeatsHeader.Size = new System.Drawing.Size(153, 28);
             this.lblSeatsHeader.TabIndex = 10;
             this.lblSeatsHeader.Text = "Selected Seats:";
-            //
+            // 
             // lstSeats
-            //
-            this.lstSeats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.lstSeats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstSeats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(55)))), ((int)(((byte)(70))))); // Slightly darker background
+            this.lstSeats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(55)))), ((int)(((byte)(70)))));
             this.lstSeats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lstSeats.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lstSeats.ForeColor = System.Drawing.Color.White;
             this.lstSeats.FormattingEnabled = true;
-            this.lstSeats.ItemHeight = 23;
-            this.lstSeats.Location = new System.Drawing.Point(21, 240); // Position below header
+            this.lstSeats.ItemHeight = 28;
+            this.lstSeats.Location = new System.Drawing.Point(24, 300);
+            this.lstSeats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstSeats.Name = "lstSeats";
-            this.lstSeats.SelectionMode = System.Windows.Forms.SelectionMode.None; // Make read-only (no selection highlight)
-            this.lstSeats.Size = new System.Drawing.Size(558, 94); // Adjust size to fit panel padding
+            this.lstSeats.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.lstSeats.Size = new System.Drawing.Size(628, 114);
             this.lstSeats.TabIndex = 4;
-            //
+            // 
             // lblUnitPrice
-            //
+            // 
             this.lblUnitPrice.AutoSize = true;
             this.lblUnitPrice.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblUnitPrice.ForeColor = System.Drawing.Color.White;
-            this.lblUnitPrice.Location = new System.Drawing.Point(18, 360); // Position below list
+            this.lblUnitPrice.Location = new System.Drawing.Point(20, 450);
             this.lblUnitPrice.Name = "lblUnitPrice";
-            this.lblUnitPrice.Size = new System.Drawing.Size(160, 23);
+            this.lblUnitPrice.Size = new System.Drawing.Size(192, 28);
             this.lblUnitPrice.TabIndex = 5;
-            this.lblUnitPrice.Text = "Price Per Seat: [Price]"; // Placeholder
-            //
+            this.lblUnitPrice.Text = "Price Per Seat: [Price]";
+            // 
             // lblTotalPrice
-            //
+            // 
             this.lblTotalPrice.AutoSize = true;
-            this.lblTotalPrice.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold); // Slightly bigger/bold
+            this.lblTotalPrice.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblTotalPrice.ForeColor = System.Drawing.Color.White;
-            this.lblTotalPrice.Location = new System.Drawing.Point(18, 390); // Position below unit price
+            this.lblTotalPrice.Location = new System.Drawing.Point(20, 488);
             this.lblTotalPrice.Name = "lblTotalPrice";
-            this.lblTotalPrice.Size = new System.Drawing.Size(150, 25);
+            this.lblTotalPrice.Size = new System.Drawing.Size(143, 30);
             this.lblTotalPrice.TabIndex = 6;
-            this.lblTotalPrice.Text = "Total: [Total]"; // Placeholder
-            //
+            this.lblTotalPrice.Text = "Total: [Total]";
+            // 
             // btnBack
-            //
-            this.btnBack.Anchor = System.Windows.Forms.AnchorStyles.Bottom; // Anchor to bottom center
+            // 
+            this.btnBack.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnBack.BackColor = System.Drawing.Color.Gray;
             this.btnBack.FlatAppearance.BorderSize = 0;
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBack.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.btnBack.ForeColor = System.Drawing.Color.White;
-            this.btnBack.Location = new System.Drawing.Point(229, 478); // Centered X position within panel
+            this.btnBack.Location = new System.Drawing.Point(258, 598);
+            this.btnBack.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(140, 45); // Make slightly larger?
-            this.btnBack.TabIndex = 8; // Only interactive element besides form closing
+            this.btnBack.Size = new System.Drawing.Size(158, 56);
+            this.btnBack.TabIndex = 8;
             this.btnBack.Text = "Back";
             this.btnBack.UseVisualStyleBackColor = false;
-
-            //
-            // Initialize lblReservationDate
-            //
-            this.lblReservationDate = new System.Windows.Forms.Label();
+            // 
+            // lblReservationDate
+            // 
             this.lblReservationDate.AutoSize = true;
             this.lblReservationDate.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblReservationDate.ForeColor = System.Drawing.Color.White;
-            this.lblReservationDate.Location = new System.Drawing.Point(10, 120); // Adjust location as needed
+            this.lblReservationDate.Location = new System.Drawing.Point(22, 225);
             this.lblReservationDate.Name = "lblReservationDate";
-            this.lblReservationDate.Size = new System.Drawing.Size(0, 23);
+            this.lblReservationDate.Size = new System.Drawing.Size(168, 28);
             this.lblReservationDate.TabIndex = 5;
             this.lblReservationDate.Text = "Reservation Date: ";
-            this.Controls.Add(this.lblReservationDate);
-
-
-            // Click event handler attached in BookingDetailsForm.cs
-            //
+            // 
             // BookingDetailsForm
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(40))))); // Match main background
-            this.ClientSize = new System.Drawing.Size(1000, 600); // Match other child forms
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(40)))));
+            this.ClientSize = new System.Drawing.Size(1125, 750);
             this.Controls.Add(this.contentPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None; // Make it look like other child forms
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "BookingDetailsForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual; // Position manually or centered by parent
-            this.Text = "Booking Details"; // Internal name, title bar hidden
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "Booking Details";
             this.Load += new System.EventHandler(this.BookingDetailsForm_Load);
             this.contentPanel.ResumeLayout(false);
             this.contentPanel.PerformLayout();

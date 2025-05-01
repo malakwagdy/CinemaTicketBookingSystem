@@ -10,6 +10,7 @@ namespace GUI_DB
     {
         private MainForm mainForm;
         private DateTimePicker dtpReservationDate; // Date Picker for reservation date
+        private DatabaseManager dbManager; // Assuming this is a class for database operations
 
 
         // Filters
@@ -21,6 +22,7 @@ namespace GUI_DB
         public CustomerMovieListForm(MainForm form)
         {
             mainForm = form ?? throw new ArgumentNullException(nameof(form));
+            dbManager = new DatabaseManager();
             InitializeComponent(); // Creates btnBack, filterLayout, cmbGenre, panelReservations etc. AND dtpReservationDate
 
             // --- Hook up Back Button Event ---
@@ -181,7 +183,11 @@ namespace GUI_DB
             if (flowLayoutPanelMovies == null) return;
             flowLayoutPanelMovies.SuspendLayout(); // Suspend layout for performance
             flowLayoutPanelMovies.Controls.Clear();
-            List<Movie> movies = MovieRepository.GetMovies();
+
+
+            // Fetch movies from the database
+            var movies = dbManager.getAllMovies(); // Assuming this method fetches all movies
+
 
             // Calculate available width
             int availableWidth = flowLayoutPanelMovies.ClientSize.Width;
@@ -192,7 +198,7 @@ namespace GUI_DB
             availableWidth -= (flowLayoutPanelMovies.Padding.Left + flowLayoutPanelMovies.Padding.Right);
             availableWidth = Math.Max(20, availableWidth);
 
-            foreach (var movie in movies)
+            foreach (DatabaseManager.Movie movie in movies)
             {
                 if (!PassesFilters(movie)) continue;
 
@@ -207,7 +213,7 @@ namespace GUI_DB
                 };
                 Label lblTitle = new Label
                 {
-                    Text = $"{movie.Title} ({movie.AgeRating}, {movie.ReleaseYear})",
+                    Text = $"{movie.Title} ({movie.AgeRating}, {movie.ReleaseDate.Year})",
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                     ForeColor = Color.White,
                     Dock = DockStyle.Top,
@@ -217,7 +223,7 @@ namespace GUI_DB
                 };
                 Label lblDetails = new Label
                 {
-                    Text = $"Genre: {movie.Genre} | Director: {movie.Director} | Star: {movie.StarActor}",
+                    Text = $"Genre: {movie.Genre} | Director: {movie.Director}",
                     Font = new Font("Segoe UI", 9F),
                     ForeColor = Color.Gray,
                     Dock = DockStyle.Top,
@@ -234,13 +240,17 @@ namespace GUI_DB
                     Padding = new Padding(0, 5, 0, 0)
                 };
 
-                if (movie.Showtimes != null && movie.Showtimes.Any())
+
+                var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
+
+                
+                if (showtimes != null && showtimes.Any())
                 {
-                    foreach (var showtime in movie.Showtimes)
+                    foreach (var showtime in showtimes)
                     {
                         LinkLabel linkShowtime = new LinkLabel
                         {
-                            Text = showtime,
+                            Text = showtime.startTime.ToString("hh:mm tt"),
                             AutoSize = true,
                             Font = new Font("Segoe UI", 9F, FontStyle.Underline),
                             LinkColor = Color.SkyBlue,
@@ -251,7 +261,7 @@ namespace GUI_DB
                         // *** MODIFICATION: Pass selected date from dtpReservationDate ***
                         linkShowtime.Click += (s, e) => {
                             DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get date part, default to today
-                            OpenSeatingChart(movie.Title, showtime, selectedDate); // Pass date
+                            OpenSeatingChart(movie.Title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);
                     }
@@ -288,10 +298,10 @@ namespace GUI_DB
         }
 
         // --- Filter Logic ---
-        private bool PassesFilters(Movie movie)
+        private bool PassesFilters(DatabaseManager.Movie movie)
         {
             // NOTE: Currently, date selected doesn't filter the *movie list* itself.
-            bool ageOk = currentAgeFilter == "All" || movie.AgeRating == currentAgeFilter;
+            bool ageOk = currentAgeFilter == "All" || movie.AgeRating.ToString() == currentAgeFilter;
             bool genreOk = selectedGenre == "All" || movie.Genre == selectedGenre;
             return ageOk && genreOk;
         }
@@ -332,8 +342,14 @@ namespace GUI_DB
             };
             setupRadioEvents(this.panelFilterControlsContainer); // Search within the container
 
-            // Date Picker (Optional: Add if date change should trigger actions like reloading movies)
-            // dtpReservationDate.ValueChanged += (s, e) => { /* Action needed? */ };
+            // DateTimePicker
+            if (dtpReservationDate != null)
+            {
+                dtpReservationDate.ValueChanged += (s, e) =>
+                {
+                    LoadMovies(); // Reload movies when the date changes
+                };
+            }
         }
 
         private void OnAgeFilterChanged(object sender, EventArgs e)
@@ -436,40 +452,11 @@ namespace GUI_DB
             LoadMovies();
         }
 
-        // Ensure Movie and MovieRepository classes are accessible/defined
-        // You should have these classes defined elsewhere in your project
-        // public class Movie { ... }
-        // public static class MovieRepository { ... }
+        
     }
 
-    // --- Include Movie and MovieRepository if not defined elsewhere ---
-    // (Using the definitions from the initial prompt)
-    public class Movie
-    {
-        public string Title { get; set; }
-        public List<string> Showtimes { get; set; }
-        public string AgeRating { get; set; }
-        public string Genre { get; set; }
-        public int ReleaseYear { get; set; }
-        public string Director { get; set; }
-        public string StarActor { get; set; }
-    }
+    
+    
 
-    public static class MovieRepository
-    {
-        public static List<Movie> GetMovies()
-        {
-            return new List<Movie>
-            {
-                new Movie { Title = "Snow White", AgeRating = "G", Genre = "Fantasy", ReleaseYear = 2025, Director = "Jane Doe", StarActor = "Lily James", Showtimes = new List<string>{ "10:00 AM", "2:00 PM", "6:00 PM" }},
-                new Movie { Title = "Guns Akimbo", AgeRating = "R", Genre = "Action", ReleaseYear = 2020, Director = "Jason Howden", StarActor = "Daniel Radcliffe", Showtimes = new List<string>{ "12:00 PM", "4:00 PM", "8:00 PM" }},
-                new Movie { Title = "Dune Part II", AgeRating = "PG-13", Genre = "Sci-Fi", ReleaseYear = 2023, Director = "Denis Villeneuve", StarActor = "Timothée Chalamet", Showtimes = new List<string>{ "3:30 PM", "7:00 PM" }},
-                new Movie { Title = "Barbie", AgeRating = "PG", Genre = "Comedy", ReleaseYear = 2023, Director = "Greta Gerwig", StarActor = "Margot Robbie", Showtimes = new List<string>{ "1:00 PM", "5:00 PM" }},
-                new Movie { Title = "Oppenheimer", AgeRating = "R", Genre = "Drama", ReleaseYear = 2023, Director = "Christopher Nolan", StarActor = "Cillian Murphy", Showtimes = new List<string>{ "11:00 AM", "4:30 PM" }},
-                 new Movie { Title = "Poor Things", AgeRating = "R", Genre = "Comedy", ReleaseYear = 2023, Director = "Yorgos Lanthimos", StarActor = "Emma Stone", Showtimes = new List<string>{ "6:30 PM", "9:00 PM" }},
-                 new Movie { Title = "The Matrix", AgeRating = "R", Genre = "Sci-Fi", ReleaseYear = 1999, Director = "Wachowskis", StarActor = "Keanu Reeves", Showtimes = new List<string>{ "8:30 PM" }},
-                 new Movie { Title = "Finding Nemo", AgeRating = "G", Genre = "Comedy", ReleaseYear = 2003, Director = "Andrew Stanton", StarActor = "Albert Brooks", Showtimes = null },
-            };
-        }
-    }
+   
 }

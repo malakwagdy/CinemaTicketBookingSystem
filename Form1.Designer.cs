@@ -49,9 +49,9 @@ namespace GUI_DB
             this.panelLeft.Controls.Add(this.pictureBoxLeft);
             this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelLeft.Location = new System.Drawing.Point(0, 0);
-            this.panelLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.panelLeft.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelLeft.Name = "panelLeft";
-            this.panelLeft.Size = new System.Drawing.Size(533, 738);
+            this.panelLeft.Size = new System.Drawing.Size(600, 922);
             this.panelLeft.TabIndex = 1;
             // 
             // pictureBoxLeft
@@ -59,9 +59,9 @@ namespace GUI_DB
             this.pictureBoxLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxLeft.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxLeft.Image")));
             this.pictureBoxLeft.Location = new System.Drawing.Point(0, 0);
-            this.pictureBoxLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBoxLeft.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBoxLeft.Name = "pictureBoxLeft";
-            this.pictureBoxLeft.Size = new System.Drawing.Size(533, 738);
+            this.pictureBoxLeft.Size = new System.Drawing.Size(600, 922);
             this.pictureBoxLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxLeft.TabIndex = 0;
             this.pictureBoxLeft.TabStop = false;
@@ -72,10 +72,10 @@ namespace GUI_DB
             this.panelRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(60)))));
             this.panelRight.Controls.Add(this.panelForm);
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRight.Location = new System.Drawing.Point(533, 0);
-            this.panelRight.Margin = new System.Windows.Forms.Padding(4);
+            this.panelRight.Location = new System.Drawing.Point(600, 0);
+            this.panelRight.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(800, 738);
+            this.panelRight.Size = new System.Drawing.Size(900, 922);
             this.panelRight.TabIndex = 0;
             // 
             // panelForm
@@ -95,22 +95,22 @@ namespace GUI_DB
             this.panelForm.Controls.Add(this.btnCreateAccount, 0, 10);
             this.panelForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelForm.Location = new System.Drawing.Point(0, 0);
-            this.panelForm.Margin = new System.Windows.Forms.Padding(4);
+            this.panelForm.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelForm.Name = "panelForm";
-            this.panelForm.Padding = new System.Windows.Forms.Padding(67, 30, 67, 30);
+            this.panelForm.Padding = new System.Windows.Forms.Padding(75, 38, 75, 38);
             this.panelForm.RowCount = 11;
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
             this.panelForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.panelForm.Size = new System.Drawing.Size(800, 738);
+            this.panelForm.Size = new System.Drawing.Size(900, 922);
             this.panelForm.TabIndex = 0;
             this.panelForm.Paint += new System.Windows.Forms.PaintEventHandler(this.panelForm_Paint);
             // 
@@ -119,10 +119,10 @@ namespace GUI_DB
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(71, 30);
+            this.lblTitle.Location = new System.Drawing.Point(79, 38);
             this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(658, 60);
+            this.lblTitle.Size = new System.Drawing.Size(742, 75);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Create an Account";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -134,10 +134,10 @@ namespace GUI_DB
             this.txtFirstName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFirstName.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtFirstName.ForeColor = System.Drawing.Color.Gray;
-            this.txtFirstName.Location = new System.Drawing.Point(67, 96);
-            this.txtFirstName.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.txtFirstName.Location = new System.Drawing.Point(75, 121);
+            this.txtFirstName.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(666, 30);
+            this.txtFirstName.Size = new System.Drawing.Size(750, 34);
             this.txtFirstName.TabIndex = 1;
             this.txtFirstName.Text = "First Name";
             // 
@@ -148,10 +148,10 @@ namespace GUI_DB
             this.txtLastName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLastName.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtLastName.ForeColor = System.Drawing.Color.Gray;
-            this.txtLastName.Location = new System.Drawing.Point(67, 141);
-            this.txtLastName.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.txtLastName.Location = new System.Drawing.Point(75, 177);
+            this.txtLastName.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(666, 30);
+            this.txtLastName.Size = new System.Drawing.Size(750, 34);
             this.txtLastName.TabIndex = 2;
             this.txtLastName.Text = "Last Name";
             // 
@@ -162,10 +162,10 @@ namespace GUI_DB
             this.txtEmail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtEmail.ForeColor = System.Drawing.Color.Gray;
-            this.txtEmail.Location = new System.Drawing.Point(67, 186);
-            this.txtEmail.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.txtEmail.Location = new System.Drawing.Point(75, 233);
+            this.txtEmail.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(666, 30);
+            this.txtEmail.Size = new System.Drawing.Size(750, 34);
             this.txtEmail.TabIndex = 3;
             this.txtEmail.Text = "Email Address";
             // 
@@ -176,10 +176,10 @@ namespace GUI_DB
             this.txtPhoneNumber.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtPhoneNumber.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtPhoneNumber.ForeColor = System.Drawing.Color.Gray;
-            this.txtPhoneNumber.Location = new System.Drawing.Point(67, 231);
-            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.txtPhoneNumber.Location = new System.Drawing.Point(75, 289);
+            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.txtPhoneNumber.Name = "txtPhoneNumber";
-            this.txtPhoneNumber.Size = new System.Drawing.Size(666, 30);
+            this.txtPhoneNumber.Size = new System.Drawing.Size(750, 34);
             this.txtPhoneNumber.TabIndex = 4;
             this.txtPhoneNumber.Text = "Phone Number";
             // 
@@ -189,9 +189,9 @@ namespace GUI_DB
             this.lblBirthdate.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblBirthdate.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblBirthdate.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.lblBirthdate.Location = new System.Drawing.Point(70, 275);
+            this.lblBirthdate.Location = new System.Drawing.Point(78, 343);
             this.lblBirthdate.Name = "lblBirthdate";
-            this.lblBirthdate.Size = new System.Drawing.Size(660, 20);
+            this.lblBirthdate.Size = new System.Drawing.Size(744, 25);
             this.lblBirthdate.TabIndex = 10;
             this.lblBirthdate.Text = "Birthdate";
             this.lblBirthdate.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -207,10 +207,10 @@ namespace GUI_DB
             this.dtpBirthdate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dtpBirthdate.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.dtpBirthdate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpBirthdate.Location = new System.Drawing.Point(67, 300);
-            this.dtpBirthdate.Margin = new System.Windows.Forms.Padding(0, 5, 0, 6);
+            this.dtpBirthdate.Location = new System.Drawing.Point(75, 374);
+            this.dtpBirthdate.Margin = new System.Windows.Forms.Padding(0, 6, 0, 8);
             this.dtpBirthdate.Name = "dtpBirthdate";
-            this.dtpBirthdate.Size = new System.Drawing.Size(666, 30);
+            this.dtpBirthdate.Size = new System.Drawing.Size(750, 34);
             this.dtpBirthdate.TabIndex = 5;
             this.dtpBirthdate.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
             // 
@@ -221,11 +221,11 @@ namespace GUI_DB
             this.txtPassword.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtPassword.ForeColor = System.Drawing.Color.Gray;
-            this.txtPassword.Location = new System.Drawing.Point(67, 346);
-            this.txtPassword.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.txtPassword.Location = new System.Drawing.Point(75, 432);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '●';
-            this.txtPassword.Size = new System.Drawing.Size(666, 30);
+            this.txtPassword.Size = new System.Drawing.Size(750, 34);
             this.txtPassword.TabIndex = 6;
             this.txtPassword.Text = "Password";
             // 
@@ -236,11 +236,11 @@ namespace GUI_DB
             this.txtConfirmPassword.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtConfirmPassword.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtConfirmPassword.ForeColor = System.Drawing.Color.Gray;
-            this.txtConfirmPassword.Location = new System.Drawing.Point(67, 391);
-            this.txtConfirmPassword.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.txtConfirmPassword.Location = new System.Drawing.Point(75, 488);
+            this.txtConfirmPassword.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.txtConfirmPassword.Name = "txtConfirmPassword";
             this.txtConfirmPassword.PasswordChar = '●';
-            this.txtConfirmPassword.Size = new System.Drawing.Size(666, 30);
+            this.txtConfirmPassword.Size = new System.Drawing.Size(750, 34);
             this.txtConfirmPassword.TabIndex = 7;
             this.txtConfirmPassword.Text = "Confirm Password";
             // 
@@ -250,11 +250,11 @@ namespace GUI_DB
             this.chkTerms.Dock = System.Windows.Forms.DockStyle.Top;
             this.chkTerms.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.chkTerms.ForeColor = System.Drawing.Color.White;
-            this.chkTerms.Location = new System.Drawing.Point(67, 442);
-            this.chkTerms.Margin = new System.Windows.Forms.Padding(0, 12, 0, 12);
+            this.chkTerms.Location = new System.Drawing.Point(75, 551);
+            this.chkTerms.Margin = new System.Windows.Forms.Padding(0, 15, 0, 15);
             this.chkTerms.Name = "chkTerms";
-            this.chkTerms.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.chkTerms.Size = new System.Drawing.Size(666, 24);
+            this.chkTerms.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.chkTerms.Size = new System.Drawing.Size(750, 29);
             this.chkTerms.TabIndex = 8;
             this.chkTerms.Text = "I agree to the Terms & Conditions";
             this.chkTerms.UseVisualStyleBackColor = true;
@@ -267,10 +267,10 @@ namespace GUI_DB
             this.btnCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCreateAccount.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCreateAccount.ForeColor = System.Drawing.Color.White;
-            this.btnCreateAccount.Location = new System.Drawing.Point(67, 492);
-            this.btnCreateAccount.Margin = new System.Windows.Forms.Padding(0, 12, 0, 12);
+            this.btnCreateAccount.Location = new System.Drawing.Point(75, 613);
+            this.btnCreateAccount.Margin = new System.Windows.Forms.Padding(0, 15, 0, 15);
             this.btnCreateAccount.Name = "btnCreateAccount";
-            this.btnCreateAccount.Size = new System.Drawing.Size(666, 40);
+            this.btnCreateAccount.Size = new System.Drawing.Size(750, 50);
             this.btnCreateAccount.TabIndex = 9;
             this.btnCreateAccount.Text = "Create Account";
             this.btnCreateAccount.UseVisualStyleBackColor = false;
@@ -278,13 +278,13 @@ namespace GUI_DB
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1333, 738);
+            this.ClientSize = new System.Drawing.Size(1500, 922);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.panelLeft);
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(1000, 700);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MinimumSize = new System.Drawing.Size(1122, 861);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Create Account";
