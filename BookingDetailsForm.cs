@@ -38,10 +38,7 @@ namespace GUI_DB
             lstSeats.Items.Clear();
             if (currentBooking.SelectedSeats != null && currentBooking.SelectedSeats.Any())
             {
-                foreach (string seat in currentBooking.SelectedSeats)
-                {
-                    lstSeats.Items.Add($"   • {seat}");
-                }
+
             }
             else
             {

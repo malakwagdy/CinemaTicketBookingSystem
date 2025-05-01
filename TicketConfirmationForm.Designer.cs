@@ -31,6 +31,7 @@ namespace GUI_DB
         {
             this.lblHeader = new System.Windows.Forms.Label();
             this.contentPanel = new System.Windows.Forms.Panel();
+            this.lblReservationDate = new System.Windows.Forms.Label();
             this.lblMovie = new System.Windows.Forms.Label();
             this.lblShowtime = new System.Windows.Forms.Label();
             this.lblTicketId = new System.Windows.Forms.Label();
@@ -39,7 +40,6 @@ namespace GUI_DB
             this.lblTotalPrice = new System.Windows.Forms.Label();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lblReservationDate = new System.Windows.Forms.Label();
             this.contentPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,6 +72,17 @@ namespace GUI_DB
             this.contentPanel.Name = "contentPanel";
             this.contentPanel.Size = new System.Drawing.Size(686, 662);
             this.contentPanel.TabIndex = 0;
+            // 
+            // lblReservationDate
+            // 
+            this.lblReservationDate.AutoSize = true;
+            this.lblReservationDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblReservationDate.ForeColor = System.Drawing.Color.White;
+            this.lblReservationDate.Location = new System.Drawing.Point(419, 50);
+            this.lblReservationDate.Name = "lblReservationDate";
+            this.lblReservationDate.Size = new System.Drawing.Size(168, 28);
+            this.lblReservationDate.TabIndex = 5;
+            this.lblReservationDate.Text = "Reservation Date: ";
             // 
             // lblMovie
             // 
@@ -111,7 +122,7 @@ namespace GUI_DB
             this.lstSeats.ItemHeight = 28;
             this.lstSeats.Location = new System.Drawing.Point(222, 153);
             this.lstSeats.Name = "lstSeats";
-            this.lstSeats.Size = new System.Drawing.Size(250, 60);
+            this.lstSeats.Size = new System.Drawing.Size(250, 144);
             this.lstSeats.TabIndex = 4;
             // 
             // lblUnitPrice
@@ -157,17 +168,6 @@ namespace GUI_DB
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = false;
-            // 
-            // lblReservationDate
-            // 
-            this.lblReservationDate.AutoSize = true;
-            this.lblReservationDate.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblReservationDate.ForeColor = System.Drawing.Color.White;
-            this.lblReservationDate.Location = new System.Drawing.Point(419, 50);
-            this.lblReservationDate.Name = "lblReservationDate";
-            this.lblReservationDate.Size = new System.Drawing.Size(168, 28);
-            this.lblReservationDate.TabIndex = 5;
-            this.lblReservationDate.Text = "Reservation Date: ";
             // 
             // TicketConfirmationForm
             // 

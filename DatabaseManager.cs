@@ -15,7 +15,7 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=MALAK;Initial Catalog = CinemaTicketBookingSystem; Integrated Security = True; Trust Server Certificate=True";
+            "Data Source=AMR;Initial Catalog=Test_Project_DB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
@@ -138,6 +138,17 @@ namespace GUI_DB
             public int movieID;
             public int hallID;
             public float Price;
+            public Ticket(int ticketID, string bookingID, DateTime startTime, int seatNumber, char rowNumber, int movieID, int hallID, float price)
+            {
+                this.ticketID = ticketID;
+                this.bookingID = bookingID;
+                this.startTime = startTime;
+                this.seatNumber = seatNumber;
+                this.rowNumber = rowNumber;
+                this.movieID = movieID;
+                this.hallID = hallID;
+                this.Price = 0;
+            }
         }
 
         public struct Showtime
@@ -314,12 +325,12 @@ namespace GUI_DB
             return movies.ToArray();
         }
 
-        public void calculatePrice(Ticket ticket)
+        public float calculatePrice(Ticket ticket)
         {
             string seatType = null;
             string screenType = null;
             string query = @"SELECT * FROM Seat WHERE SeatNumber = @seatNumber AND RowNumber = @rowNumber AND HallID = @hallID";
-            
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -334,7 +345,7 @@ namespace GUI_DB
                         {
                             while (reader.Read())
                             {
-                               seatType = reader["seatType"].ToString();
+                                seatType = reader["seatType"].ToString();
                             }
                         }
                     }
@@ -345,9 +356,9 @@ namespace GUI_DB
                 // Handle exception (e.g., log the error)
                 Console.WriteLine("An error occurred: " + ex.Message);
             }
-            
+
             query = @"SELECT * FROM Hall WHERE HallID = @hallID";
-            
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -360,7 +371,7 @@ namespace GUI_DB
                         {
                             while (reader.Read())
                             {
-                                screenType = reader["seatType"].ToString();
+                                screenType = reader["ScreenType"].ToString();
                             }
                         }
                     }
@@ -374,7 +385,7 @@ namespace GUI_DB
 
             if (screenType == "IM")
             {
-                if (seatType == "standard")
+                if (seatType == "Standard")
                 {
                     if (ticket.startTime.Hour < 14)
                         ticket.Price = 200;
@@ -391,7 +402,7 @@ namespace GUI_DB
             }
             else
             {
-                if (seatType == "standard")
+                if (seatType == "Standard")
                 {
                     if (ticket.startTime.Hour < 14)
                         ticket.Price = 120;
@@ -405,9 +416,10 @@ namespace GUI_DB
                     else
                         ticket.Price = 220;
                 }
-            }   
+            }
+            return ticket.Price;
         }
-        
+
         public Movie[] getMoviesByGenre(string genre)
         {
             string query = @"SELECT * FROM Movie WHERE Genre= @genre";
@@ -1170,13 +1182,13 @@ namespace GUI_DB
             return returnstring;
         }
         public string confirmBooking(Ticket[] tickets, String CurrentlyLoggedIN)
-        {   
+        {
             int bookingID = 0;
             float totalPrice = 0;
             string returnstring = null;
             string query = @"INSERT INTO Booking  (TotalPrice, BookingDate, CustomerID) 
-                            VALUES ( @TotalPrice, @BookingDate, @CustomerID);
-                            SELECT SCOPE_IDENTITY();";
+                     VALUES ( @TotalPrice, @BookingDate, @CustomerID);
+                     SELECT SCOPE_IDENTITY();";
             DateTime now = DateTime.Now;
             foreach (Ticket ticket in tickets)
             {
@@ -1189,25 +1201,27 @@ namespace GUI_DB
                 {
                     connection.Open();
                     using (SqlCommand command = new SqlCommand(query, connection))
-                    { 
-                        command.Parameters.AddWithValue("@TotalPrice",totalPrice ); 
+                    {
+                        command.Parameters.AddWithValue("@TotalPrice", totalPrice);
                         command.Parameters.AddWithValue("@BookingDate", now);
                         command.Parameters.AddWithValue("CustomerID", CurrentlyLoggedIN);
-                        command.ExecuteNonQuery();
-                        returnstring = "Booking Confirmed";
                         object result = command.ExecuteScalar();
+                        returnstring = "Booking Confirmed";
+
                         if (result != null)
                         {
-                            bookingID = Convert.ToInt32(result); 
+                            bookingID = Convert.ToInt32(result);
                         }
                     }
-                    
+
                     query = @"INSERT INTO Ticket (BookingID, StartTime, SeatNumber, RowNumber, MovieID, HallID, Price) 
-                     VALUES ( @BookingID, @StartTime, @SeatNumber, @RowNumber, @MovieID, @HallID, @Price)";
-                    foreach(Ticket ticket in tickets){
+                            VALUES ( @BookingID, @StartTime, @SeatNumber, @RowNumber, @MovieID, @HallID, @Price)";
+                    foreach (Ticket ticket in tickets)
+                    {
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             // Add parameters to prevent SQL injection
+                            command.Parameters.AddWithValue("@BookingID", bookingID);
                             command.Parameters.AddWithValue("@StartTime", ticket.startTime);
                             command.Parameters.AddWithValue("@SeatNumber", ticket.seatNumber);
                             command.Parameters.AddWithValue("@RowNumber", ticket.rowNumber);
@@ -1219,7 +1233,7 @@ namespace GUI_DB
                             command.ExecuteNonQuery();
                         }
                     }
-                    
+
                 }
             }
             catch (Exception ex)

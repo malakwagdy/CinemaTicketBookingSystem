@@ -14,7 +14,7 @@ namespace GUI_DB
         public string TicketId { get; private set; }
         public string MovieTitle { get; private set; }
         public DateTime Showtime { get; private set; }
-        public List<string> SelectedSeats { get; private set; }
+        public Dictionary<string, string> SelectedSeats { get; private set; }
         public decimal TotalPrice { get; private set; }
         public DateTime BookingTime { get; private set; }   // When the booking was *made*
         public DateTime ReservationDate { get; private set; } // *** NEW: The date the movie is for ***
@@ -29,7 +29,7 @@ namespace GUI_DB
         /// <param name="reservationDate">The date the movie showing is on.</param> // *** NEW Parameter ***
         /// <param name="selectedSeats">The list of seats booked.</param>
         /// <param name="totalPrice">The total price for all seats in this booking.</param>
-        public Booking(string ticketId, string movieTitle, DateTime showtime, DateTime reservationDate, List<string> selectedSeats, decimal totalPrice) // *** Signature Updated ***
+        public Booking(string ticketId, string movieTitle, DateTime showtime, DateTime reservationDate, Dictionary<string, string> selectedSeats, decimal totalPrice) // *** Signature Updated ***
         {
             // Basic validation
             if (string.IsNullOrWhiteSpace(ticketId))
@@ -54,7 +54,7 @@ namespace GUI_DB
             Showtime = showtime;
             // Store only the Date part, ignore time component from DateTimePicker
             ReservationDate = reservationDate.Date; // *** Assign NEW Property ***
-            SelectedSeats = new List<string>(selectedSeats); // Create copy
+            SelectedSeats = new Dictionary<string, string>(selectedSeats); // Create copy
             TotalPrice = totalPrice;
             BookingTime = DateTime.Now; // Time the booking object was created
         }
