@@ -7,7 +7,7 @@ namespace GUI_DB
     public partial class LogInPage : Form
     {
         private MainForm mainForm;
-
+        DatabaseManager db = new DatabaseManager();
         public LogInPage(MainForm form)
         {
             InitializeComponent();
@@ -49,28 +49,18 @@ namespace GUI_DB
 
         private void BtnLogIn_Click(object sender, EventArgs e)
         {
-            // Hardcoded credentials
-            string adminUsername = "admin";
-            string adminPassword = "admin123";
-            string hardCodedUsername = "user";
-            string hardCodedPassword = "user123";
-
-            // Check if entered credentials match the hardcoded ones
-            if (txtEmailOrUsername.Text == hardCodedUsername && txtPassword.Text == hardCodedPassword)
+            string msg =db.Login(txtEmailOrUsername.Text,txtPassword.Text);
+            if (msg == "Invalid Email or Password")
             {
-                // Navigate to the CustomerMovieList form
-                mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
-            }
-            else if (txtEmailOrUsername.Text == adminUsername && txtPassword.Text == adminPassword)
+                MessageBox.Show(msg, "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }else 
             {
-                // Navigate to the AdminControl form
-                mainForm.OpenChildForm(new AdminControl(mainForm));
+                MessageBox.Show(msg, "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
             }
-            else
-            {
-                // Show error message
-                MessageBox.Show("Invalid username or password. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            
+            
+            mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
         }
 
         private void LinkRegister_Click(object sender, EventArgs e)
