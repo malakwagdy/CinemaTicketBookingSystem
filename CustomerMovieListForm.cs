@@ -202,7 +202,7 @@ namespace GUI_DB
                 {
                     movies = dbManager
                         .getMoviesByGenre(selectedGenre)
-                        .Where(movie => movie.ageRating == ageRating)
+                        .Where(movie => movie.AgeRating == ageRating)
                         .ToArray();
                 }
                 else
@@ -258,7 +258,7 @@ namespace GUI_DB
                 };
                 Label lblTitle = new Label
                 {
-                    Text = $"{movie.title} ({movie.ageRating}, {movie.releaseDate.Year})",
+                    Text = $"{movie.Title} ({movie.AgeRating}, {movie.ReleaseDate.Year})",
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                     ForeColor = Color.White,
                     Dock = DockStyle.Top,
@@ -268,7 +268,7 @@ namespace GUI_DB
                 };
                 Label lblDetails = new Label
                 {
-                    Text = $"Genre: {movie.genre} | Director: {movie.director}",
+                    Text = $"Genre: {movie.Genre} | Director: {movie.Director}",
                     Font = new Font("Segoe UI", 9F),
                     ForeColor = Color.Gray,
                     Dock = DockStyle.Top,
@@ -285,7 +285,7 @@ namespace GUI_DB
                     Padding = new Padding(0, 5, 0, 0)
                 };
 
-                var showtimes = dbManager.GetShowtimesForMovie(movie.movieID);
+                var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
 
                 if (showtimes != null && showtimes.Any())
                 {
@@ -304,7 +304,7 @@ namespace GUI_DB
                         linkShowtime.Click += (s, e) =>
                         {
                             DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get the date part, default to today
-                            OpenSeatingChart(movie.title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
+                            OpenSeatingChart(movie.Title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);
                     }
@@ -350,8 +350,8 @@ namespace GUI_DB
         private bool PassesFilters(DatabaseManager.Movie movie)
         {
             // NOTE: Currently, date selected doesn't filter the *movie list* itself.
-            bool ageOk = currentAgeFilter == "All" || movie.ageRating.ToString() == currentAgeFilter;
-            bool genreOk = selectedGenre == "All" || movie.genre == selectedGenre;
+            bool ageOk = currentAgeFilter == "All" || movie.AgeRating.ToString() == currentAgeFilter;
+            bool genreOk = selectedGenre == "All" || movie.Genre == selectedGenre;
             return ageOk && genreOk;
         }
 
