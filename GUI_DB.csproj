@@ -91,7 +91,9 @@
       <HintPath>packages\Microsoft.IdentityModel.Tokens.7.5.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -165,12 +167,14 @@
     <Compile Include="AdminControl.Designer.cs">
       <DependentUpon>AdminControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CinemaListForm.cs">
+    <Compile Include="Booking.cs" />
+    <Compile Include="BookingDetailsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CinemaListForm.Designer.cs">
-      <DependentUpon>CinemaListForm.cs</DependentUpon>
+    <Compile Include="BookingDetailsForm.Designer.cs">
+      <DependentUpon>BookingDetailsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BookingRepository.cs" />
     <Compile Include="DatabaseManager.cs" />
     <Compile Include="CustomerMovieListForm.cs">
       <SubType>Form</SubType>
@@ -184,6 +188,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalVariable.cs" />
     <Compile Include="LogInPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,8 +218,8 @@
     <Compile Include="SeatingChartForm.Designer.cs">
       <DependentUpon>SeatingChartForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="CinemaListForm.resx">
-      <DependentUpon>CinemaListForm.cs</DependentUpon>
+    <EmbeddedResource Include="BookingDetailsForm.resx">
+      <DependentUpon>BookingDetailsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomerMovieListForm.resx">
       <DependentUpon>CustomerMovieListForm.cs</DependentUpon>
