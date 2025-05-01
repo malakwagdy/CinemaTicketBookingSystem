@@ -14,7 +14,8 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=DESKTOP-PD4DI32;Initial Catalog = DatabasBroject; Integrated Security = True; Trust Server Certificate=True";
+            "Data Source=HP;Initial Catalog=Compilers;Integrated Security=True;Trust Server Certificate=True";
+           
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
