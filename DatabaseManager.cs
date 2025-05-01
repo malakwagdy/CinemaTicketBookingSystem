@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using System.Data;
+using System.Windows.Forms;
 
 namespace GUI_DB
 {
@@ -14,7 +15,8 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=DESKTOP-PD4DI32;Initial Catalog = DatabasBroject; Integrated Security = True; Trust Server Certificate=True";
+            "Data Source=HP;Initial Catalog=Compilers;Integrated Security=True;Trust Server Certificate=True";
+           
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
@@ -197,7 +199,7 @@ namespace GUI_DB
 
         public Movie[] getAllMovies()
         {
-            string query = @"SELECT * FROM Movies";
+            string query = @"SELECT * FROM Movie";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -232,9 +234,10 @@ namespace GUI_DB
             return movies.ToArray();
         }
 
-        public void calculatePrice(Ticket ticket)
+public void calculatePrice(Ticket ticket)
         {
             string seatType = null;
+            string screenType = null;
             string query = @"SELECT * FROM Seat WHERE SeatNumber = @seatNumber AND RowNumber = @rowNumber AND HallID = @hallID";
             
             try
@@ -262,22 +265,68 @@ namespace GUI_DB
                 // Handle exception (e.g., log the error)
                 Console.WriteLine("An error occurred: " + ex.Message);
             }
-            if (seatType == "standard")
+            
+            query = @"SELECT * FROM Hall WHERE HallID = @hallID";
+            
+            try
             {
-                if (ticket.startTime.Hour < 14)
-                    ticket.Price = 120;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@hallID", ticket.hallID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                screenType = reader["seatType"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            if (screenType == "IM")
+            {
+                if (seatType == "standard")
+                {
+                    if (ticket.startTime.Hour < 14)
+                        ticket.Price = 200;
+                    else
+                        ticket.Price = 240;
+                }
                 else
-                    ticket.Price = 160;
+                {
+                    if (ticket.startTime.Hour < 14)
+                        ticket.Price = 260;
+                    else
+                        ticket.Price = 300;
+                }
             }
             else
             {
-                if (ticket.startTime.Hour < 14)
-                    ticket.Price = 180;
+                if (seatType == "standard")
+                {
+                    if (ticket.startTime.Hour < 14)
+                        ticket.Price = 120;
+                    else
+                        ticket.Price = 160;
+                }
                 else
-                    ticket.Price = 150;
-            }
+                {
+                    if (ticket.startTime.Hour < 14)
+                        ticket.Price = 180;
+                    else
+                        ticket.Price = 220;
+                }
+            }   
         }
-        
         public Movie[] getMoviesByGenre(string genre)
         {
             string query = @"SELECT * FROM Movies WHERE Genre= @genre";
@@ -814,6 +863,8 @@ namespace GUI_DB
         }
         public Showtime[] GetShowtimesForMovie(int movieID)
         {
+
+
             string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
             List<Showtime> showtimes = new List<Showtime>();
 
@@ -833,7 +884,7 @@ namespace GUI_DB
                                 {
                                     startTime = Convert.ToDateTime(reader["StartTime"]),
                                     adminID = reader["AdminID"].ToString(),
-                                    price = Convert.ToDouble(reader["Price"]),
+                                    //price = Convert.ToDouble(reader["Price"]),
                                     hallID = Convert.ToInt32(reader["HallID"]),
                                     movieID = Convert.ToInt32(reader["MovieID"])
                                 };
@@ -1301,8 +1352,144 @@ namespace GUI_DB
 
             return returnString;
         }
+
+
+
+        public Booking[] GetBookingsByUser(string customerEmail)
+        {
+            List<Booking> bookings = new List<Booking>();
+
+            // Fixed query - removed line break and added proper spacing
+            string query = @"SELECT * FROM Booking WHERE CustomerID = @CustomerID ORDER BY BookingDate DESC";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Make sure customerEmail is not null or empty
+                        if (string.IsNullOrEmpty(customerEmail))
+                        {
+                            MessageBox.Show("No customer email provided", "Error");
+                            return bookings.ToArray();
+                        }
+
+                        // Explicitly specify parameter type and size
+                        command.Parameters.Add("@CustomerID", SqlDbType.NVarChar, 255).Value = customerEmail;
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                bookings.Add(new Booking(
+                                    Convert.ToInt32(reader["BookingID"]),
+                                    Convert.ToSingle(reader["TotalPrice"]),
+                                    Convert.ToDateTime(reader["BookingDate"]),
+                                    reader["CustomerID"].ToString()
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error retrieving bookings: {ex.Message}", "Database Error");
+            }
+
+            return bookings.ToArray();
+        }
+
+
+
+
+
+        private string ConvertToSeatId(char rowNumber, int seatNumber)
+        {
+            return $"{rowNumber}{seatNumber}";
+        }
+        public HashSet<string> GetReservedSeatsCombined(DateTime startTime, int hallID, int movieID)
+        {
+            var reservedSeats = new HashSet<string>();
+            string query = @"SELECT SeatNumber, RowNumber FROM Ticket 
+                   WHERE StartTime=@startTime AND HallID=@HallID AND MovieID=@movieID";
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@startTime", startTime);
+                        command.Parameters.AddWithValue("@HallID", hallID);
+                        command.Parameters.AddWithValue("@MovieID", movieID);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                char row = Convert.ToChar(reader["RowNumber"]);
+                                int number = Convert.ToInt32(reader["SeatNumber"]);
+                                reservedSeats.Add(ConvertToSeatId(row, number));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading reserved seats: {ex.Message}");
+            }
+
+            return reservedSeats;
+        }
+
+        public Dictionary<string, string> GetSeatsByHallCombined(int hallID) // <seatId, seatType>
+        {
+            var seats = new Dictionary<string, string>();
+            string query = @"SELECT SeatNumber, RowNumber, SeatType FROM Seat WHERE HallID = @hallID";
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@hallID", hallID);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                char row = Convert.ToChar(reader["RowNumber"]);
+                                int number = Convert.ToInt32(reader["SeatNumber"]);
+                                string type = reader["SeatType"].ToString();
+
+                                seats.Add(ConvertToSeatId(row, number), type);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading seats: {ex.Message}");
+            }
+
+            return seats;
+        }
+
     }
     
+
+
+
+
+
     
 
 }

@@ -304,7 +304,10 @@ namespace GUI_DB
                         linkShowtime.Click += (s, e) =>
                         {
                             DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get the date part, default to today
-                            OpenSeatingChart(movie.Title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
+                            GlobalVariable.setMovie(movie.MovieID);
+                            GlobalVariable.setCurrentHallId(showtime.hallID);
+
+                            OpenSeatingChart(movie.Title, showtime.startTime, selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);
                     }
@@ -332,7 +335,7 @@ namespace GUI_DB
         }
 
         // *** MODIFIED Signature: Add DateTime parameter ***
-        private void OpenSeatingChart(string movieTitle, string showtime, DateTime reservationDate)
+        private void OpenSeatingChart(string movieTitle, DateTime showtime, DateTime reservationDate)
         {
             if (mainForm != null && dtpReservationDate != null) // Also check dtpReservationDate exists
             {
