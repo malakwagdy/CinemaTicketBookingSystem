@@ -420,6 +420,38 @@ namespace GUI_DB
             return ticket.Price;
         }
 
+        public int getMovieID(string title, DateTime releaseDate)
+        {
+            string query = @"SELECT * FROM Movie WHERE Title = @title AND ReleaseDate = @releaseDate";
+            int movieID = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@title", title);
+                        command.Parameters.AddWithValue("@releaseDate", releaseDate.Date);
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            movieID = Convert.ToInt32(result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return movieID;
+        }
+        
+
         public Movie[] getMoviesByGenre(string genre)
         {
             string query = @"SELECT * FROM Movie WHERE Genre= @genre";
@@ -766,11 +798,11 @@ namespace GUI_DB
          }
 
          
-        public string AddMovie(string director, string title, string genre, int ageRating, DateTime releaseDate)
+        public int AddMovie(string director, string title, string genre, int ageRating, DateTime releaseDate)
         {
-            string returnstring = null;
+            int returnstring = 0;
             string query = @"INSERT INTO Movie (Director, Title, Genre, AgeRating, ReleaseDate, AdminID) 
-                     VALUES (@Director, @Title, @Genre, @AgeRating, @ReleaseDate, 'admin@email.com')";
+             VALUES (@Director, @Title, @Genre, @AgeRating, @ReleaseDate, 'admin@email.com'); SELECT SCOPE_IDENTITY();";
 
             try
             {
@@ -781,6 +813,7 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
+                        //command.Parameters.AddWithValue("@MovieID", movieID);
                         command.Parameters.AddWithValue("@Director", director);
                         command.Parameters.AddWithValue("@Title", title);
                         command.Parameters.AddWithValue("@Genre", genre);
@@ -788,8 +821,12 @@ namespace GUI_DB
                         command.Parameters.AddWithValue("@ReleaseDate", releaseDate);
 
                         // Execute the query
-                        command.ExecuteNonQuery();
-                        returnstring = "Movie added successfully!";
+                        // command.ExecuteNonQuery();
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            returnstring = Convert.ToInt32(result);
+                        }
                     }
                 }
             }
@@ -797,7 +834,7 @@ namespace GUI_DB
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                returnstring = "Failed to add the movie.";
+
             }
 
             return returnstring;
@@ -844,10 +881,10 @@ namespace GUI_DB
             return returnstring;
         }
 
-        public int GetHallIDByName(string hallName, int CurrentlyEditingCinemaID)
+        public int GetHallIDByName(string hallName)
         {
             int hallID = 0;
-            string query = @"SELECT HallID FROM Hall WHERE HallName = @HallName AND CinemaID = @CinemaID";
+            string query = @"SELECT HallID FROM Hall WHERE HallName = @HallName AND CinemaID = 1";
 
             try
             {
@@ -858,7 +895,7 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@HallName", hallName);
-                        command.Parameters.AddWithValue("@CinemaID", CurrentlyEditingCinemaID);
+                        //command.Parameters.AddWithValue("@CinemaID", CurrentlyEditingCinema);
                         object result = command.ExecuteScalar();
                         if (result != null)
                         {
@@ -954,11 +991,11 @@ namespace GUI_DB
             return returnstring;
         }
 
-        public string AddMoviesActors(string movieID, string actor)
+        public string AddMoviesActors(int movieID, string [] actors)
         {
             string returnstring = null;
             string query = @"INSERT INTO MoviesActors (MovieID, Actor) 
-                     VALUES (@MovieID, @Actor)";
+             VALUES (@MovieID, @Actor)";
 
             try
             {
@@ -968,13 +1005,17 @@ namespace GUI_DB
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@MovieID", movieID);
-                        command.Parameters.AddWithValue("@Actor", actor);
+                        foreach (string actor in actors)
+                        {
+                            // Add parameters to prevent SQL injection
+                            command.Parameters.AddWithValue("@MovieID", movieID);
+                            command.Parameters.AddWithValue("@Actor", actor);
 
-                        // Execute the query
-                        command.ExecuteNonQuery();
-                        returnstring = "MoviesActors entry added successfully!";
+                            // Execute the query
+                            command.ExecuteNonQuery();
+                            returnstring = "MoviesActors entry added successfully!";
+
+                        }
                     }
                 }
             }
@@ -1103,11 +1144,11 @@ namespace GUI_DB
 
             return returnstring;
         }
-        public string AddShowtime(DateTime startTime, string adminID, string hallID, string movieID)
+        public string AddShowtime(DateTime startTime, int movieID, int hallID)
         {
             string returnstring = null;
             string query = @"INSERT INTO Showtimes (StartTime, AdminID, HallID, MovieID) 
-                     VALUES (@StartTime, @AdminID, @HallID, @MovieID)";
+             VALUES (@StartTime, 'admin@email.com', @HallID, @MovieID)";
 
             try
             {
@@ -1119,7 +1160,7 @@ namespace GUI_DB
                     {
                         // Add parameters to prevent SQL injection
                         command.Parameters.AddWithValue("@StartTime", startTime);
-                        command.Parameters.AddWithValue("@AdminID", adminID);
+                        //command.Parameters.AddWithValue("@AdminID", adminID);
                         command.Parameters.AddWithValue("@HallID", hallID);
                         command.Parameters.AddWithValue("@MovieID", movieID);
 
