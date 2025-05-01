@@ -195,6 +195,45 @@ namespace GUI_DB
             public int movieID;
         }
 
+        public Showtime[] GetShowtimesForMovie(int movieID)
+        {
+            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
+            List<Showtime> showtimes = new List<Showtime>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieID", movieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Showtime showtime = new Showtime
+                                {
+                                    startTime = Convert.ToDateTime(reader["StartTime"]),
+                                    adminID = reader["AdminID"].ToString(),
+                                    price = Convert.ToDouble(reader["Price"]),
+                                    hallID = Convert.ToInt32(reader["HallID"]),
+                                    movieID = Convert.ToInt32(reader["MovieID"])
+                                };
+                                showtimes.Add(showtime);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return showtimes.ToArray();
+        }
+        
         public Movie[] getAllMovies()
         {
             string query = @"SELECT * FROM Movie";

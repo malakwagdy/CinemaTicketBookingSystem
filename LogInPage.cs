@@ -58,7 +58,7 @@ namespace GUI_DB
                 MessageBox.Show(msg, "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
             }else 
             {
-                MessageBox.Show(msg, "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Login Successful!", "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
                 GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
             }
             User currentUser = db.GetUserById(txtEmailOrUsername.Text);

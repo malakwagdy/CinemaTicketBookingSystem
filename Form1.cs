@@ -53,7 +53,7 @@ namespace GUI_DB
 
         private void BtnCreateAccount_Click(object sender, EventArgs e)
         {
-            string msg= db.Register(txtEmail.Text, txtPassword.Text, txtPhoneNumber.Text, txtFirstName.Text, txtLastName.Text, dtpBirthdate.Value);
+            string msg= db.Register(txtEmail.Text, txtPassword.Text, txtPhoneNumber.Text, txtFirstName.Text, txtLastName.Text, dtpBirthdate.Value.ToString());
             MessageBox.Show(msg, "Message",MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             // Navigate back to the Login Page
