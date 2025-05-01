@@ -370,19 +370,22 @@ namespace GUI_DB
             var ageRatingLabels = new Dictionary<int, string>
              {
                     { -1, "All" },  // -1 represents "All" (no filter)
-                    { 0, "G" },     // General Audience
-                    { 10, "PG" },   // Parental Guidance
-                    { 13, "PG-13" },// Parents Strongly Cautioned
-                    { 17, "R" }     // Restricted
+                    { 7, "G" },     // General Audience
+                    { 13, "PG-13" },   // Parental Guidance
+                    { 16, "PG-16" },// Parents Strongly Cautioned
+                    { 18, "M" }     // Restricted
              };
 
             // Create a ComboBox for age ratings
             ComboBox cmbAgeRating = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                ForeColor = Color.Black,
-                BackColor = Color.White,
-                Width = 150 // Adjust size as needed
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(75))))),
+                Font = new Font("Segoe UI", 9F),           // Font style and size (same as Genre dropdown)
+                Width = 150,                               // Adjust width to match Genre dropdown
+                Margin = new Padding(0, 5, 0, 5)           // Add margin for spacing
+
             };
 
             // Add age ratings to the ComboBox
