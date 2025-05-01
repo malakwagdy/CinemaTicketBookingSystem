@@ -7,6 +7,7 @@ namespace GUI_DB
 {
     public partial class LogInPage : Form
     {
+        
         private MainForm mainForm;
         DatabaseManager db = new DatabaseManager();
         public LogInPage(MainForm form)
@@ -62,6 +63,7 @@ namespace GUI_DB
             else 
             {
                 MessageBox.Show("Login Successful!", "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
                 
                 // Check user type and navigate accordingly
                 if (!isAdmin)
@@ -74,7 +76,7 @@ namespace GUI_DB
                     // Open Customer Movie List Form
                     mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
                 }
-                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
+                
             }
             
 

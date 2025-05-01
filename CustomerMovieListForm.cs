@@ -285,8 +285,8 @@ namespace GUI_DB
                     Padding = new Padding(0, 5, 0, 0)
                 };
 
-                var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
-
+                var showtimes = dbManager.GethowtimesForMovie(movie.MovieID);
+               
                 if (showtimes != null && showtimes.Any())
                 {
                     foreach (var showtime in showtimes)
@@ -442,14 +442,18 @@ namespace GUI_DB
         {
             if (lstReservations == null) return;
 
+            // Get the currently logged in user's email (you'll need to set this somewhere)
+            string currentUserEmail = GlobalVariable.CurrentlyLoggedIN; // Replace with actual user email
+          
             lstReservations.SuspendLayout();
             object selectedItem = lstReservations.SelectedItem;
             lstReservations.Items.Clear();
-            var bookings = BookingRepository.GetBookings()
-                                             // Example Sort: By Reservation Date first, then Booking Time
-                                             .OrderBy(b => b.ReservationDate)
-                                             .ThenByDescending(b => b.BookingTime)
-                                             .ToList();
+
+            // Use the DatabaseManager to get bookings
+            var dbManager = new DatabaseManager();
+            var bookings = dbManager.GetBookingsByUser(currentUserEmail)
+                                  .OrderBy(b => b.bookingDate) // Changed from ReservationDate
+                                  .ToList();
 
             if (!bookings.Any())
             {
@@ -460,8 +464,11 @@ namespace GUI_DB
                 lblReservationsHeader.Text = $"My Reservations ({bookings.Count})";
                 foreach (var booking in bookings)
                 {
-                    lstReservations.Items.Add(booking); // ToString() now includes date
+                    // Format the booking display text
+                    string displayText = $"Booking #{booking.bookingID} - {booking.bookingDate.ToString("MMM dd, yyyy")} - ${booking.totalPrice}";
+                    lstReservations.Items.Add(displayText);
                 }
+
                 if (selectedItem != null && lstReservations.Items.Contains(selectedItem))
                 {
                     lstReservations.SelectedItem = selectedItem;

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using System.Data;
+using System.Windows.Forms;
 
 namespace GUI_DB
 {
@@ -198,7 +199,7 @@ namespace GUI_DB
 
         public Movie[] getAllMovies()
         {
-            string query = @"SELECT * FROM Movies";
+            string query = @"SELECT * FROM Movie";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -813,8 +814,10 @@ namespace GUI_DB
 
             return returnstring;
         }
-        public Showtime[] GetShowtimesForMovie(int movieID)
+        public Showtime[] GethowtimesForMovie(int movieID)
         {
+
+
             string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
             List<Showtime> showtimes = new List<Showtime>();
 
@@ -834,7 +837,7 @@ namespace GUI_DB
                                 {
                                     startTime = Convert.ToDateTime(reader["StartTime"]),
                                     adminID = reader["AdminID"].ToString(),
-                                    price = Convert.ToDouble(reader["Price"]),
+                                    //price = Convert.ToDouble(reader["Price"]),
                                     hallID = Convert.ToInt32(reader["HallID"]),
                                     movieID = Convert.ToInt32(reader["MovieID"])
                                 };
@@ -1302,8 +1305,63 @@ namespace GUI_DB
 
             return returnString;
         }
+
+
+
+        public Booking[] GetBookingsByUser(string customerEmail)
+        {
+            List<Booking> bookings = new List<Booking>();
+
+            // Fixed query - removed line break and added proper spacing
+            string query = @"SELECT * FROM Booking WHERE CustomerID = @CustomerID ORDER BY BookingDate DESC";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Make sure customerEmail is not null or empty
+                        if (string.IsNullOrEmpty(customerEmail))
+                        {
+                            MessageBox.Show("No customer email provided", "Error");
+                            return bookings.ToArray();
+                        }
+
+                        // Explicitly specify parameter type and size
+                        command.Parameters.Add("@CustomerID", SqlDbType.NVarChar, 255).Value = customerEmail;
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                bookings.Add(new Booking(
+                                    Convert.ToInt32(reader["BookingID"]),
+                                    Convert.ToSingle(reader["TotalPrice"]),
+                                    Convert.ToDateTime(reader["BookingDate"]),
+                                    reader["CustomerID"].ToString()
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error retrieving bookings: {ex.Message}", "Database Error");
+            }
+
+            return bookings.ToArray();
+        }
+
     }
     
+
+
+
+
+
     
 
 }
