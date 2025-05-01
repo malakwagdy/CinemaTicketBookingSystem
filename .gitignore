@@ -384,3 +384,4 @@ FodyWeavers.xsd
 /SeatingChartForm.cs
 /SeatingChartForm.Designer.cs
 /SeatingChartForm.resx
+/DatabaseManager.cs
