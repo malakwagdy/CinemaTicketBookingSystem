@@ -754,11 +754,11 @@ namespace GUI_DB
          }
 
          
-        public string AddMovie(int movieID, string director, string title, string genre, int ageRating, DateTime releaseDate)
+        public string AddMovie(string director, string title, string genre, int ageRating, DateTime releaseDate)
         {
             string returnstring = null;
-            string query = @"INSERT INTO Movie (MovieID, Director, Title, Genre, AgeRating, ReleaseDate, AdminID) 
-                     VALUES (@MovieID, @Director, @Title, @Genre, @AgeRating, @ReleaseDate, 'admin@email.com')";
+            string query = @"INSERT INTO Movie (Director, Title, Genre, AgeRating, ReleaseDate, AdminID) 
+                     VALUES (@Director, @Title, @Genre, @AgeRating, @ReleaseDate, 'admin@email.com')";
 
             try
             {
@@ -769,7 +769,6 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@MovieID", movieID);
                         command.Parameters.AddWithValue("@Director", director);
                         command.Parameters.AddWithValue("@Title", title);
                         command.Parameters.AddWithValue("@Genre", genre);
