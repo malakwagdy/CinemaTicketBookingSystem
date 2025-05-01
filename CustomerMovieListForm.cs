@@ -202,7 +202,7 @@ namespace GUI_DB
                 {
                     movies = dbManager
                         .getMoviesByGenre(selectedGenre)
-                        .Where(movie => movie.ageRating == ageRating)
+                        .Where(movie => movie.AgeRating == ageRating)
                         .ToArray();
                 }
                 else
@@ -258,7 +258,7 @@ namespace GUI_DB
                 };
                 Label lblTitle = new Label
                 {
-                    Text = $"{movie.title} ({movie.ageRating}, {movie.releaseDate.Year})",
+                    Text = $"{movie.Title} ({movie.AgeRating}, {movie.ReleaseDate.Year})",
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                     ForeColor = Color.White,
                     Dock = DockStyle.Top,
@@ -268,7 +268,7 @@ namespace GUI_DB
                 };
                 Label lblDetails = new Label
                 {
-                    Text = $"Genre: {movie.genre} | Director: {movie.director}",
+                    Text = $"Genre: {movie.Genre} | Director: {movie.Director}",
                     Font = new Font("Segoe UI", 9F),
                     ForeColor = Color.Gray,
                     Dock = DockStyle.Top,
@@ -285,7 +285,7 @@ namespace GUI_DB
                     Padding = new Padding(0, 5, 0, 0)
                 };
 
-                var showtimes = dbManager.GetShowtimesForMovie(movie.movieID);
+                var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
 
                 if (showtimes != null && showtimes.Any())
                 {
@@ -304,7 +304,7 @@ namespace GUI_DB
                         linkShowtime.Click += (s, e) =>
                         {
                             DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get the date part, default to today
-                            OpenSeatingChart(movie.title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
+                            OpenSeatingChart(movie.Title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);
                     }
@@ -350,8 +350,8 @@ namespace GUI_DB
         private bool PassesFilters(DatabaseManager.Movie movie)
         {
             // NOTE: Currently, date selected doesn't filter the *movie list* itself.
-            bool ageOk = currentAgeFilter == "All" || movie.ageRating.ToString() == currentAgeFilter;
-            bool genreOk = selectedGenre == "All" || movie.genre == selectedGenre;
+            bool ageOk = currentAgeFilter == "All" || movie.AgeRating.ToString() == currentAgeFilter;
+            bool genreOk = selectedGenre == "All" || movie.Genre == selectedGenre;
             return ageOk && genreOk;
         }
 
@@ -370,19 +370,22 @@ namespace GUI_DB
             var ageRatingLabels = new Dictionary<int, string>
              {
                     { -1, "All" },  // -1 represents "All" (no filter)
-                    { 0, "G" },     // General Audience
-                    { 10, "PG" },   // Parental Guidance
-                    { 13, "PG-13" },// Parents Strongly Cautioned
-                    { 17, "R" }     // Restricted
+                    { 7, "G" },     // General Audience
+                    { 13, "PG-13" },   // Parental Guidance
+                    { 16, "PG-16" },// Parents Strongly Cautioned
+                    { 18, "M" }     // Restricted
              };
 
             // Create a ComboBox for age ratings
             ComboBox cmbAgeRating = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                ForeColor = Color.Black,
-                BackColor = Color.White,
-                Width = 150 // Adjust size as needed
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(75))))),
+                Font = new Font("Segoe UI", 9F),           // Font style and size (same as Genre dropdown)
+                Width = 150,                               // Adjust width to match Genre dropdown
+                Margin = new Padding(0, 5, 0, 5)           // Add margin for spacing
+
             };
 
             // Add age ratings to the ComboBox
