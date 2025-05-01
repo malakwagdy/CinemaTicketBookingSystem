@@ -51,29 +51,32 @@ namespace GUI_DB
         private void BtnLogIn_Click(object sender, EventArgs e)
         {
             string msg =db.Login(txtEmailOrUsername.Text,txtPassword.Text);
-            
-            
-            if (msg == "Invalid Email or Password")
-            {
-                MessageBox.Show(msg, "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }else 
-            {
-                MessageBox.Show("Login Successful!", "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
-                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
-            }
             User currentUser = db.GetUserById(txtEmailOrUsername.Text);
             bool isAdmin = currentUser.userType;
-            // Check user type and navigate accordingly
-            if (!isAdmin)
+
+            if (msg == "Invalid email or password.")
             {
-                // Open Admin Control Form
-                mainForm.OpenChildForm(new AdminControl(mainForm));
+                MessageBox.Show(msg, "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //mainForm.OpenChildForm(new LogInPage(mainForm));
             }
-            else
+            else 
             {
-                // Open Customer Movie List Form
-                mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+                MessageBox.Show("Login Successful!", "Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                // Check user type and navigate accordingly
+                if (!isAdmin)
+                {
+                    // Open Admin Control Form
+                    mainForm.OpenChildForm(new AdminControl(mainForm));
+                } 
+                else
+                {
+                    // Open Customer Movie List Form
+                    mainForm.OpenChildForm(new CustomerMovieListForm(mainForm));
+                }
+                GlobalVariable.setCurrentlyLoggedIN(txtEmailOrUsername.Text);
             }
+            
 
         }
 
