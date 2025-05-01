@@ -11,14 +11,15 @@ namespace GUI_DB
         private MainForm mainForm;
 
         // Filters
-        private string currentTimeFilter = "All"; // Keep for potential future use
         private string currentAgeFilter = "All";
-        private string selectedGenre = "All"; // *** ADDED BACK ***
+        private string selectedGenre = "All";
+        // No currentTimeFilter used, remove if desired (CS0414 warning)
+        // private string currentTimeFilter = "All";
 
         public CustomerMovieListForm(MainForm form)
         {
-            mainForm = form;
-            InitializeComponent(); // Creates btnBack, filterLayout, cmbGenre etc.
+            mainForm = form ?? throw new ArgumentNullException(nameof(form));
+            InitializeComponent(); // Creates btnBack, filterLayout, cmbGenre, panelReservations etc. AND dtpReservationDate
 
             // --- Hook up Back Button Event ---
             if (this.btnBack != null)
@@ -31,71 +32,117 @@ namespace GUI_DB
             }
             // --- End Hook up Back Button ---
 
-            // --- Add Filters ---
-            AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
-            AddFilterControl("Genre", cmbGenre); // *** ADDED BACK - Use the instance from Designer ***
+            // --- Setup & Add Date Picker ---
+            ConfigureAndAddDatePicker(); // Encapsulate date picker setup
 
-            // --- Populate Genre ComboBox --- // *** ADDED BACK ***
+            // --- Add Other Filters ---
+            AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
+            AddFilterControl("Genre", cmbGenre); // cmbGenre is instantiated in Designer
+
+            // --- Populate Genre ComboBox ---
+            PopulateGenreComboBox();
+
+            // --- Initialize Events for filters ---
+            // Check if container and cmbGenre exist
+            if (panelFilterControlsContainer != null && cmbGenre != null && dtpReservationDate != null)
+            {
+                InitializeFilterEvents();
+            }
+            else
+            {
+                MessageBox.Show("Filter controls container, Genre ComboBox, or Date Picker not initialized properly.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            // --- End Initialize Events ---
+
+            // --- Initialize Reservations List ---
+            if (lstReservations != null)
+            {
+                lstReservations.DrawMode = DrawMode.OwnerDrawFixed;
+                lstReservations.DrawItem += LstReservations_DrawItem;
+                lstReservations.SelectedIndexChanged += LstReservations_SelectedIndexChanged;
+                LoadReservations();
+            }
+            else
+            {
+                MessageBox.Show("Reservations listbox not initialized properly.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            // --- End Initialize Reservations List ---
+
+
+            LoadMovies(); // Initial movie load
+        }
+
+        // --- Configure and Add Date Picker ---
+        private void ConfigureAndAddDatePicker()
+        {
+            if (dtpReservationDate == null)
+            {
+                // If not instantiated in Designer, do it here (belt and braces)
+                dtpReservationDate = new DateTimePicker();
+                // Set properties again just in case
+                dtpReservationDate.Font = new Font("Segoe UI", 9F);
+                dtpReservationDate.Format = DateTimePickerFormat.Short;
+                dtpReservationDate.Name = "dtpReservationDate";
+                // Add any other styling from Designer here if needed
+            }
+            // Set MinDate to today and default Value to today
+            dtpReservationDate.MinDate = DateTime.Today;
+            dtpReservationDate.Value = DateTime.Today;
+
+            // Add it to the layout
+            AddFilterControl("Date", dtpReservationDate);
+
+            // Optional: Add event handler if movie list should reload on date change
+            // dtpReservationDate.ValueChanged += (s, e) => LoadMovies();
+        }
+
+
+        // --- Back Button Click Event Handler ---
+        private void BtnBack_Click(object sender, EventArgs e)
+        {
+            mainForm?.OpenChildForm(new CinemaListForm(mainForm));
+        }
+
+        // --- Helper to Populate Genre ComboBox ---
+        private void PopulateGenreComboBox()
+        {
+            if (cmbGenre == null) return;
+            cmbGenre.Items.Clear();
             cmbGenre.Items.Add("All");
             cmbGenre.Items.Add("Action");
             cmbGenre.Items.Add("Comedy");
             cmbGenre.Items.Add("Drama");
             cmbGenre.Items.Add("Fantasy");
             cmbGenre.Items.Add("Sci-Fi");
-            cmbGenre.SelectedItem = "All"; // Set default selection
-
-            // --- Initialize Events for filters ---
-            // Check cmbGenre exists along with filterLayout
-            if (filterLayout != null && cmbGenre != null)
-            {
-                InitializeFilterEvents();
-            }
-            else
-            {
-                MessageBox.Show("Filter controls are not initialized properly.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            LoadMovies(); // Initial movie load
+            cmbGenre.SelectedItem = "All";
         }
 
-        // --- Back Button Click Event Handler (Keep as is) ---
-        private void BtnBack_Click(object sender, EventArgs e)
-        {
-            if (mainForm != null)
-            {
-                mainForm.OpenChildForm(new CinemaListForm(mainForm));
-            }
-            else
-            {
-                MessageBox.Show("Navigation unavailable. MainForm reference is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
-        // --- Helper Methods for UI Construction (Keep AddFilterControl & CreateRadioGroup) ---
-
+        // --- Helper Methods for UI Construction ---
         private void AddFilterControl(string labelText, Control control)
         {
+            if (panelFilterControlsContainer == null) return;
+
             Label label = new Label
             {
                 Text = labelText + ":",
                 ForeColor = Color.White,
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Margin = new Padding(0, 15, 0, 3) // Add space above label
+                Margin = new Padding(0, 15, 0, 3) // Space above label
             };
 
-            // Position below the last control added in the filter panel
-            int topPosition = filterLayout.Controls.OfType<Control>().Any()
-                              ? filterLayout.Controls.OfType<Control>().Max(c => c.Bottom) + 5 // Below last control
-                              : (this.btnBack != null ? this.btnBack.Bottom + 15 : filterLayout.Padding.Top); // Below back button
+            var existingControls = panelFilterControlsContainer.Controls.OfType<Control>().ToList();
+            int topPosition = existingControls.Any()
+                              ? existingControls.Max(c => c.Bottom) + 5
+                              : (this.btnBack != null ? this.btnBack.Bottom + 15 : panelFilterControlsContainer.Padding.Top);
 
-            label.Location = new Point(filterLayout.Padding.Left, topPosition);
-            control.Location = new Point(filterLayout.Padding.Left, label.Bottom + 3); // Position control below label
-            // Make control use most of the panel width, respecting padding
-            control.Width = filterLayout.ClientSize.Width - filterLayout.Padding.Left - filterLayout.Padding.Right;
+            label.Location = new Point(panelFilterControlsContainer.Padding.Left, topPosition);
+            panelFilterControlsContainer.Controls.Add(label); // Add label first
 
-            filterLayout.Controls.Add(label);
-            filterLayout.Controls.Add(control);
+            control.Location = new Point(panelFilterControlsContainer.Padding.Left, label.Bottom + 3);
+            control.Width = panelFilterControlsContainer.ClientSize.Width - panelFilterControlsContainer.Padding.Left - panelFilterControlsContainer.Padding.Right;
+            panelFilterControlsContainer.Controls.Add(control); // Add control
         }
 
         private FlowLayoutPanel CreateRadioGroup(string[] options, string tagPrefix)
@@ -104,9 +151,9 @@ namespace GUI_DB
             {
                 FlowDirection = FlowDirection.TopDown,
                 AutoSize = true,
-                WrapContents = false
+                WrapContents = false,
+                BackColor = Color.Transparent
             };
-
             bool first = true;
             foreach (string option in options)
             {
@@ -116,7 +163,8 @@ namespace GUI_DB
                     Tag = tagPrefix + option,
                     ForeColor = Color.White,
                     AutoSize = true,
-                    Checked = first
+                    Checked = first,
+                    Margin = new Padding(3, 0, 3, 5) // Add some spacing
                 };
                 radioPanel.Controls.Add(rb);
                 first = false;
@@ -125,36 +173,36 @@ namespace GUI_DB
         }
 
 
-        // --- Core Logic (LoadMovies, OpenSeatingChart remain largely the same) ---
-
+        // --- Core Logic ---
         private void LoadMovies()
         {
-            flowLayoutPanelMovies.SuspendLayout();
+            if (flowLayoutPanelMovies == null) return;
+            flowLayoutPanelMovies.SuspendLayout(); // Suspend layout for performance
             flowLayoutPanelMovies.Controls.Clear();
             List<Movie> movies = MovieRepository.GetMovies();
 
-            int availableWidth = flowLayoutPanelMovies.ClientSize.Width - flowLayoutPanelMovies.Padding.Left - flowLayoutPanelMovies.Padding.Right;
+            // Calculate available width
+            int availableWidth = flowLayoutPanelMovies.ClientSize.Width;
             if (flowLayoutPanelMovies.VerticalScroll.Visible)
             {
                 availableWidth -= SystemInformation.VerticalScrollBarWidth;
             }
+            availableWidth -= (flowLayoutPanelMovies.Padding.Left + flowLayoutPanelMovies.Padding.Right);
             availableWidth = Math.Max(20, availableWidth);
 
             foreach (var movie in movies)
             {
-                // Apply Age Rating AND Genre filters
                 if (!PassesFilters(movie)) continue;
 
-                // --- Movie Panel Creation (Identical to previous version) ---
+                // --- Movie Panel Creation ---
                 Panel moviePanel = new Panel
                 {
-                    Width = availableWidth - 20,
+                    Width = availableWidth - 20, // Margin
                     Height = 100,
                     BackColor = Color.FromArgb(60, 60, 75),
                     Margin = new Padding(10),
                     Padding = new Padding(10)
                 };
-
                 Label lblTitle = new Label
                 {
                     Text = $"{movie.Title} ({movie.AgeRating}, {movie.ReleaseYear})",
@@ -165,7 +213,6 @@ namespace GUI_DB
                     Height = 28,
                     TextAlign = ContentAlignment.MiddleLeft
                 };
-
                 Label lblDetails = new Label
                 {
                     Text = $"Genre: {movie.Genre} | Director: {movie.Director} | Star: {movie.StarActor}",
@@ -199,76 +246,71 @@ namespace GUI_DB
                             VisitedLinkColor = Color.Plum,
                             Margin = new Padding(0, 0, 8, 4)
                         };
-                        linkShowtime.Click += (s, e) => OpenSeatingChart(movie.Title, showtime);
+                        // *** MODIFICATION: Pass selected date from dtpReservationDate ***
+                        linkShowtime.Click += (s, e) => {
+                            DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get date part, default to today
+                            OpenSeatingChart(movie.Title, showtime, selectedDate); // Pass date
+                        };
                         showtimesPanel.Controls.Add(linkShowtime);
                     }
                 }
                 else
                 {
-                    Label noShowtimesLabel = new Label
-                    {
-                        Text = "No showtimes available",
-                        ForeColor = Color.DarkGray,
-                        Font = new Font("Segoe UI", 9F, FontStyle.Italic),
-                        AutoSize = true
-                    };
+                    Label noShowtimesLabel = new Label { Text = "No showtimes available", ForeColor = Color.DarkGray, Font = new Font("Segoe UI", 9F, FontStyle.Italic), AutoSize = true };
                     showtimesPanel.Controls.Add(noShowtimesLabel);
                 }
 
+                // Add controls to moviePanel
                 moviePanel.Controls.Add(showtimesPanel);
                 moviePanel.Controls.Add(lblDetails);
                 moviePanel.Controls.Add(lblTitle);
 
                 flowLayoutPanelMovies.Controls.Add(moviePanel);
             }
-            flowLayoutPanelMovies.ResumeLayout();
+            flowLayoutPanelMovies.ResumeLayout(true);
         }
 
-
-        private void OpenSeatingChart(string movieTitle, string showtime)
+        // *** MODIFIED Signature: Add DateTime parameter ***
+        private void OpenSeatingChart(string movieTitle, string showtime, DateTime reservationDate)
         {
-            if (mainForm != null)
+            if (mainForm != null && dtpReservationDate != null) // Also check dtpReservationDate exists
             {
-                SeatingChartForm seatingChart = new SeatingChartForm(mainForm, movieTitle, showtime);
+                // *** Pass date to SeatingChartForm constructor ***
+                SeatingChartForm seatingChart = new SeatingChartForm(mainForm, movieTitle, showtime, reservationDate);
                 mainForm.OpenChildForm(seatingChart);
             }
             else
             {
-                MessageBox.Show("Navigation unavailable. MainForm reference is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Navigation unavailable. MainForm or Date Picker reference is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // --- Filter Logic (Updated) ---
-
+        // --- Filter Logic ---
         private bool PassesFilters(Movie movie)
         {
-            // Time filter (if used)
-            // bool timeOk = currentTimeFilter == "All";
-
-            // Age Rating Filter
+            // NOTE: Currently, date selected doesn't filter the *movie list* itself.
             bool ageOk = currentAgeFilter == "All" || movie.AgeRating == currentAgeFilter;
-
-            // Genre Filter // *** ADDED BACK ***
             bool genreOk = selectedGenre == "All" || movie.Genre == selectedGenre;
-
-            // Return result based on active filters
-            return ageOk && genreOk; // && timeOk;
+            return ageOk && genreOk;
         }
 
-        // --- Event Handlers for Filters (Updated) ---
-
+        // --- Event Handlers for Filters ---
         private void InitializeFilterEvents()
         {
-            // Genre ComboBox Event Handler // *** ADDED BACK ***
-            cmbGenre.SelectedIndexChanged += (s, e) =>
+            // Genre ComboBox
+            if (cmbGenre != null)
             {
-                selectedGenre = cmbGenre.SelectedItem?.ToString() ?? "All"; // Handle null selection
-                LoadMovies(); // Reload movies when genre changes
-            };
+                cmbGenre.SelectedIndexChanged += (s, e) => {
+                    selectedGenre = cmbGenre.SelectedItem?.ToString() ?? "All";
+                    LoadMovies();
+                };
+            }
 
-            // Radio Buttons (Age Rating) - Logic remains the same
+
+            // Age Radio Buttons
             Action<Control> setupRadioEvents = null;
             setupRadioEvents = (parent) => {
+                if (parent == null) return;
                 foreach (Control c in parent.Controls)
                 {
                     if (c is RadioButton rb && rb.Tag != null)
@@ -276,20 +318,22 @@ namespace GUI_DB
                         string tag = rb.Tag.ToString();
                         if (tag.StartsWith("Age_"))
                         {
-                            rb.CheckedChanged -= OnAgeFilterChanged; // Prevent multiple subscriptions
+                            rb.CheckedChanged -= OnAgeFilterChanged;
                             rb.CheckedChanged += OnAgeFilterChanged;
                         }
                     }
                     else if (c.HasChildren)
                     {
-                        setupRadioEvents(c); // Recursively check containers
+                        setupRadioEvents(c);
                     }
                 }
             };
-            setupRadioEvents(this.filterLayout); // Search within the filter panel
+            setupRadioEvents(this.panelFilterControlsContainer); // Search within the container
+
+            // Date Picker (Optional: Add if date change should trigger actions like reloading movies)
+            // dtpReservationDate.ValueChanged += (s, e) => { /* Action needed? */ };
         }
 
-        // Specific handler for Age filter radio buttons (Keep as is)
         private void OnAgeFilterChanged(object sender, EventArgs e)
         {
             RadioButton rb = sender as RadioButton;
@@ -304,14 +348,100 @@ namespace GUI_DB
             }
         }
 
-        // --- Form Load Event Handler (Keep as is) ---
+
+        // --- Reservations Logic ---
+        private void LoadReservations()
+        {
+            if (lstReservations == null) return;
+
+            lstReservations.SuspendLayout();
+            object selectedItem = lstReservations.SelectedItem;
+            lstReservations.Items.Clear();
+            var bookings = BookingRepository.GetBookings()
+                                             // Example Sort: By Reservation Date first, then Booking Time
+                                             .OrderBy(b => b.ReservationDate)
+                                             .ThenByDescending(b => b.BookingTime)
+                                             .ToList();
+
+            if (!bookings.Any())
+            {
+                lblReservationsHeader.Text = "My Reservations (None)";
+            }
+            else
+            {
+                lblReservationsHeader.Text = $"My Reservations ({bookings.Count})";
+                foreach (var booking in bookings)
+                {
+                    lstReservations.Items.Add(booking); // ToString() now includes date
+                }
+                if (selectedItem != null && lstReservations.Items.Contains(selectedItem))
+                {
+                    lstReservations.SelectedItem = selectedItem;
+                }
+            }
+            lstReservations.ResumeLayout(true);
+        }
+
+        private void LstReservations_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstReservations.SelectedItem is Booking selectedBooking)
+            {
+                if (mainForm != null)
+                {
+                    BookingDetailsForm detailsForm = new BookingDetailsForm(mainForm, selectedBooking);
+                    mainForm.OpenChildForm(detailsForm);
+                }
+                else
+                {
+                    MessageBox.Show("Navigation unavailable. MainForm reference is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                lstReservations.ClearSelected(); // Deselect after navigating
+            }
+        }
+
+        private void LstReservations_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+            ListBox lb = sender as ListBox;
+            if (lb == null) return;
+
+            Color itemBackgroundColor = lb.BackColor;
+            Color itemForegroundColor = lb.ForeColor;
+
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                itemBackgroundColor = Color.FromArgb(80, 80, 100);
+                itemForegroundColor = Color.White;
+            }
+
+            e.Graphics.FillRectangle(new SolidBrush(itemBackgroundColor), e.Bounds);
+
+            string text = (lb.Items[e.Index] is Booking booking)
+                          ? booking.ToString() // Uses updated ToString() with date
+                          : lb.Items[e.Index].ToString();
+
+            TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
+            Rectangle textBounds = new Rectangle(e.Bounds.Left + 2, e.Bounds.Top, e.Bounds.Width - 4, e.Bounds.Height);
+            TextRenderer.DrawText(e.Graphics, text, e.Font, textBounds, itemForegroundColor, flags);
+
+            e.DrawFocusRectangle();
+        }
+
+        // --- Form Load Event Handler ---
         private void CustomerMovieListForm_Load_1(object sender, EventArgs e)
         {
-            // No specific logic needed here now
+            LoadReservations();
+            LoadMovies();
         }
+
+        // Ensure Movie and MovieRepository classes are accessible/defined
+        // You should have these classes defined elsewhere in your project
+        // public class Movie { ... }
+        // public static class MovieRepository { ... }
     }
 
-    // --- Data Classes (Keep as is) ---
+    // --- Include Movie and MovieRepository if not defined elsewhere ---
+    // (Using the definitions from the initial prompt)
     public class Movie
     {
         public string Title { get; set; }

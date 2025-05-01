@@ -165,6 +165,14 @@
     <Compile Include="AdminControl.Designer.cs">
       <DependentUpon>AdminControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Booking.cs" />
+    <Compile Include="BookingDetailsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BookingDetailsForm.Designer.cs">
+      <DependentUpon>BookingDetailsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BookingRepository.cs" />
     <Compile Include="CinemaListForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,6 +221,9 @@
     <Compile Include="SeatingChartForm.Designer.cs">
       <DependentUpon>SeatingChartForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="BookingDetailsForm.resx">
+      <DependentUpon>BookingDetailsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CinemaListForm.resx">
       <DependentUpon>CinemaListForm.cs</DependentUpon>
     </EmbeddedResource>

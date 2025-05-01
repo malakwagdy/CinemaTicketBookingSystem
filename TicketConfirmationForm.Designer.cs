@@ -77,7 +77,7 @@ namespace GUI_DB
             this.lblMovie.ForeColor = System.Drawing.Color.White;
             this.lblMovie.Location = new System.Drawing.Point(10, 50);
             this.lblMovie.Name = "lblMovie";
-            this.lblMovie.Size = new System.Drawing.Size(0, 28);
+            this.lblMovie.Size = new System.Drawing.Size(0, 23);
             this.lblMovie.TabIndex = 1;
             // 
             // lblShowtime
@@ -87,7 +87,7 @@ namespace GUI_DB
             this.lblShowtime.ForeColor = System.Drawing.Color.White;
             this.lblShowtime.Location = new System.Drawing.Point(10, 80);
             this.lblShowtime.Name = "lblShowtime";
-            this.lblShowtime.Size = new System.Drawing.Size(0, 28);
+            this.lblShowtime.Size = new System.Drawing.Size(0, 23);
             this.lblShowtime.TabIndex = 2;
             // 
             // lblTicketId
@@ -97,7 +97,7 @@ namespace GUI_DB
             this.lblTicketId.ForeColor = System.Drawing.Color.White;
             this.lblTicketId.Location = new System.Drawing.Point(10, 110);
             this.lblTicketId.Name = "lblTicketId";
-            this.lblTicketId.Size = new System.Drawing.Size(0, 28);
+            this.lblTicketId.Size = new System.Drawing.Size(0, 23);
             this.lblTicketId.TabIndex = 3;
             // 
             // lstSeats
@@ -105,10 +105,10 @@ namespace GUI_DB
             this.lstSeats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(60)))));
             this.lstSeats.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lstSeats.ForeColor = System.Drawing.Color.White;
-            this.lstSeats.ItemHeight = 28;
+            this.lstSeats.ItemHeight = 23;
             this.lstSeats.Location = new System.Drawing.Point(179, 152);
             this.lstSeats.Name = "lstSeats";
-            this.lstSeats.Size = new System.Drawing.Size(250, 88);
+            this.lstSeats.Size = new System.Drawing.Size(250, 73);
             this.lstSeats.TabIndex = 4;
             // 
             // lblUnitPrice
@@ -118,7 +118,7 @@ namespace GUI_DB
             this.lblUnitPrice.ForeColor = System.Drawing.Color.White;
             this.lblUnitPrice.Location = new System.Drawing.Point(10, 250);
             this.lblUnitPrice.Name = "lblUnitPrice";
-            this.lblUnitPrice.Size = new System.Drawing.Size(0, 28);
+            this.lblUnitPrice.Size = new System.Drawing.Size(0, 23);
             this.lblUnitPrice.TabIndex = 5;
             // 
             // lblTotalPrice
@@ -128,7 +128,7 @@ namespace GUI_DB
             this.lblTotalPrice.ForeColor = System.Drawing.Color.White;
             this.lblTotalPrice.Location = new System.Drawing.Point(10, 280);
             this.lblTotalPrice.Name = "lblTotalPrice";
-            this.lblTotalPrice.Size = new System.Drawing.Size(0, 28);
+            this.lblTotalPrice.Size = new System.Drawing.Size(0, 23);
             this.lblTotalPrice.TabIndex = 6;
             // 
             // btnConfirm
@@ -163,6 +163,7 @@ namespace GUI_DB
             this.Name = "TicketConfirmationForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Ticket Confirmation";
+            this.Load += new System.EventHandler(this.TicketConfirmationForm_Load);
             this.contentPanel.ResumeLayout(false);
             this.contentPanel.PerformLayout();
             this.ResumeLayout(false);
