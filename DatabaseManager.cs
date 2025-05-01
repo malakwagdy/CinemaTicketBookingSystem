@@ -106,7 +106,7 @@ namespace GUI_DB
 
         public Movie[] getAllMovies()
         {
-            string query = @"SELECT * FROM Movies";
+            string query = @"SELECT * FROM Movie";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -1133,6 +1133,120 @@ namespace GUI_DB
 
             return returnstring;
         }
-    }
+        
+        public string CreateHallSeats(int hallID, int numRows, int seatsPerRow, bool isPremiumHall = false, int premiumRowsFromEnd = 3, string adminID = "admin@email.com"){
+            string returnString = null;
+            
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
 
+                    using (SqlCommand command = new SqlCommand("CreateHallSeats", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        
+                        // Add parameters for the stored procedure
+                        command.Parameters.AddWithValue("@HallID", hallID);
+                        command.Parameters.AddWithValue("@NumRows", numRows);
+                        command.Parameters.AddWithValue("@SeatsPerRow", seatsPerRow);
+                        command.Parameters.AddWithValue("@IsPremiumHall", isPremiumHall ? 1 : 0); // Convert bool to bit
+                        command.Parameters.AddWithValue("@PremiumRowsFromEnd", premiumRowsFromEnd);
+                        command.Parameters.AddWithValue("@AdminID", adminID);
+
+                        // Execute the stored procedure
+                        command.ExecuteNonQuery();
+                        returnString = $"Successfully created {numRows * seatsPerRow} seats for Hall ID {hallID}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                returnString = "Failed to create hall seats.";
+            }
+
+            return returnString;
+        }
+
+        public string CreateHallWithSeats(string hallName, string screenType, int cinemaID, string adminID, 
+                                        int numRows, int seatsPerRow, bool isPremiumHall = false, int premiumRowsFromEnd = 3)
+        {
+            string returnString = null;
+            
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("CreateHallWithSeats", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        
+                        // Add parameters for the stored procedure
+                        command.Parameters.AddWithValue("@HallName", hallName);
+                        command.Parameters.AddWithValue("@ScreenType", screenType);
+                        command.Parameters.AddWithValue("@CinemaID", cinemaID);
+                        command.Parameters.AddWithValue("@AdminID", adminID);
+                        command.Parameters.AddWithValue("@NumRows", numRows);
+                        command.Parameters.AddWithValue("@SeatsPerRow", seatsPerRow);
+                        command.Parameters.AddWithValue("@IsPremiumHall", isPremiumHall ? 1 : 0); // Convert bool to bit
+                        command.Parameters.AddWithValue("@PremiumRowsFromEnd", premiumRowsFromEnd);
+
+                        // Execute the stored procedure
+                        command.ExecuteNonQuery();
+                        returnString = $"Successfully created hall '{hallName}' with {numRows * seatsPerRow} seats";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                returnString = "Failed to create hall with seats.";
+            }
+
+            return returnString;
+        }
+
+        public string CreateSeatsForAllHalls(List<(int HallID, int NumRows, int SeatsPerRow, bool IsPremiumHall, int PremiumRowsFromEnd)> hallConfigs, string adminID = "admin@email.com")
+        {
+            string returnString = null;
+            int successCount = 0;
+            
+            try
+            {
+                foreach (var config in hallConfigs)
+                {
+                    string result = CreateHallSeats(
+                        config.HallID, 
+                        config.NumRows, 
+                        config.SeatsPerRow, 
+                        config.IsPremiumHall, 
+                        config.PremiumRowsFromEnd, 
+                        adminID
+                    );
+                    
+                    if (!result.StartsWith("Failed"))
+                    {
+                        successCount++;
+                    }
+                }
+                
+                returnString = $"Successfully created seats for {successCount} out of {hallConfigs.Count} halls";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                returnString = "Failed to create seats for all halls.";
+            }
+
+            return returnString;
+        }
+    }
+    
 }
