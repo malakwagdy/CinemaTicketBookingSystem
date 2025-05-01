@@ -26,8 +26,6 @@ namespace GUI_DB
 
             InitializeComponent();
             SetDynamicValues();
-            FetchReservedSeats();
-            FetchPremiumSeats();
             GenerateSeatLayout(showtime ,GlobalVariable.getCurrentMovie(), GlobalVariable.getCurrentHallId());
             CreateLegend(); // Add the legend
         }
@@ -37,22 +35,7 @@ namespace GUI_DB
             lblTitle.Text = $"{movieTitle} - {showtime}";
         }
 
-        private void FetchReservedSeats()
-        {
-            // === BACKEND PLACEHOLDER ===
-            reservedSeats = new HashSet<string> { "B2", "B9", "C5", "D7" };
-        }
-
-        private void FetchPremiumSeats()
-        {
-            // === BACKEND PLACEHOLDER ===
-            premiumSeatsSet = new HashSet<string>
-            {
-                "F1", "F2", "F3", "F4", "F5",
-                "G1", "G2", "G3", "G4", "G5",
-                "H1", "H2", "H3", "H4", "H5"
-            };
-        }
+     
 
         private async Task GenerateSeatLayout(DateTime showtime, int movieID, int hallID)
         {

@@ -15,7 +15,7 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=HP;Initial Catalog=Compilers;Integrated Security=True;Trust Server Certificate=True";
+            "Data Source=AMR;Initial Catalog=Test_Project_DB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
            
 
         //SqlConnection con = new SqlConnection(connectionString);
@@ -329,7 +329,7 @@ public void calculatePrice(Ticket ticket)
         }
         public Movie[] getMoviesByGenre(string genre)
         {
-            string query = @"SELECT * FROM Movies WHERE Genre= @genre";
+            string query = @"SELECT * FROM Movie WHERE Genre= @genre";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -369,7 +369,7 @@ public void calculatePrice(Ticket ticket)
 
         public Movie[] getMoviesByAgeRating(int rating)
         {
-            string query = @"SELECT * FROM Movies WHERE AgeRating=@rating";
+            string query = @"SELECT * FROM Movie WHERE AgeRating=@rating";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -1372,7 +1372,7 @@ public void calculatePrice(Ticket ticket)
                         // Make sure customerEmail is not null or empty
                         if (string.IsNullOrEmpty(customerEmail))
                         {
-                            MessageBox.Show("No customer email provided", "Error");
+                            //MessageBox.Show("No customer email provided", "Error");
                             return bookings.ToArray();
                         }
 
