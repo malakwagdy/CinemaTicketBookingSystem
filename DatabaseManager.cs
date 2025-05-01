@@ -195,48 +195,9 @@ namespace GUI_DB
             public int movieID;
         }
 
-        public Showtime[] GetShowtimesForMovie(int movieID)
-        {
-            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
-            List<Showtime> showtimes = new List<Showtime>();
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@movieID", movieID);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                Showtime showtime = new Showtime
-                                {
-                                    startTime = Convert.ToDateTime(reader["StartTime"]),
-                                    adminID = reader["AdminID"].ToString(),
-                                    price = Convert.ToDouble(reader["Price"]),
-                                    hallID = Convert.ToInt32(reader["HallID"]),
-                                    movieID = Convert.ToInt32(reader["MovieID"])
-                                };
-                                showtimes.Add(showtime);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-
-            return showtimes.ToArray();
-        }
-        
         public Movie[] getAllMovies()
         {
-            string query = @"SELECT * FROM Movie";
+            string query = @"SELECT * FROM Movies";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -319,7 +280,7 @@ namespace GUI_DB
         
         public Movie[] getMoviesByGenre(string genre)
         {
-            string query = @"SELECT * FROM Movie WHERE Genre= @genre";
+            string query = @"SELECT * FROM Movies WHERE Genre= @genre";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -359,7 +320,7 @@ namespace GUI_DB
 
         public Movie[] getMoviesByAgeRating(int rating)
         {
-            string query = @"SELECT * FROM Movie WHERE AgeRating=@rating";
+            string query = @"SELECT * FROM Movies WHERE AgeRating=@rating";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -622,7 +583,7 @@ namespace GUI_DB
 
             return returnstring;
         }
-        
+        //it is what it isss.......
         public Seat[] getReservedSeats(DateTime startTime, int HallID, int MovieID)
         {   List<Seat> seats = new List<Seat>();
              string query = @"SELECT SeatNumber, RowNumber FROM Ticket WHERE StartTime=@startTime AND HallID=@HallID AND MovieID = @movieID";
@@ -851,7 +812,44 @@ namespace GUI_DB
 
             return returnstring;
         }
+        public Showtime[] GetShowtimesForMovie(int movieID)
+        {
+            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
+            List<Showtime> showtimes = new List<Showtime>();
 
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieID", movieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Showtime showtime = new Showtime
+                                {
+                                    startTime = Convert.ToDateTime(reader["StartTime"]),
+                                    adminID = reader["AdminID"].ToString(),
+                                    price = Convert.ToDouble(reader["Price"]),
+                                    hallID = Convert.ToInt32(reader["HallID"]),
+                                    movieID = Convert.ToInt32(reader["MovieID"])
+                                };
+                                showtimes.Add(showtime);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return showtimes.ToArray();
+        }
         public string AddMoviesActors(string movieID, string actor)
         {
             string returnstring = null;

@@ -161,9 +161,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminControl.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="AdminControl.cs" />
     <Compile Include="AdminControl.Designer.cs">
       <DependentUpon>AdminControl.cs</DependentUpon>
     </Compile>
