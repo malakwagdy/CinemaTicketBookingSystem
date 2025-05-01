@@ -108,7 +108,7 @@ namespace GUI_DB
 
         public Movie[] getAllMovies()
         {
-            string query = @"SELECT * FROM Movies";
+            string query = @"SELECT * FROM Movie";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -194,7 +194,7 @@ namespace GUI_DB
 
         public Movie[] getMoviesByGenre(string genre)
         {
-            string query = @"SELECT * FROM Movies WHERE Genre= @genre";
+            string query = @"SELECT * FROM Movie WHERE Genre= @genre";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -235,7 +235,7 @@ namespace GUI_DB
 
         public Movie[] getMoviesByAgeRating(int rating)
         {
-            string query = @"SELECT * FROM Movies WHERE AgeRating=@rating";
+            string query = @"SELECT * FROM Movie WHERE AgeRating=@rating";
             List<Movie> movies = new List<Movie>();
 
             try
