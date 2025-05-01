@@ -43,7 +43,7 @@ namespace GUI_DB
             this.panelLeft.Controls.Add(this.pictureBoxLeft);
             this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelLeft.Location = new System.Drawing.Point(0, 0);
-            this.panelLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.panelLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelLeft.Name = "panelLeft";
             this.panelLeft.Size = new System.Drawing.Size(533, 738);
             this.panelLeft.TabIndex = 1;
@@ -53,7 +53,7 @@ namespace GUI_DB
             this.pictureBoxLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxLeft.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxLeft.Image")));
             this.pictureBoxLeft.Location = new System.Drawing.Point(0, 0);
-            this.pictureBoxLeft.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBoxLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBoxLeft.Name = "pictureBoxLeft";
             this.pictureBoxLeft.Size = new System.Drawing.Size(533, 738);
             this.pictureBoxLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -66,7 +66,7 @@ namespace GUI_DB
             this.panelRight.Controls.Add(this.panelForm);
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRight.Location = new System.Drawing.Point(533, 0);
-            this.panelRight.Margin = new System.Windows.Forms.Padding(4);
+            this.panelRight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelRight.Name = "panelRight";
             this.panelRight.Size = new System.Drawing.Size(800, 738);
             this.panelRight.TabIndex = 0;
@@ -82,7 +82,7 @@ namespace GUI_DB
             this.panelForm.Controls.Add(this.linkRegister, 0, 4);
             this.panelForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelForm.Location = new System.Drawing.Point(0, 0);
-            this.panelForm.Margin = new System.Windows.Forms.Padding(4);
+            this.panelForm.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelForm.Name = "panelForm";
             this.panelForm.Padding = new System.Windows.Forms.Padding(67, 62, 67, 62);
             this.panelForm.RowCount = 5;
@@ -178,7 +178,7 @@ namespace GUI_DB
             this.ClientSize = new System.Drawing.Size(1333, 738);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.panelLeft);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "LogInPage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Modern Log In Form";
