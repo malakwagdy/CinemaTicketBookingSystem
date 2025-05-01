@@ -106,6 +106,96 @@ namespace GUI_DB
             public int movieID;
         }
 
+        public struct User
+        {
+            public string email;
+            public string userPassword;
+            public Boolean userType;
+            public string phoneNumber;
+            public string firstName;
+            public string lastName;
+            public DateTime birthDate;
+            public int Age;
+
+            public User(string email, string userPassword, Boolean userType, string phoneNumber, string firstName,
+                string lastName, DateTime birthDate)
+            {
+                this.email = email;
+                this.userPassword = userPassword;
+                this.userType = userType;
+                this.phoneNumber = phoneNumber;
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.birthDate = birthDate;
+                this.Age = 0;
+            }
+            public User(string email, string userPassword, Boolean userType, string phoneNumber, string firstName,
+                string lastName, DateTime birthDate, int age)
+            {
+                this.email = email;
+                this.userPassword = userPassword;
+                this.userType = userType;
+                this.phoneNumber = phoneNumber;
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.birthDate = birthDate;
+                this.Age = age;
+            }
+        }
+
+        public int calculateAge (DateTime birthDate)
+        {
+            DateTime today = DateTime.Today;
+            int age = today.Year - birthDate.Year;
+            
+            if (birthDate > today.AddYears(-age))
+                age--;
+            
+            return age;
+        }
+        
+        public User GetUserById(string email)
+        {
+            string query = @"SELECT * FROM Users WHERE Email= @email";
+            User user = new User();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@email", email);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                user = new User(
+                                    reader["Email"].ToString(),
+                                    reader["UserPassword"].ToString(),
+                                    Convert.ToBoolean(reader["UserType"]),
+                                    reader["PhoneNumber"].ToString(),
+                                    reader["FirstName"].ToString(),
+                                    reader["LastName"].ToString(),
+                                    Convert.ToDateTime(reader["BirthDate"]),
+                                    calculateAge(Convert.ToDateTime(reader["BirthDate"]))
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+                throw;
+            }
+
+            return user;
+        }
+        
         public Movie[] getAllMovies()
         {
             string query = @"SELECT * FROM Movies";
