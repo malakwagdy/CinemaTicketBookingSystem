@@ -6,7 +6,7 @@ using System.Text.RegularExpressions; // For potential phone number validation
 namespace GUI_DB
 {
     public partial class Form1 : Form
-    {
+    {   DatabaseManager db = new DatabaseManager();
         private MainForm mainForm;
 
         public Form1(MainForm form)
@@ -53,88 +53,8 @@ namespace GUI_DB
 
         private void BtnCreateAccount_Click(object sender, EventArgs e)
         {
-            // --- Enhanced Validation ---
-            if (IsPlaceholder(txtFirstName, "First Name") ||
-                IsPlaceholder(txtLastName, "Last Name") ||
-                IsPlaceholder(txtEmail, "Email Address") ||
-                IsPlaceholder(txtPhoneNumber, "Phone Number") || // Check Phone Number
-                IsPlaceholder(txtPassword, "Password") ||
-                IsPlaceholder(txtConfirmPassword, "Confirm Password"))
-            {
-                MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Email Format Validation (Simple)
-            if (!IsValidEmail(txtEmail.Text))
-            {
-                MessageBox.Show("Please enter a valid email address.", "Invalid Email", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtEmail.Focus();
-                return;
-            }
-
-            // Phone Number Validation (Example - Adjust Regex as needed for your format)
-            // This regex allows digits, spaces, hyphens, parentheses, optional leading +
-            // Examples: +1 (555) 123-4567, 555-123-4567, 555 123 4567
-            string phonePattern = @"^(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$";
-            if (!Regex.IsMatch(txtPhoneNumber.Text, phonePattern))
-            {
-                MessageBox.Show("Please enter a valid phone number format.", "Invalid Phone Number", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPhoneNumber.Focus();
-                return;
-            }
-
-
-            // Birthdate Validation (Example: Check if user is at least 18)
-            if (dtpBirthdate.Value > DateTime.Today.AddYears(-18))
-            {
-                MessageBox.Show("You must be at least 18 years old to register.", "Age Requirement", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                dtpBirthdate.Focus();
-                return;
-            }
-
-
-            if (txtPassword.Text != txtConfirmPassword.Text)
-            {
-                MessageBox.Show("Passwords do not match.", "Password Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Optionally clear password fields
-                // txtPassword.Clear();
-                // txtConfirmPassword.Clear();
-                // AddPlaceholderText(txtPassword, EventArgs.Empty);
-                // AddPlaceholderText(txtConfirmPassword, EventArgs.Empty);
-                txtPassword.Focus();
-                return;
-            }
-
-            if (!chkTerms.Checked)
-            {
-                MessageBox.Show("You must agree to the Terms & Conditions.", "Terms Agreement", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                chkTerms.Focus();
-                return;
-            }
-
-            // --- Get Data (Example) ---
-            string firstName = txtFirstName.Text;
-            string lastName = txtLastName.Text;
-            string email = txtEmail.Text;
-            string phoneNumber = txtPhoneNumber.Text;
-            DateTime birthDate = dtpBirthdate.Value;
-            string password = txtPassword.Text; // Remember to HASH this before saving!
-
-            // --- End Get Data ---
-
-
-            // Simulate saving the user's registration details
-            // **IMPORTANT**: In a real application, HASH the password before saving!
-            Console.WriteLine($"First Name: {firstName}");
-            Console.WriteLine($"Last Name: {lastName}");
-            Console.WriteLine($"Email: {email}");
-            Console.WriteLine($"Phone: {phoneNumber}");
-            Console.WriteLine($"Birthdate: {birthDate.ToShortDateString()}");
-            Console.WriteLine($"Password (Plain): {password} <-- HASH THIS!");
-
-
-            MessageBox.Show("Registration successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string msg= db.Register(txtEmail.Text, txtPassword.Text, txtPhoneNumber.Text, txtFirstName.Text, txtLastName.Text, dtpBirthdate.Value);
+            MessageBox.Show(msg, "Message",MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             // Navigate back to the Login Page
             mainForm.OpenChildForm(new LogInPage(mainForm));
