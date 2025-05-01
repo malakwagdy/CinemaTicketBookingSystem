@@ -13,7 +13,9 @@ namespace GUI_DB
     public class DatabaseManager
     {
         //InitializeComponent();
-        public string connectionString = "Data Source=MALAK;Initial Catalog=CinemaTicketBookingSystem;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+        public string connectionString =
+            "Data Source=DESKTOP-PD4DI32;Initial Catalog = DatabasBroject; Integrated Security = True; Trust Server Certificate=True";
+
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
         public struct Seat
@@ -32,6 +34,95 @@ namespace GUI_DB
             }
         }
 
+        public struct User
+        {
+            public string email;
+            public string userPassword;
+            public Boolean userType;
+            public string phoneNumber;
+            public string firstName;
+            public string lastName;
+            public DateTime birthDate;
+            public int Age;
+
+            public User(string email, string userPassword, Boolean userType, string phoneNumber, string firstName,
+                string lastName, DateTime birthDate)
+            {
+                this.email = email;
+                this.userPassword = userPassword;
+                this.userType = userType;
+                this.phoneNumber = phoneNumber;
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.birthDate = birthDate;
+                this.Age = 0;
+            }
+            public User(string email, string userPassword, Boolean userType, string phoneNumber, string firstName,
+                string lastName, DateTime birthDate, int age)
+            {
+                this.email = email;
+                this.userPassword = userPassword;
+                this.userType = userType;
+                this.phoneNumber = phoneNumber;
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.birthDate = birthDate;
+                this.Age = age;
+            }
+        }
+
+        public int calculateAge(DateTime birthDate)
+        {
+            DateTime today = DateTime.Today;
+            int age = today.Year - birthDate.Year;
+
+            if (birthDate > today.AddYears(-age))
+                age--;
+
+            return age;
+        }
+
+        public User GetUserById(string email)
+        {
+            string query = @"SELECT * FROM Users WHERE Email= @email";
+            User user = new User();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@email", email);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                user = new User(
+                                    reader["Email"].ToString(),
+                                    reader["UserPassword"].ToString(),
+                                    Convert.ToBoolean(reader["UserType"]),
+                                    reader["PhoneNumber"].ToString(),
+                                    reader["FirstName"].ToString(),
+                                    reader["LastName"].ToString(),
+                                    Convert.ToDateTime(reader["BirthDate"]),
+                                    calculateAge(Convert.ToDateTime(reader["BirthDate"]))
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+                throw;
+            }
+
+            return user;
+        }
         public struct Movie
         {
             public int MovieID;
@@ -104,9 +195,48 @@ namespace GUI_DB
             public int movieID;
         }
 
+        public Showtime[] GetShowtimesForMovie(int movieID)
+        {
+            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
+            List<Showtime> showtimes = new List<Showtime>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieID", movieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Showtime showtime = new Showtime
+                                {
+                                    startTime = Convert.ToDateTime(reader["StartTime"]),
+                                    adminID = reader["AdminID"].ToString(),
+                                    price = Convert.ToDouble(reader["Price"]),
+                                    hallID = Convert.ToInt32(reader["HallID"]),
+                                    movieID = Convert.ToInt32(reader["MovieID"])
+                                };
+                                showtimes.Add(showtime);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return showtimes.ToArray();
+        }
+        
         public Movie[] getAllMovies()
         {
-            string query = @"SELECT * FROM Movies";
+            string query = @"SELECT * FROM Movie";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -189,7 +319,7 @@ namespace GUI_DB
         
         public Movie[] getMoviesByGenre(string genre)
         {
-            string query = @"SELECT * FROM Movies WHERE Genre= @genre";
+            string query = @"SELECT * FROM Movie WHERE Genre= @genre";
             List<Movie> movies = new List<Movie>();
 
             try
@@ -229,7 +359,7 @@ namespace GUI_DB
 
         public Movie[] getMoviesByAgeRating(int rating)
         {
-            string query = @"SELECT * FROM Movies WHERE AgeRating=@rating";
+            string query = @"SELECT * FROM Movie WHERE AgeRating=@rating";
             List<Movie> movies = new List<Movie>();
 
             try

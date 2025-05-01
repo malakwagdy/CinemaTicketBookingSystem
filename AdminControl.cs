@@ -45,6 +45,7 @@ namespace GUI_DB
             btnRemoveMovie.Click += BtnRemoveMovie_Click;
             btnAddHall.Click += BtnAddHall_Click;
             btnRemoveHall.Click += BtnRemoveHall_Click;
+ 
         }
 
         // Load halls into dropdown
@@ -182,6 +183,16 @@ namespace GUI_DB
             txtAgeRating.Clear();
             txtDirector.Clear();
             txtActors.Clear();
+        }
+
+        private void AdminControl_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

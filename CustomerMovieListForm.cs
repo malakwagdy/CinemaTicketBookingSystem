@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using static GUI_DB.DatabaseManager;
 
 namespace GUI_DB
 {
@@ -40,7 +41,14 @@ namespace GUI_DB
             ConfigureAndAddDatePicker(); // Encapsulate date picker setup
 
             // --- Add Other Filters ---
-            AddFilterControl("Age Rating", CreateRadioGroup(new[] { "All", "G", "PG", "PG-13", "R" }, "Age_"));
+            var ageRatingLabels = new Dictionary<int, string>
+            {
+                { -1, "All" },
+                { 10, "PG" },
+                { 13, "PG-13" },
+                { 17, "R" }
+             };
+
             AddFilterControl("Genre", cmbGenre); // cmbGenre is instantiated in Designer
 
             // --- Populate Genre ComboBox ---
@@ -149,7 +157,7 @@ namespace GUI_DB
             panelFilterControlsContainer.Controls.Add(control); // Add control
         }
 
-        private FlowLayoutPanel CreateRadioGroup(string[] options, string tagPrefix)
+        private FlowLayoutPanel CreateRadioGroup(int[] options, string tagPrefix)
         {
             FlowLayoutPanel radioPanel = new FlowLayoutPanel
             {
@@ -159,12 +167,12 @@ namespace GUI_DB
                 BackColor = Color.Transparent
             };
             bool first = true;
-            foreach (string option in options)
+            foreach (int option in options)
             {
                 RadioButton rb = new RadioButton
                 {
-                    Text = option,
-                    Tag = tagPrefix + option,
+                    Text = option.ToString(), // Display the numeric value as text
+                    Tag = tagPrefix + option.ToString(), // Store the numeric value in the tag
                     ForeColor = Color.White,
                     AutoSize = true,
                     Checked = first,
@@ -184,12 +192,52 @@ namespace GUI_DB
             flowLayoutPanelMovies.SuspendLayout(); // Suspend layout for performance
             flowLayoutPanelMovies.Controls.Clear();
 
+            Movie[] movies = null;
 
-            // Fetch movies from the database
-            var movies = dbManager.getAllMovies(); // Assuming this method fetches all movies
+            // Handle filtering by genre and numeric age rating
+            if (selectedGenre != "All" && currentAgeFilter != "-1")
+            {
+                // Filter by both genre and numeric age rating
+                if (int.TryParse(currentAgeFilter, out int ageRating))
+                {
+                    movies = dbManager
+                        .getMoviesByGenre(selectedGenre)
+                        .Where(movie => movie.ageRating == ageRating)
+                        .ToArray();
+                }
+                else
+                {
+                    movies = dbManager.getMoviesByGenre(selectedGenre); // Fallback
+                }
+            }
+            else if (selectedGenre != "All")
+            {
+                // Filter by genre only
+                movies = dbManager.getMoviesByGenre(selectedGenre);
+            }
+            else if (currentAgeFilter != "-1")
+            {
+                // Filter by numeric age rating only
+                if (int.TryParse(currentAgeFilter, out int ageRating))
+                {
+                    movies = dbManager.getMoviesByAgeRating(ageRating);
+                }
+                else
+                {
+                    movies = dbManager.getAllMovies(); // Fallback
+                }
+            }
+            else
+            {
+                // Fetch all movies if no filters are applied
+                movies = dbManager.getAllMovies();
+            }
 
+            AddMoviesToFlowLayoutPanel(movies); // Populate the UI
+        }
 
-            // Calculate available width
+        private void AddMoviesToFlowLayoutPanel(Movie[] movies)
+        {
             int availableWidth = flowLayoutPanelMovies.ClientSize.Width;
             if (flowLayoutPanelMovies.VerticalScroll.Visible)
             {
@@ -200,9 +248,6 @@ namespace GUI_DB
 
             foreach (DatabaseManager.Movie movie in movies)
             {
-                if (!PassesFilters(movie)) continue;
-
-                // --- Movie Panel Creation ---
                 Panel moviePanel = new Panel
                 {
                     Width = availableWidth - 20, // Margin
@@ -213,7 +258,7 @@ namespace GUI_DB
                 };
                 Label lblTitle = new Label
                 {
-                    Text = $"{movie.Title} ({movie.AgeRating}, {movie.ReleaseDate.Year})",
+                    Text = $"{movie.title} ({movie.ageRating}, {movie.releaseDate.Year})",
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                     ForeColor = Color.White,
                     Dock = DockStyle.Top,
@@ -223,7 +268,7 @@ namespace GUI_DB
                 };
                 Label lblDetails = new Label
                 {
-                    Text = $"Genre: {movie.Genre} | Director: {movie.Director}",
+                    Text = $"Genre: {movie.genre} | Director: {movie.director}",
                     Font = new Font("Segoe UI", 9F),
                     ForeColor = Color.Gray,
                     Dock = DockStyle.Top,
@@ -240,10 +285,8 @@ namespace GUI_DB
                     Padding = new Padding(0, 5, 0, 0)
                 };
 
+                var showtimes = dbManager.GetShowtimesForMovie(movie.movieID);
 
-                var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
-
-                
                 if (showtimes != null && showtimes.Any())
                 {
                     foreach (var showtime in showtimes)
@@ -258,17 +301,23 @@ namespace GUI_DB
                             VisitedLinkColor = Color.Plum,
                             Margin = new Padding(0, 0, 8, 4)
                         };
-                        // *** MODIFICATION: Pass selected date from dtpReservationDate ***
-                        linkShowtime.Click += (s, e) => {
-                            DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get date part, default to today
-                            OpenSeatingChart(movie.Title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
+                        linkShowtime.Click += (s, e) =>
+                        {
+                            DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get the date part, default to today
+                            OpenSeatingChart(movie.title, showtime.startTime.ToString("hh:mm tt"), selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);
                     }
                 }
                 else
                 {
-                    Label noShowtimesLabel = new Label { Text = "No showtimes available", ForeColor = Color.DarkGray, Font = new Font("Segoe UI", 9F, FontStyle.Italic), AutoSize = true };
+                    Label noShowtimesLabel = new Label
+                    {
+                        Text = "No showtimes available",
+                        ForeColor = Color.DarkGray,
+                        Font = new Font("Segoe UI", 9F, FontStyle.Italic),
+                        AutoSize = true
+                    };
                     showtimesPanel.Controls.Add(noShowtimesLabel);
                 }
 
@@ -297,16 +346,15 @@ namespace GUI_DB
             }
         }
 
-        // --- Filter Logic ---
+        // --- Filter Logic(Redundant) ---
         private bool PassesFilters(DatabaseManager.Movie movie)
         {
             // NOTE: Currently, date selected doesn't filter the *movie list* itself.
-            bool ageOk = currentAgeFilter == "All" || movie.AgeRating.ToString() == currentAgeFilter;
-            bool genreOk = selectedGenre == "All" || movie.Genre == selectedGenre;
+            bool ageOk = currentAgeFilter == "All" || movie.ageRating.ToString() == currentAgeFilter;
+            bool genreOk = selectedGenre == "All" || movie.genre == selectedGenre;
             return ageOk && genreOk;
         }
 
-        // --- Event Handlers for Filters ---
         private void InitializeFilterEvents()
         {
             // Genre ComboBox
@@ -318,29 +366,48 @@ namespace GUI_DB
                 };
             }
 
+            // Define age rating options (numeric values mapped to their labels)
+            var ageRatingLabels = new Dictionary<int, string>
+             {
+                    { -1, "All" },  // -1 represents "All" (no filter)
+                    { 0, "G" },     // General Audience
+                    { 10, "PG" },   // Parental Guidance
+                    { 13, "PG-13" },// Parents Strongly Cautioned
+                    { 17, "R" }     // Restricted
+             };
 
-            // Age Radio Buttons
-            Action<Control> setupRadioEvents = null;
-            setupRadioEvents = (parent) => {
-                if (parent == null) return;
-                foreach (Control c in parent.Controls)
-                {
-                    if (c is RadioButton rb && rb.Tag != null)
-                    {
-                        string tag = rb.Tag.ToString();
-                        if (tag.StartsWith("Age_"))
-                        {
-                            rb.CheckedChanged -= OnAgeFilterChanged;
-                            rb.CheckedChanged += OnAgeFilterChanged;
-                        }
-                    }
-                    else if (c.HasChildren)
-                    {
-                        setupRadioEvents(c);
-                    }
-                }
+            // Create a ComboBox for age ratings
+            ComboBox cmbAgeRating = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                ForeColor = Color.Black,
+                BackColor = Color.White,
+                Width = 150 // Adjust size as needed
             };
-            setupRadioEvents(this.panelFilterControlsContainer); // Search within the container
+
+            // Add age ratings to the ComboBox
+            foreach (var kvp in ageRatingLabels)
+            {
+                cmbAgeRating.Items.Add(new KeyValuePair<int, string>(kvp.Key, kvp.Value));
+            }
+
+            // Display the age rating label (e.g., "All", "G", "PG") in the ComboBox
+            cmbAgeRating.DisplayMember = "Value";
+            cmbAgeRating.ValueMember = "Key";
+
+            // Set default selected item to "All"
+            cmbAgeRating.SelectedIndex = 0;
+
+            // Handle selection changes
+            cmbAgeRating.SelectedIndexChanged += (s, e) =>
+            {
+                var selectedKeyValue = (KeyValuePair<int, string>)cmbAgeRating.SelectedItem;
+                currentAgeFilter = selectedKeyValue.Key.ToString(); // Update the current filter
+                LoadMovies(); // Reload movies based on the new filter
+            };
+
+            // Add the ComboBox to the filter panel
+            AddFilterControl("Age Rating", cmbAgeRating);
 
             // DateTimePicker
             if (dtpReservationDate != null)
@@ -358,9 +425,9 @@ namespace GUI_DB
             if (rb != null && rb.Checked && rb.Tag != null)
             {
                 string tag = rb.Tag.ToString();
-                if (tag.StartsWith("Age_"))
+                if (int.TryParse(tag, out int numericTag) || tag == "All")
                 {
-                    currentAgeFilter = tag.Replace("Age_", "");
+                    currentAgeFilter = tag; // Save as string (numeric or "All")
                     LoadMovies();
                 }
             }
