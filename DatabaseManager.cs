@@ -34,20 +34,20 @@ namespace GUI_DB
 
         public struct Movie
         {
-            public int movieID;
-            public string director;
-            public string title;
-            public string genre;
-            public int ageRating;
-            public DateTime releaseDate;
+            public int MovieID;
+            public string Director;
+            public string Title;
+            public string Genre;
+            public int AgeRating;
+            public DateTime ReleaseDate;
             public Movie(int movieID, string director, string title, string genre, int ageRating, DateTime releaseDate)
             {
-                this.movieID = movieID;
-                this.director = director;
-                this.title = title;
-                this.genre = genre;
-                this.ageRating = ageRating;
-                this.releaseDate = releaseDate;
+                this.MovieID = movieID;
+                this.Director = director;
+                this.Title = title;
+                this.Genre = genre;
+                this.AgeRating = ageRating;
+                this.ReleaseDate = releaseDate;
             }
         }
 
@@ -347,7 +347,7 @@ namespace GUI_DB
         }
                         
         
-        public string Register(string Email, string UserPassword,string PhoneNumber, string FirstName, string LastName, string date)
+        public string Register(string Email, string UserPassword,string PhoneNumber, string FirstName, string LastName, DateTime date)
         {
             string returnstring = null;
             int count= 0;
@@ -396,7 +396,7 @@ namespace GUI_DB
                     command1.Parameters.AddWithValue("@PhoneNumber", PhoneNumber);
                     command1.Parameters.AddWithValue("@FirstName", FirstName);
                     command1.Parameters.AddWithValue("@LastName", LastName);
-                    command1.Parameters.Add(new SqlParameter("@BirthDate", SqlDbType.Date) { Value = DateTime.Parse(date) });
+                    command1.Parameters.AddWithValue("@BirthDate", date);
                     command1.ExecuteNonQuery();
                     returnstring = "Registered Successfully";
                     return returnstring;
@@ -412,7 +412,44 @@ namespace GUI_DB
 
         }
 
+        public Showtime[] GetShowtimesForMovie(int movieID)
+        {
+            string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
+            List<Showtime> showtimes = new List<Showtime>();
 
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieID", movieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Showtime showtime = new Showtime
+                                {
+                                    startTime = Convert.ToDateTime(reader["StartTime"]),
+                                    adminID = reader["AdminID"].ToString(),
+                                    price = Convert.ToDouble(reader["Price"]),
+                                    hallID = Convert.ToInt32(reader["HallID"]),
+                                    movieID = Convert.ToInt32(reader["MovieID"])
+                                };
+                                showtimes.Add(showtime);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return showtimes.ToArray();
+        }
 
         public string AddSeat(int seatNumber, char rowNumber, string seatType, int hallID)
         {
@@ -644,11 +681,9 @@ namespace GUI_DB
             return hallID;
         }
         
-        public string AddHall(int hallID, string hallName, string screenType, int cinemaID)
+        public string AddHall(string hallName, string ScreenType ,int NumOfRows, int SeatsPerRow,bool IsPremium,int numOfPremiumRows)
         {
             string returnstring = null;
-            string query = @"INSERT INTO Hall (HallID, HallName, ScreenType, CinemaID) 
-                     VALUES (@HallID, @HallName, @ScreenType, @CinemaID)";
 
             try
             {
@@ -656,17 +691,21 @@ namespace GUI_DB
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand("CreateHallWithSeats", connection))
                     {
+                        command.CommandType = CommandType.StoredProcedure;
                         // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@HallID", hallID);
                         command.Parameters.AddWithValue("@HallName", hallName);
-                        command.Parameters.AddWithValue("@ScreenType", screenType);
-                        command.Parameters.AddWithValue("@CinemaID", cinemaID);
-
+                        command.Parameters.AddWithValue("@ScreenType", ScreenType);
+                        command.Parameters.AddWithValue("@CinemaID", 1);
+                        command.Parameters.AddWithValue("@AdminID", "admin@gmail.com");
+                        command.Parameters.AddWithValue("@NumRows", NumOfRows);
+                        command.Parameters.AddWithValue("@SeatsPerRow", SeatsPerRow);
+                        command.Parameters.AddWithValue("@IsPremiumHall", IsPremium);
+                        command.Parameters.AddWithValue("@PremiumRowsFromEnd", numOfPremiumRows);
                         // Execute the query
                         command.ExecuteNonQuery();
-                        returnstring = "Hall added successfully!";
+                        returnstring = $"Successfully created hall '{hallName}' with {NumOfRows * SeatsPerRow} seats";
                     }
                 }
             }
@@ -1133,6 +1172,46 @@ namespace GUI_DB
 
             return returnstring;
         }
+        
+        public string CreateHallSeats(int hallID, int numRows, int seatsPerRow, bool isPremiumHall , int premiumRowsFromEnd )
+        {
+            string returnString = null;
+    
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("CreateHallSeats", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                
+                        // Add parameters for the stored procedure
+                        command.Parameters.AddWithValue("@HallID", hallID);
+                        command.Parameters.AddWithValue("@NumRows", numRows);
+                        command.Parameters.AddWithValue("@SeatsPerRow", seatsPerRow);
+                        command.Parameters.AddWithValue("@IsPremiumHall", isPremiumHall); // Convert bool to bit
+                        command.Parameters.AddWithValue("@PremiumRowsFromEnd", premiumRowsFromEnd);
+                        command.Parameters.AddWithValue("@AdminID"," admin@gmail.com");
+
+                        // Execute the stored procedure
+                        command.ExecuteNonQuery();
+                        returnString = $"Successfully created {numRows * seatsPerRow} seats for Hall ID {hallID}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                returnString = "Failed to create hall seats.";
+            }
+
+            return returnString;
+        }
     }
+    
+    
 
 }
