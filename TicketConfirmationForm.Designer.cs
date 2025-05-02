@@ -18,6 +18,8 @@ namespace GUI_DB
         private Button btnCancel;
         private Panel contentPanel;
         private Label lblReservationDate;
+        private Label lblBookingTime;
+        private Label lblHallID;
 
 
         protected override void Dispose(bool disposing)
@@ -40,6 +42,8 @@ namespace GUI_DB
             this.lblTotalPrice = new System.Windows.Forms.Label();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblBookingTime = new System.Windows.Forms.Label();
+            this.lblHallID = new System.Windows.Forms.Label();
             this.contentPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +72,8 @@ namespace GUI_DB
             this.contentPanel.Controls.Add(this.lblTotalPrice);
             this.contentPanel.Controls.Add(this.btnConfirm);
             this.contentPanel.Controls.Add(this.btnCancel);
+            this.contentPanel.Controls.Add(this.lblBookingTime);
+            this.contentPanel.Controls.Add(this.lblHallID);
             this.contentPanel.Location = new System.Drawing.Point(331, 12);
             this.contentPanel.Name = "contentPanel";
             this.contentPanel.Size = new System.Drawing.Size(686, 662);
@@ -120,9 +126,9 @@ namespace GUI_DB
             this.lstSeats.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lstSeats.ForeColor = System.Drawing.Color.White;
             this.lstSeats.ItemHeight = 28;
-            this.lstSeats.Location = new System.Drawing.Point(222, 153);
+            this.lstSeats.Location = new System.Drawing.Point(224, 173);
             this.lstSeats.Name = "lstSeats";
-            this.lstSeats.Size = new System.Drawing.Size(250, 144);
+            this.lstSeats.Size = new System.Drawing.Size(250, 172);
             this.lstSeats.TabIndex = 4;
             // 
             // lblUnitPrice
@@ -150,7 +156,7 @@ namespace GUI_DB
             this.btnConfirm.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.btnConfirm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConfirm.ForeColor = System.Drawing.Color.White;
-            this.btnConfirm.Location = new System.Drawing.Point(278, 396);
+            this.btnConfirm.Location = new System.Drawing.Point(279, 423);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(140, 40);
             this.btnConfirm.TabIndex = 7;
@@ -162,12 +168,32 @@ namespace GUI_DB
             this.btnCancel.BackColor = System.Drawing.Color.Gray;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.ForeColor = System.Drawing.Color.White;
-            this.btnCancel.Location = new System.Drawing.Point(278, 465);
+            this.btnCancel.Location = new System.Drawing.Point(279, 492);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(140, 40);
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = false;
+            // 
+            // lblBookingTime
+            // 
+            this.lblBookingTime.AutoSize = true;
+            this.lblBookingTime.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblBookingTime.ForeColor = System.Drawing.Color.White;
+            this.lblBookingTime.Location = new System.Drawing.Point(419, 80);
+            this.lblBookingTime.Name = "lblBookingTime";
+            this.lblBookingTime.Size = new System.Drawing.Size(0, 28);
+            this.lblBookingTime.TabIndex = 4;
+            // 
+            // lblHallID
+            // 
+            this.lblHallID.AutoSize = true;
+            this.lblHallID.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblHallID.ForeColor = System.Drawing.Color.White;
+            this.lblHallID.Location = new System.Drawing.Point(419, 110);
+            this.lblHallID.Name = "lblHallID";
+            this.lblHallID.Size = new System.Drawing.Size(0, 28);
+            this.lblHallID.TabIndex = 3;
             // 
             // TicketConfirmationForm
             // 

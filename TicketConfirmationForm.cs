@@ -38,7 +38,9 @@ namespace GUI_DB
             lblMovie.Text = $"🎬 Movie: {movieTitle}";
             lblShowtime.Text = $"🕒 Showtime: {showtime}";
             lblReservationDate.Text = $"📅 Date: {reservationDate:D}";
-            lblTicketId.Text = $"🧾 Ticket ID: {""}";
+            lblBookingTime.Text = $"🛒 Booked On: {DateTime.Now:g}"; // Short date/time
+            lblHallID.Text = $"📺 Hall ID: {GlobalVariable.getCurrentHallId()}"; 
+
 
             // Listbox
             lstSeats.Items.Clear();
