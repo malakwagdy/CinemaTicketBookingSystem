@@ -15,7 +15,7 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=MALAK;Initial Catalog = CinemaTicketBookingSystem; Integrated Security = True; Trust Server Certificate=True";
+            "Data Source=DESKTOP-PD4DI32;Initial Catalog=DatabasBroject;Integrated Security=True;Trust Server Certificate=True";
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
@@ -438,7 +438,36 @@ namespace GUI_DB
 
             return movieID;
         }
-        
+        //public int getMovieIDByHallID(string title, DateTime releaseDate)
+        //{
+        //    string query = @"SELECT * FROM Movie WHERE Title = @title AND ReleaseDate = @releaseDate";
+        //    int movieID = 0;
+
+        //    try
+        //    {
+        //        using (SqlConnection connection = new SqlConnection(connectionString))
+        //        {
+        //            connection.Open();
+        //            using (SqlCommand command = new SqlCommand(query, connection))
+        //            {
+        //                command.Parameters.AddWithValue("@title", title);
+        //                command.Parameters.AddWithValue("@releaseDate", releaseDate.Date);
+        //                object result = command.ExecuteScalar();
+        //                if (result != null)
+        //                {
+        //                    movieID = Convert.ToInt32(result);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exception (e.g., log the error)
+        //        Console.WriteLine("An error occurred: " + ex.Message);
+        //    }
+
+        //    return movieID;
+        //}
         public Movie[] getMoviesByGenre(string genre)
         {
             string query = @"SELECT * FROM Movie WHERE Genre= @genre";
@@ -703,10 +732,10 @@ namespace GUI_DB
         }
 
 
-        public string DeleteSeat(int seatNumber, string rowNumber, string hallID)
+        public string DeleteSeat(int hallID)
         {
             string returnstring = null;
-            string query = @"DELETE FROM Seat WHERE SeatNumber = @SeatNumber AND RowNumber = @RowNumber AND HallID = @HallID";
+            string query = @"DELETE FROM Seat WHERE HallID = @HallID";
 
             try
             {
@@ -717,8 +746,8 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@SeatNumber", seatNumber);
-                        command.Parameters.AddWithValue("@RowNumber", rowNumber);
+                        //command.Parameters.AddWithValue("@SeatNumber", seatNumber);
+                        //command.Parameters.AddWithValue("@RowNumber", rowNumber);
                         command.Parameters.AddWithValue("@HallID", hallID);
 
                         // Execute the query
@@ -940,9 +969,11 @@ namespace GUI_DB
 
         public string DeleteHall(int hallID)
         {
-            string returnstring = null;
-            string query = @"DELETE FROM Hall WHERE HallID = @HallID";
 
+            string returnstring = null;
+            
+            string query = @"DELETE FROM Hall WHERE HallID = @HallID";
+            
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1016,10 +1047,10 @@ namespace GUI_DB
             return returnstring;
         }
 
-        public string DeleteMovieActor(string movieID, string actor)
+        public string DeleteMovieActor(int movieID)
         {
             string returnstring = null;
-            string query = @"DELETE FROM MoviesActors WHERE MovieID = @MovieID AND Actor = @Actor";
+            string query = @"DELETE FROM MoviesActors WHERE MovieID = @MovieID";
 
             try
             {
@@ -1031,7 +1062,7 @@ namespace GUI_DB
                     {
                         // Add parameters to prevent SQL injection
                         command.Parameters.AddWithValue("@MovieID", movieID);
-                        command.Parameters.AddWithValue("@Actor", actor);
+                        //command.Parameters.AddWithValue("@Actor", actor);
 
                         // Execute the query
                         int rowsAffected = command.ExecuteNonQuery();
@@ -1167,11 +1198,53 @@ namespace GUI_DB
             return returnstring;
         }
 
-        public string DeleteShowtime(DateTime startTime, int hallID, int movieID)
+        //public string DeleteShowtime(DateTime startTime, int hallID, int movieID)
+        //{
+        //    string returnstring = null;
+        //    string query = @"DELETE FROM Showtimes 
+        //             WHERE StartTime = @StartTime AND HallID = @HallID AND MovieID = @MovieID";
+
+        //    try
+        //    {
+        //        using (SqlConnection connection = new SqlConnection(connectionString))
+        //        {
+        //            connection.Open();
+
+        //            using (SqlCommand command = new SqlCommand(query, connection))
+        //            {
+        //                // Add parameters to prevent SQL injection
+        //                command.Parameters.AddWithValue("@StartTime", startTime);
+        //                command.Parameters.AddWithValue("@HallID", hallID);
+        //                command.Parameters.AddWithValue("@MovieID", movieID);
+
+        //                // Execute the query
+        //                int rowsAffected = command.ExecuteNonQuery();
+
+        //                if (rowsAffected > 0)
+        //                {
+        //                    returnstring = "Showtime deleted successfully!";
+        //                }
+        //                else
+        //                {
+        //                    returnstring = "Showtime not found.";
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"An error occurred: {ex.Message}");
+        //        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+        //        returnstring = "Failed to delete the showtime.";
+        //    }
+
+        //    return returnstring;
+        //}
+        public string DeleteShowtime(int hallID)
         {
             string returnstring = null;
             string query = @"DELETE FROM Showtimes 
-                     WHERE StartTime = @StartTime AND HallID = @HallID AND MovieID = @MovieID";
+                     WHERE  HallID = @HallID";
 
             try
             {
@@ -1182,8 +1255,51 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@StartTime", startTime);
+                        //command.Parameters.AddWithValue("@StartTime", startTime);
                         command.Parameters.AddWithValue("@HallID", hallID);
+                        //command.Parameters.AddWithValue("@MovieID", movieID);
+
+                        // Execute the query
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            returnstring = "Showtime deleted successfully!";
+                        }
+                        else
+                        {
+                            returnstring = "Showtime not found.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                returnstring = "Failed to delete the showtime.";
+            }
+
+            return returnstring;
+        }
+
+        public string DeleteShowtimeByMovieID(int movieID)
+        {
+            string returnstring = null;
+            string query = @"DELETE FROM Showtimes 
+                     WHERE  MovieID = @MovieID";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Add parameters to prevent SQL injection
+                        //command.Parameters.AddWithValue("@StartTime", startTime);
+                        //command.Parameters.AddWithValue("@HallID", hallID);
                         command.Parameters.AddWithValue("@MovieID", movieID);
 
                         // Execute the query
@@ -1272,12 +1388,11 @@ namespace GUI_DB
             return returnstring;
         }
 
-        public string DeleteTicket(string ticketID, string bookingID, DateTime startTime, int seatNumber, string rowNumber, string movieID, string hallID)
+        public string DeleteTicketByMovieID(int movieID)
         {
             string returnstring = null;
             string query = @"DELETE FROM Ticket 
-                     WHERE TicketID = @TicketID AND BookingID = @BookingID AND StartTime = @StartTime 
-                     AND SeatNumber = @SeatNumber AND RowNumber = @RowNumber AND MovieID = @MovieID AND HallID = @HallID";
+                     WHERE MovieID = @MovieID";
 
             try
             {
@@ -1288,12 +1403,59 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@TicketID", ticketID);
-                        command.Parameters.AddWithValue("@BookingID", bookingID);
-                        command.Parameters.AddWithValue("@StartTime", startTime);
-                        command.Parameters.AddWithValue("@SeatNumber", seatNumber);
-                        command.Parameters.AddWithValue("@RowNumber", rowNumber);
+                        //command.Parameters.AddWithValue("@TicketID", ticketID);
+                        //command.Parameters.AddWithValue("@BookingID", bookingID);
+                        //command.Parameters.AddWithValue("@StartTime", startTime);
+                        //command.Parameters.AddWithValue("@SeatNumber", seatNumber);
+                        //command.Parameters.AddWithValue("@RowNumber", rowNumber);
                         command.Parameters.AddWithValue("@MovieID", movieID);
+                        //command.Parameters.AddWithValue("@HallID", hallID);
+
+                        // Execute the query
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            returnstring = "Ticket deleted successfully!";
+                        }
+                        else
+                        {
+                            returnstring = "Ticket not found.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                returnstring = "Failed to delete the ticket.";
+            }
+
+            return returnstring;
+        }
+
+        public string DeleteTicketByHallID(int hallID)
+        {
+            string returnstring = null;
+            string query = @"DELETE FROM Ticket 
+                     WHERE HallID = @HallID";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Add parameters to prevent SQL injection
+                        //command.Parameters.AddWithValue("@TicketID", ticketID);
+                        //command.Parameters.AddWithValue("@BookingID", bookingID);
+                        //command.Parameters.AddWithValue("@StartTime", startTime);
+                        //command.Parameters.AddWithValue("@SeatNumber", seatNumber);
+                        //command.Parameters.AddWithValue("@RowNumber", rowNumber);
+                        //command.Parameters.AddWithValue("@MovieID", movieID);
                         command.Parameters.AddWithValue("@HallID", hallID);
 
                         // Execute the query
@@ -1319,7 +1481,9 @@ namespace GUI_DB
 
             return returnstring;
         }
-        
+
+
+
         public string AddCinema(int cinemaID, string cinemaName, string cLocation)
         {
             string returnstring = null;
