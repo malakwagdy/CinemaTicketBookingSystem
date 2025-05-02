@@ -468,7 +468,7 @@ namespace GUI_DB
             this.cmbAgeRating.FormattingEnabled = true;
             this.cmbAgeRating.Items.AddRange(new object[] {
             7,
-            12,
+            13,
             16,
             18});
             this.cmbAgeRating.Location = new System.Drawing.Point(470, 170);

@@ -17,7 +17,7 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=AMR;Initial Catalog=Test_Project_DB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+            "Data Source=DESKTOP-PD4DI32;Initial Catalog=DatabasBroject;Integrated Security=True;Trust Server Certificate=True";
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
@@ -1687,7 +1687,7 @@ namespace GUI_DB
             return bookings.ToArray();
         }
 
-        private string ConvertToSeatId(char rowNumber, int seatNumber)
+        //private string ConvertToSeatId(char rowNumber, int seatNumber)
         
         public string ConvertToSeatId(char rowNumber, int seatNumber)
         {

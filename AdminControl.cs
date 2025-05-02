@@ -1334,16 +1334,16 @@ namespace GUI_DB
         private void LoadComboBoxDefaults()
         {
             // Example: Populate Age Rating ComboBox
-            cmbAgeRating.Items.Clear();
-            cmbAgeRating.Items.AddRange(new object[] { "3", "7", "12", "15", "18" }); // Or load from DB/config
+            //cmbAgeRating.Items.Clear();
+            //cmbAgeRating.Items.AddRange(new object[] { "3", "7", "12", "15", "18" }); // Or load from DB/config
 
-            // Example: Populate Genre ComboBox
-            cmbGenre.Items.Clear();
-            cmbGenre.Items.AddRange(new object[] { "Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Thriller", "Romance", "Animation", "Family" }); // Or load
+            //// Example: Populate Genre ComboBox
+            //cmbGenre.Items.Clear();
+            //cmbGenre.Items.AddRange(new object[] { "Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Thriller", "Romance", "Animation", "Family" }); // Or load
 
-            // Example: Populate Screen Type ComboBox
-            cmbScreenType.Items.Clear();
-            cmbScreenType.Items.AddRange(new object[] { "Standard", "IMAX", "VIP", "3D" }); // Or load
+            //// Example: Populate Screen Type ComboBox
+            //cmbScreenType.Items.Clear();
+            //cmbScreenType.Items.AddRange(new object[] { "Standard", "IMAX", "VIP", "3D" }); // Or load
         }
 
         // Constants for MessageBox clarity (optional but good practice)
