@@ -12,7 +12,7 @@ namespace GUI_DB
     {
         private MainForm mainForm;
         private DatabaseManager.Booking currentBooking;
-        private const decimal UnitPrice = 80.00m; // Keep consistent
+        
 
 
         public BookingDetailsForm(MainForm mainForm, DatabaseManager.Booking bookingToShow)
