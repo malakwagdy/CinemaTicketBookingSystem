@@ -286,7 +286,7 @@ namespace GUI_DB
                 };
 
                 var showtimes = dbManager.GetShowtimesForMovie(movie.MovieID);
-                
+
                 if (showtimes != null && showtimes.Any())
                 {
                     foreach (var showtime in showtimes)
@@ -304,6 +304,9 @@ namespace GUI_DB
                         linkShowtime.Click += (s, e) =>
                         {
                             DateTime selectedDate = dtpReservationDate?.Value.Date ?? DateTime.Today; // Get the date part, default to today
+                            GlobalVariable.setMovie(movie.MovieID);
+                            GlobalVariable.setCurrentHallId(showtime.hallID);
+
                             OpenSeatingChart(movie.Title, showtime.startTime, selectedDate); // Pass date
                         };
                         showtimesPanel.Controls.Add(linkShowtime);

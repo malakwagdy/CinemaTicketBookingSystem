@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq; // Needed for Any()
 using System.Windows.Forms;
+using static GUI_DB.DatabaseManager;
 
 namespace GUI_DB
 {
@@ -12,20 +13,20 @@ namespace GUI_DB
         private string movieTitle;
         private DateTime showtime;
         private DateTime reservationDate; // *** NEW Field ***
-        private List<string> selectedSeats;
-        private const decimal UnitPrice = 80.00m;
-        private string ticketId;
+        private Dictionary<string, string> selectedSeats;
+        private float totalprice = 0;// *** NEW Field ***
+        private List<Ticket> usertickets = new List<Ticket>(); // *** NEW Field ***
 
         // *** MODIFIED Constructor Signature ***
-        public TicketConfirmationForm(MainForm mainForm, string movieTitle, DateTime showtime, DateTime reservationDate, List<string> selectedSeats)
+        public TicketConfirmationForm(MainForm mainForm, string movieTitle, DateTime showtime, DateTime reservationDate, Dictionary<string, string> selectedSeats)
         {
             InitializeComponent();
 
             this.mainForm = mainForm ?? throw new ArgumentNullException(nameof(mainForm));
             this.movieTitle = movieTitle ?? throw new ArgumentNullException(nameof(movieTitle));
-            this.showtime = showtime ;
+            this.showtime = showtime;
             this.reservationDate = reservationDate; // *** Store the date ***
-            this.selectedSeats = selectedSeats ?? new List<string>(); // Ensure list exists
+            this.selectedSeats = selectedSeats ?? new Dictionary<string, string>(); // Ensure list exists
 
             RenderReceipt();
             AttachEvents();
@@ -33,21 +34,46 @@ namespace GUI_DB
 
         private void RenderReceipt()
         {
-            // Generate and store the ticket ID
-            this.ticketId = "TXN-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
-
             // Populate Labels
             lblMovie.Text = $"🎬 Movie: {movieTitle}";
             lblShowtime.Text = $"🕒 Showtime: {showtime}";
-            lblReservationDate.Text = $"📅 Date: {reservationDate:D}"; // *** Set Date Label text (Long Date format) ***
-            lblTicketId.Text = $"🧾 Ticket ID: {ticketId}";
+            lblReservationDate.Text = $"📅 Date: {reservationDate:D}";
+            lblBookingTime.Text = $"🛒 Booked On: {DateTime.Now:g}"; // Short date/time
+            lblHallID.Text = $"📺 Hall ID: {GlobalVariable.getCurrentHallId()}"; 
 
-            // Populate Seats ListBox
+
+            // Listbox
             lstSeats.Items.Clear();
             if (selectedSeats != null && selectedSeats.Any())
             {
-                foreach (string seat in selectedSeats)
-                    lstSeats.Items.Add($"   • {seat}");
+                foreach (var seatEntry in selectedSeats)
+                {
+                    string seatId = seatEntry.Key;     // e.g., "A5"
+                    string seatType = seatEntry.Value; // e.g., "VIP"
+                    lstSeats.Items.Add($"   • {seatId} ({seatType})");
+
+                    // Extract row and number from seatId
+                    char row = seatId[0]; // First character is row letter
+                    int seatNumber = int.Parse(seatId.Substring(1)); // Rest is the seat number
+
+                    // Create ticket for each seat (example values used for IDs)
+                    Ticket ticket = new Ticket(
+                        ticketID: 0,                  // You can generate or assign later
+                        bookingID: "0",               // Replace with actual booking ID
+                        startTime: showtime,
+                        seatNumber: seatNumber,
+                        rowNumber: row,
+                        movieID: GlobalVariable.getCurrentMovie(),             // Make sure movieId is in scope
+                        hallID: GlobalVariable.getCurrentHallId(),               // Make sure hallId is in scope
+                        price: 0
+                    );
+                    DatabaseManager db = new DatabaseManager();
+                    totalprice = db.calculatePrice(ticket) + totalprice;
+                    usertickets.Add(ticket);
+                    // Update total price
+                    // Optionally store or display the ticket
+                    // e.g., TicketRepository.AddTicket(ticket);
+                }
             }
             else
             {
@@ -55,11 +81,9 @@ namespace GUI_DB
             }
 
 
-            // Calculate and Display Price
-            decimal totalPrice = (selectedSeats?.Count ?? 0) * UnitPrice;
-            lblUnitPrice.Text = $"🎟️ Price per seat: {UnitPrice:C2}";
-            lblTotalPrice.Text = $"💰 Total: {totalPrice:C2}";
+            lblTotalPrice.Text = $"💰 Total: {totalprice:C2}";
         }
+
 
         private void AttachEvents()
         {
@@ -90,9 +114,9 @@ namespace GUI_DB
                         return; // Stop booking process
                     }
 
-                    decimal totalPrice = selectedSeats.Count * UnitPrice;
+                    decimal totalPrice = selectedSeats.Count;
                     // *** Pass date to Booking constructor ***
-                    Booking newBooking = new Booking(this.ticketId, this.movieTitle, this.showtime, this.reservationDate, this.selectedSeats, totalPrice);
+                    Booking newBooking = new Booking("0", this.movieTitle, this.showtime, this.reservationDate, this.selectedSeats, totalPrice);
                     BookingRepository.AddBooking(newBooking);
 
                     MessageBox.Show("✅ Booking confirmed! Your ticket has been saved.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -117,6 +141,8 @@ namespace GUI_DB
         {
             CenterContentPanel();
             // No style changes needed here - handled by OpenChildForm
+            DatabaseManager db = new DatabaseManager();
+            db.confirmBooking(usertickets.ToArray(), GlobalVariable.getCurrentlyLoggedIN());
         }
 
         private void CenterContentPanel()

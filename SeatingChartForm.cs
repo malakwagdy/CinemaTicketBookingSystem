@@ -13,9 +13,10 @@ namespace GUI_DB
         private string movieTitle;
         private DateTime showtime;
         private HashSet<string> reservedSeats;
-        private List<string> selectedSeats = new List<string>();
+        private Dictionary<string, string> selectedSeats = new Dictionary<string, string>();
         private HashSet<string> premiumSeatsSet;
         private DateTime reservationDate; // *** NEW Field ***
+       
 
         public SeatingChartForm(MainForm mainForm, string movieTitle, DateTime showtime, DateTime reservationDate)
         {
@@ -26,59 +27,61 @@ namespace GUI_DB
 
             InitializeComponent();
             SetDynamicValues();
-            GenerateSeatLayout(showtime ,GlobalVariable.getCurrentMovie(), GlobalVariable.getCurrentHallId());
+            GenerateSeatLayout(showtime, GlobalVariable.getCurrentMovie(), GlobalVariable.getCurrentHallId());
             CreateLegend(); // Add the legend
         }
 
         private void SetDynamicValues()
         {
-            lblTitle.Text = $"{movieTitle} - {showtime}";
+            lblTitle.Text = $"{movieTitle} - {showtime} - {"Hall " + GlobalVariable.getCurrentHallId()}";
         }
 
-     
 
         private async Task GenerateSeatLayout(DateTime showtime, int movieID, int hallID)
         {
             seatLayout.Controls.Clear();
 
-            // Get all seat data
             var dbManager = new DatabaseManager();
             var allSeats = dbManager.GetSeatsByHallCombined(hallID);
             var reservedSeats = dbManager.GetReservedSeatsCombined(showtime, hallID, movieID);
 
-            // Generate premium seats list
             var premiumSeatsSet = allSeats
                 .Where(s => s.Value.Equals("Premium", StringComparison.OrdinalIgnoreCase))
                 .Select(s => s.Key)
                 .ToHashSet();
 
-            // Create the grid
-            seatLayout.RowCount = 8;
-            seatLayout.ColumnCount = 10;
-                        
-            for (int row = 0; row < 8; row++)
+            // Get max row and column from seat IDs
+            var seatIds = allSeats.Keys.ToList();
+            int maxRow = seatIds.Max(id => id[0] - 'A'); // e.g. 'H' - 'A' = 7
+            int maxCol = seatIds.Max(id => int.Parse(id.Substring(1))) - 1;
+
+            seatLayout.RowCount = maxRow + 1;
+            seatLayout.ColumnCount = maxCol + 1;
+
+            for (int row = 0; row <= maxRow; row++)
             {
-                for (int col = 0; col < 10; col++)
+                for (int col = 0; col <= maxCol; col++)
                 {
                     string seatId = $"{(char)('A' + row)}{col + 1}";
+
+                    if (!allSeats.ContainsKey(seatId))
+                        continue; // Skip if seat doesn't exist in DB
+
                     var btn = new Button { Text = seatId, Tag = seatId };
 
-                    // Style based on seat status
-                    if (premiumSeatsSet.Contains(seatId))
+                    if (reservedSeats.Contains(seatId))
+                    {
+                        StyleAsReserved(btn);
+                    }
+                    else if (premiumSeatsSet.Contains(seatId))
                     {
                         StyleAsPremium(btn);
                         btn.Click += (s, e) => PremiumSeatButton_Click(s, e, seatId, btn);
-                        
-                        
-                    }
-                    else if (reservedSeats.Contains(seatId))
-                    {
-                        StyleAsReserved(btn);
                     }
                     else
                     {
                         StyleAsAvailable(btn);
-                        btn.Click += (s, e) => SeatButton_Click(s,e); 
+                        btn.Click += (s, e) => SeatButton_Click(s, e);
                     }
 
                     seatLayout.Controls.Add(btn, col, row);
@@ -199,11 +202,12 @@ namespace GUI_DB
             {
                 btn.BackColor = Color.Gold; // Revert to gold when unselected
                 selectedSeats.Remove(seatId);
+
             }
             else
             {
                 btn.BackColor = Color.SkyBlue; // Highlight in blue when selected
-                selectedSeats.Add(seatId);
+                selectedSeats.Add(seatId, "Premium");
             }
         }
 
@@ -221,7 +225,7 @@ namespace GUI_DB
                 else
                 {
                     btn.BackColor = Color.SkyBlue; // Highlight in blue when selected
-                    selectedSeats.Add(seatId);
+                    selectedSeats.Add(seatId, "Standard");
                 }
             }
         }
@@ -241,9 +245,9 @@ namespace GUI_DB
             }
 
             TicketConfirmationForm ticketConfirmationForm = new TicketConfirmationForm(mainForm, movieTitle, showtime, reservationDate, selectedSeats);
-            mainForm.OpenChildForm(ticketConfirmationForm); 
+            mainForm.OpenChildForm(ticketConfirmationForm);
             // === BACKEND PLACEHOLDER ===
-            MessageBox.Show($"Seats selected: {string.Join(", ", selectedSeats)}\n(Ticket screen not yet implemented)", "Continue");
+            MessageBox.Show($"Seats selected: {string.Join(", ", selectedSeats)}", "Continue");
         }
     }
 }
