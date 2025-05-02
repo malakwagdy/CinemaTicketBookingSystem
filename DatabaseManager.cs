@@ -26,7 +26,7 @@ namespace GUI_DB
             public string seatType;
             public int hallID;
 
-            public Seat(int SeatNumber, char rowNumber, string seatType,int hallId)
+            public Seat(int SeatNumber, char rowNumber, string seatType, int hallId)
             {
                 this.Seatnumber = SeatNumber;
                 this.rowNumber = rowNumber;
@@ -71,7 +71,7 @@ namespace GUI_DB
                 this.Age = age;
             }
         }
-        
+
         public struct Movie
         {
             public int MovieID;
@@ -81,7 +81,7 @@ namespace GUI_DB
             public int AgeRating;
             public DateTime ReleaseDate;
             public string adminID;
-            
+
             public Movie(int movieID, string director, string title, string genre, int ageRating, DateTime releaseDate)
             {
                 this.MovieID = movieID;
@@ -102,7 +102,7 @@ namespace GUI_DB
             public int cinemaID;
             public string adminID;
 
-            public Hall(int hallID, string hallName, string screentype,int cinemaID)
+            public Hall(int hallID, string hallName, string screentype, int cinemaID)
             {
                 this.hallID = hallID;
                 this.hallName = hallName;
@@ -248,7 +248,7 @@ namespace GUI_DB
 
             return user;
         }
-        
+
         public Showtime[] GetShowtimesForMovie(int movieID)
         {
             string query = @"SELECT * FROM Showtimes WHERE MovieID = @movieID";
@@ -287,7 +287,7 @@ namespace GUI_DB
 
             return showtimes.ToArray();
         }
-        
+
         public Movie[] getAllMovies()
         {
             string query = @"SELECT * FROM Movie";
@@ -603,8 +603,9 @@ namespace GUI_DB
         }
 
         public Seat[] GetSeatsByHall(int hallID)
-        {   List<Seat> seats = new List<Seat>();
-            string query=@"SELECT * FROM Seat WHERE HallID = @hallID";
+        {
+            List<Seat> seats = new List<Seat>();
+            string query = @"SELECT * FROM Seat WHERE HallID = @hallID";
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -629,7 +630,7 @@ namespace GUI_DB
                     }
                 }
             }
-             
+
             catch (Exception ex)
             {
                 // Handle exception (e.g., log the error)
@@ -638,12 +639,12 @@ namespace GUI_DB
 
             return seats.ToArray();
         }
-                        
-        
-        public string Register(string Email, string UserPassword,string PhoneNumber, string FirstName, string LastName, DateTime date)
+
+
+        public string Register(string Email, string UserPassword, string PhoneNumber, string FirstName, string LastName, DateTime date)
         {
             string returnstring = null;
-            int count= 0;
+            int count = 0;
             string query = @"SELECT COUNT(*) FROM Users WHERE Email = @Email";
             try
             {
@@ -668,15 +669,18 @@ namespace GUI_DB
                     return returnstring;
                 }
 
-                else if (UserPassword.Length < 8) {
+                else if (UserPassword.Length < 8)
+                {
                     returnstring = "Password must be 8 digits or more";
                     return returnstring;
                 }
-                else if (PhoneNumber.Length != 11) {
+                else if (PhoneNumber.Length != 11)
+                {
                     returnstring = "Invalid Phone number";
                     return returnstring;
                 }
-                else if (string.IsNullOrEmpty(FirstName) | string.IsNullOrEmpty(LastName)) {
+                else if (string.IsNullOrEmpty(FirstName) | string.IsNullOrEmpty(LastName))
+                {
                     returnstring = "Names cannot be null";
                     return returnstring;
                 }
@@ -696,7 +700,7 @@ namespace GUI_DB
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
@@ -705,7 +709,7 @@ namespace GUI_DB
 
         }
 
-       
+
 
         public string AddSeat(int seatNumber, char rowNumber, string seatType, int hallID)
         {
@@ -785,47 +789,48 @@ namespace GUI_DB
 
             return returnstring;
         }
-        
+
         public Seat[] getReservedSeats(DateTime startTime, int HallID, int MovieID)
-        {   List<Seat> seats = new List<Seat>();
-             string query = @"SELECT SeatNumber, RowNumber FROM Ticket WHERE StartTime=@startTime AND HallID=@HallID AND MovieID = @movieID";
-             try
-             {
-                 using (SqlConnection connection = new SqlConnection(connectionString))
-                 {
-                     connection.Open();
-                     using (SqlCommand command = new SqlCommand(query, connection))
-                     {
-                         command.Parameters.AddWithValue("@startTime", startTime);
-                         command.Parameters.AddWithValue("@HallID", HallID);
-                         command.Parameters.AddWithValue("@MovieID", MovieID);
-                         using (SqlDataReader reader = command.ExecuteReader())
-                         {
-                             while (reader.Read())
-                             {
-                                 Seat seat = new Seat(
-                                     Convert.ToInt32(reader["SeatNumber"]),
-                                     Convert.ToChar(reader["RowNumber"]),
-                                     reader["SeatType"].ToString(),
-                                    Convert.ToInt32(reader["HallID"])
-                                 );
-                                 seats.Add(seat);
-                             }
-                         }
-                     }
-                 }
-             }
-             
-             catch (Exception ex)
-             {
-                 // Handle exception (e.g., log the error)
-                 Console.WriteLine("An error occurred: " + ex.Message);
-             }
+        {
+            List<Seat> seats = new List<Seat>();
+            string query = @"SELECT SeatNumber, RowNumber FROM Ticket WHERE StartTime=@startTime AND HallID=@HallID AND MovieID = @movieID";
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@startTime", startTime);
+                        command.Parameters.AddWithValue("@HallID", HallID);
+                        command.Parameters.AddWithValue("@MovieID", MovieID);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Seat seat = new Seat(
+                                    Convert.ToInt32(reader["SeatNumber"]),
+                                    Convert.ToChar(reader["RowNumber"]),
+                                    reader["SeatType"].ToString(),
+                                   Convert.ToInt32(reader["HallID"])
+                                );
+                                seats.Add(seat);
+                            }
+                        }
+                    }
+                }
+            }
 
-             return seats.ToArray();
-         }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
 
-         
+            return seats.ToArray();
+        }
+
+
         public int AddMovie(string director, string title, string genre, int ageRating, DateTime releaseDate)
         {
             int returnstring = 0;
@@ -940,8 +945,8 @@ namespace GUI_DB
             }
             return hallID;
         }
-        
-        public string AddHall(string hallName, string ScreenType ,int NumOfRows, int SeatsPerRow,bool IsPremium,int numOfPremiumRows)
+
+        public string AddHall(string hallName, string ScreenType, int NumOfRows, int SeatsPerRow, bool IsPremium, int numOfPremiumRows)
         {
             string returnstring = null;
 
@@ -983,9 +988,9 @@ namespace GUI_DB
         {
 
             string returnstring = null;
-            
+
             string query = @"DELETE FROM Hall WHERE HallID = @HallID";
-            
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1021,7 +1026,7 @@ namespace GUI_DB
             return returnstring;
         }
 
-        public string AddMoviesActors(int movieID, string [] actors)
+        public string AddMoviesActors(int movieID, string actors)
         {
             string returnstring = null;
             string query = @"INSERT INTO MoviesActors (MovieID, Actor) 
@@ -1035,17 +1040,17 @@ namespace GUI_DB
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        foreach (string actor in actors)
-                        {
-                            // Add parameters to prevent SQL injection
-                            command.Parameters.AddWithValue("@MovieID", movieID);
-                            command.Parameters.AddWithValue("@Actor", actor);
+                        //foreach (string actor in actors)
 
-                            // Execute the query
-                            command.ExecuteNonQuery();
-                            returnstring = "MoviesActors entry added successfully!";
+                        // Add parameters to prevent SQL injection
+                        command.Parameters.AddWithValue("@MovieID", movieID);
+                        command.Parameters.AddWithValue("@Actor", actors);
 
-                        }
+                        // Execute the query
+                        command.ExecuteNonQuery();
+                        returnstring = "MoviesActors entry added successfully!";
+
+                        //}
                     }
                 }
             }
@@ -1099,6 +1104,27 @@ namespace GUI_DB
 
             return returnstring;
         }
+
+        //public string DeleteMovieActors(int movieID)
+        //{
+        //    try
+        //    {
+        //        using (var connection = new SqlConnection(connectionString))
+        //        {
+        //            connection.Open();
+        //            var command = new SqlCommand("DELETE FROM MovieActors WHERE MovieID = @MovieID", connection);
+        //            command.Parameters.AddWithValue("@MovieID", movieID);
+
+        //            int rowsAffected = command.ExecuteNonQuery();
+        //            return rowsAffected > 0 ? "Successfully deleted actors" : "No actors to delete";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return $"Error deleting actors: {ex.Message}";
+        //    }
+        //}
+
         public string AddBooking(int bookingID, float totalPrice, DateTime bookingDate, string customerID)
         {
             string returnstring = null;
@@ -1573,11 +1599,11 @@ namespace GUI_DB
 
             return returnstring;
         }
-        
-        public string CreateHallSeats(int hallID, int numRows, int seatsPerRow, bool isPremiumHall , int premiumRowsFromEnd )
+
+        public string CreateHallSeats(int hallID, int numRows, int seatsPerRow, bool isPremiumHall, int premiumRowsFromEnd)
         {
             string returnString = null;
-    
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1587,14 +1613,14 @@ namespace GUI_DB
                     using (SqlCommand command = new SqlCommand("CreateHallSeats", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                
+
                         // Add parameters for the stored procedure
                         command.Parameters.AddWithValue("@HallID", hallID);
                         command.Parameters.AddWithValue("@NumRows", numRows);
                         command.Parameters.AddWithValue("@SeatsPerRow", seatsPerRow);
                         command.Parameters.AddWithValue("@IsPremiumHall", isPremiumHall); // Convert bool to bit
                         command.Parameters.AddWithValue("@PremiumRowsFromEnd", premiumRowsFromEnd);
-                        command.Parameters.AddWithValue("@AdminID"," admin@email.com");
+                        command.Parameters.AddWithValue("@AdminID", " admin@email.com");
 
                         // Execute the stored procedure
                         command.ExecuteNonQuery();
@@ -1611,8 +1637,8 @@ namespace GUI_DB
 
             return returnString;
         }
-    
-     public Booking[] GetBookingsByUser(string customerEmail)
+
+        public Booking[] GetBookingsByUser(string customerEmail)
         {
             List<Booking> bookings = new List<Booking>();
 
@@ -1658,12 +1684,12 @@ namespace GUI_DB
 
             return bookings.ToArray();
         }
-        
+
         private string ConvertToSeatId(char rowNumber, int seatNumber)
         {
             return $"{rowNumber}{seatNumber}";
         }
-        
+
         public HashSet<string> GetReservedSeatsCombined(DateTime startTime, int hallID, int movieID)
         {
             var reservedSeats = new HashSet<string>();
@@ -1737,6 +1763,248 @@ namespace GUI_DB
             return seats;
         }
 
-    }
+        //    public string[] GetUnusedShowtimesForHall(int hallID)
+        //    {
+        //        string[] allShowtimes = { "10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM", "8:00 PM" };
+        //        List<string> unusedShowtimes = new List<string>();
 
+        //        string query = @"SELECT StartTime FROM Showtimes WHERE HallID = @HallID";
+        //        HashSet<string> usedShowtimes = new HashSet<string>();
+
+        //        try
+        //        {
+        //            using (SqlConnection connection = new SqlConnection(connectionString))
+        //            {
+        //                connection.Open();
+        //                using (SqlCommand command = new SqlCommand(query, connection))
+        //                {
+        //                    command.Parameters.AddWithValue("@HallID", hallID);
+
+        //                    using (SqlDataReader reader = command.ExecuteReader())
+        //                    {
+        //                        while (reader.Read())
+        //                        {
+        //                            DateTime startTime = Convert.ToDateTime(reader["StartTime"]);
+        //                            string formattedTime = startTime.ToString("hh:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+        //                            usedShowtimes.Add(formattedTime);
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+        //            // Add showtimes that are not used to the unusedShowtimes list
+        //            foreach (string showtime in allShowtimes)
+        //            {
+        //                if (!usedShowtimes.Contains(showtime))
+        //                {
+        //                    unusedShowtimes.Add(showtime);
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"An error occurred: {ex.Message}");
+        //        }
+
+        //        return unusedShowtimes.ToArray();
+        //    }
+        //}
+        public string[] GetUnusedShowtimesForHall(int hallID)
+        {
+            string[] allShowtimes = { "10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM", "6:00 PM", "8:00 PM" };
+            List<string> unusedShowtimes = new List<string>();
+
+            string query = @"SELECT StartTime FROM Showtimes WHERE HallID = @HallID";
+            HashSet<string> usedShowtimes = new HashSet<string>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@HallID", hallID);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                // Extract only the time portion of StartTime and format it
+                                DateTime startTime = Convert.ToDateTime(reader["StartTime"]);
+                                string formattedTime = startTime.ToString("h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+                                usedShowtimes.Add(formattedTime);
+                            }
+                        }
+                    }
+                }
+
+                // Add showtimes that are not used to the unusedShowtimes list
+                foreach (string showtime in allShowtimes)
+                {
+                    if (!usedShowtimes.Contains(showtime))
+                    {
+                        unusedShowtimes.Add(showtime);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            return unusedShowtimes.ToArray();
+        }
+
+        //public string UpdateMovie(int movieID, string title, string director, DateTime showtime, string genre, int ageRating)
+        //{
+        //    string returnMessage = null;
+
+        //    string query = @"UPDATE Movie 
+        //             SET Director = @Director, 
+        //                 Genre = @Genre, 
+        //                 AgeRating = @AgeRating, 
+        //                 ReleaseDate = @ReleaseDate
+        //             WHERE MovieID = @MovieID";
+
+        //    string showtimeQuery = @"UPDATE Showtimes
+        //                     SET StartTime = @StartTime
+        //                     WHERE MovieID = @MovieID";
+
+        //    try
+        //    {
+        //        using (SqlConnection connection = new SqlConnection(connectionString))
+        //        {
+        //            connection.Open();
+
+        //            // Update the movie details
+        //            using (SqlCommand command = new SqlCommand(query, connection))
+        //            {
+        //                command.Parameters.AddWithValue("@MovieID", title);
+        //                command.Parameters.AddWithValue("@Director", director);
+        //                command.Parameters.AddWithValue("@Genre", genre);
+        //                command.Parameters.AddWithValue("@AgeRating", ageRating);
+        //                //command.Parameters.AddWithValue("@ReleaseDate", releaseDate);
+
+        //                int rowsAffected = command.ExecuteNonQuery();
+        //                if (rowsAffected > 0)
+        //                {
+        //                    returnMessage = "Movie updated successfully!";
+        //                }
+        //                else
+        //                {
+        //                    returnMessage = "Failed to update movie. Movie ID not found.";
+        //                }
+        //            }
+
+        //            // Update the showtime
+        //            using (SqlCommand command = new SqlCommand(showtimeQuery, connection))
+        //            {
+        //                command.Parameters.AddWithValue("@MovieID",title);
+        //                command.Parameters.AddWithValue("@StartTime", showtime);
+
+        //                int rowsAffected = command.ExecuteNonQuery();
+        //                if (rowsAffected > 0)
+        //                {
+        //                    returnMessage += " Showtime updated successfully!";
+        //                }
+        //                else
+        //                {
+        //                    returnMessage += " Failed to update showtime. No matching record found.";
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"An error occurred: {ex.Message}");
+        //        returnMessage = "An error occurred while updating the movie.";
+        //    }
+
+        //    return returnMessage;
+        //}
+
+
+        public string UpdateMovie(int movieID, string title, string director, DateTime releaseDate, string genre, int ageRating)
+        {
+            string returnMessage = null;
+
+            string query = @"UPDATE Movie 
+                     SET Title = @Title, 
+                         Director = @Director, 
+                         Genre = @Genre, 
+                         AgeRating = @AgeRating, 
+                         ReleaseDate = @ReleaseDate
+                     WHERE MovieID = @MovieID";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Update the movie details
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@MovieID", movieID); // Corrected MovieID binding
+                        command.Parameters.AddWithValue("@Title", title);
+                        command.Parameters.AddWithValue("@Director", director);
+                        command.Parameters.AddWithValue("@Genre", genre);
+                        command.Parameters.AddWithValue("@AgeRating", ageRating);
+                        command.Parameters.AddWithValue("@ReleaseDate", releaseDate);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            returnMessage = "Movie updated successfully!";
+                        }
+                        else
+                        {
+                            returnMessage = "Failed to update movie. Movie ID not found.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                returnMessage = $"An error occurred while updating the movie: {ex.Message}";
+            }
+
+            return returnMessage;
+        }
+
+        public DateTime[] getReleaseDateByName(string movieName)
+        {
+            string query = @"SELECT ReleaseDate FROM Movie WHERE Title = @movieName";
+            List<DateTime> releaseDates = new List<DateTime>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@movieName", movieName);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DateTime releaseDate = Convert.ToDateTime(reader["ReleaseDate"]);
+                                releaseDates.Add(releaseDate);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log the error)
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+            return releaseDates.ToArray();
+        }
+
+    }
 }

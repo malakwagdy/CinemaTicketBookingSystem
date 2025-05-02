@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
+using static GUI_DB.DatabaseManager;
 // Remove the 'using static GUI_DB.DatabaseManager;' if you consistently create instances
 // using static GUI_DB.DatabaseManager; // Can be removed if dbManager instance is always used
 
@@ -29,6 +31,7 @@ namespace GUI_DB
             LoadHallsDataFromDatabase(); // Load initial hall data (both DB and memory)
 
             cmbHalls.SelectedIndexChanged += CmbHalls_SelectedIndexChanged;
+            btnUpdateMovie.Click += buttonUpdateMovie_Click;
             btnAddMovie.Click += BtnAddMovie_Click;
             btnRemoveMovie.Click += BtnRemoveMovie_Click;
             btnAddHall.Click += BtnAddHall_Click;
@@ -114,6 +117,21 @@ namespace GUI_DB
 
 
         // --- CmbHalls_SelectedIndexChanged: Load showtimes based on selected hall ---
+        //private void CmbHalls_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //    if (string.IsNullOrEmpty(selectedHallItem))
+        //    {
+        //        cmbShowtimes.Items.Clear();
+        //        cmbShowtimes.SelectedIndex = -1;
+        //        return;
+        //    }
+
+        //    string selectedHallName = selectedHallItem.Split('(')[0].Trim();
+        //    // Use the DatabaseManager to get the actual showtimes for the selected hall
+        //    LoadAvailableShowtimesFromDb(selectedHallName);
+        //}
+
         private void CmbHalls_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedHallItem = cmbHalls.SelectedItem?.ToString();
@@ -125,11 +143,84 @@ namespace GUI_DB
             }
 
             string selectedHallName = selectedHallItem.Split('(')[0].Trim();
-            // Use the DatabaseManager to get the actual showtimes for the selected hall
-            LoadAvailableShowtimesFromDb(selectedHallName);
+            LoadAvailableShowtimesFromDb(selectedHallName); // Load unused showtimes for the selected hall
         }
-
         // --- Modified LoadAvailableShowtimes to query the DB ---
+        //private void LoadAvailableShowtimesFromDb(string hallName)
+        //{
+        //    cmbShowtimes.Items.Clear();
+        //    cmbShowtimes.SelectedIndex = -1; // Reset selection
+
+        //    try
+        //    {
+        //        int hallId = dbManager.GetHallIDByName(hallName);
+        //        if (hallId <= 0) return; // Hall not found in DB
+
+        //        // We need a way to get showtimes *per hall* from the DB Manager
+        //        // Assuming GetShowtimesForMovie is NOT what we want here.
+        //        // We need a hypothetical GetShowtimesForHall(hallId) method.
+        //        // Let's simulate this or adjust logic based on available methods.
+
+        //        // **Alternative using hallOccupancy (if kept up-to-date):**
+        //        // If hallOccupancy accurately reflects schedules, the original logic can work.
+        //        // However, relying solely on DB is safer.
+
+        //        // **Let's assume we *need* to query the DB for scheduled times for this hall**
+        //        // We don't have a direct DB method for this in the provided DatabaseManager.
+        //        // OPTION 1: Add a GetShowtimesByHallID to DatabaseManager.
+        //        // OPTION 2: Simulate for now by using the original logic with hallOccupancy,
+        //        //           acknowledging it depends on hallOccupancy being accurate.
+
+        //        // --- Using original logic (dependent on hallOccupancy) ---
+        //        if (hallOccupancy.TryGetValue(hallName, out HallInfo hallInfo))
+        //        {
+        //            // Get scheduled times *from the in-memory representation*
+        //            var scheduledShowtimes = hallInfo.Movies
+        //                                         .Select(m => m.Showtime.ToString("hh:mm tt")) // Format consistently
+        //                                         .ToHashSet();
+
+        //            var availableShowtimes = allShowtimes
+        //                .Where(st => !scheduledShowtimes.Contains(st)) // Compare strings
+        //                .ToList();
+
+        //            foreach (var showtime in availableShowtimes)
+        //            {
+        //                cmbShowtimes.Items.Add(showtime); // Add as string "hh:mm tt"
+        //            }
+        //        }
+        //        // --- End using original logic ---
+
+        //        // **Recommended approach would be a DB query here.**
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading showtimes for {hallName}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+        //private void LoadAvailableShowtimesFromDb(string hallName)
+        //{
+        //    cmbShowtimes.Items.Clear();
+        //    cmbShowtimes.SelectedIndex = -1; // Reset selection
+
+        //    try
+        //    {
+        //        int hallId = dbManager.GetHallIDByName(hallName);
+        //        if (hallId <= 0) return; // Hall not found in DB
+
+        //        // Use the new GetUnusedShowtimesForHall method to fetch unused showtimes
+        //        string[] unusedShowtimes = dbManager.GetUnusedShowtimesForHall(hallId);
+
+        //        foreach (var showtime in unusedShowtimes)
+        //        {
+        //            cmbShowtimes.Items.Add(showtime); // Add unused showtimes to the ComboBox
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading showtimes for {hallName}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
         private void LoadAvailableShowtimesFromDb(string hallName)
         {
             cmbShowtimes.Items.Clear();
@@ -137,44 +228,23 @@ namespace GUI_DB
 
             try
             {
+                // Get the Hall ID by name
                 int hallId = dbManager.GetHallIDByName(hallName);
                 if (hallId <= 0) return; // Hall not found in DB
 
-                // We need a way to get showtimes *per hall* from the DB Manager
-                // Assuming GetShowtimesForMovie is NOT what we want here.
-                // We need a hypothetical GetShowtimesForHall(hallId) method.
-                // Let's simulate this or adjust logic based on available methods.
+                // Fetch unused showtimes for the selected hall
+                string[] unusedShowtimes = dbManager.GetUnusedShowtimesForHall(hallId);
 
-                // **Alternative using hallOccupancy (if kept up-to-date):**
-                // If hallOccupancy accurately reflects schedules, the original logic can work.
-                // However, relying solely on DB is safer.
-
-                // **Let's assume we *need* to query the DB for scheduled times for this hall**
-                // We don't have a direct DB method for this in the provided DatabaseManager.
-                // OPTION 1: Add a GetShowtimesByHallID to DatabaseManager.
-                // OPTION 2: Simulate for now by using the original logic with hallOccupancy,
-                //           acknowledging it depends on hallOccupancy being accurate.
-
-                // --- Using original logic (dependent on hallOccupancy) ---
-                if (hallOccupancy.TryGetValue(hallName, out HallInfo hallInfo))
+                // Populate the drop-down list with unused showtimes
+                foreach (var showtime in unusedShowtimes)
                 {
-                    // Get scheduled times *from the in-memory representation*
-                    var scheduledShowtimes = hallInfo.Movies
-                                                 .Select(m => m.Showtime.ToString("hh:mm tt")) // Format consistently
-                                                 .ToHashSet();
-
-                    var availableShowtimes = allShowtimes
-                        .Where(st => !scheduledShowtimes.Contains(st)) // Compare strings
-                        .ToList();
-
-                    foreach (var showtime in availableShowtimes)
-                    {
-                        cmbShowtimes.Items.Add(showtime); // Add as string "hh:mm tt"
-                    }
+                    cmbShowtimes.Items.Add(showtime);
                 }
-                // --- End using original logic ---
 
-                // **Recommended approach would be a DB query here.**
+                if (unusedShowtimes.Length == 0)
+                {
+                    cmbShowtimes.Items.Add("No available showtimes");
+                }
             }
             catch (Exception ex)
             {
@@ -208,10 +278,26 @@ namespace GUI_DB
             }
 
             string selectedHallName = selectedHallItem.Split('(')[0].Trim();
-            string[] actors = actorsInput.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(actor => actor.Trim())
-                                          .Where(actor => !string.IsNullOrEmpty(actor)) // Ensure no empty strings after split/trim
-                                          .ToArray();
+            string[] splitInput = actorsInput.Split(',');
+            int validCount = 0;
+            for (int i = 0; i < splitInput.Length; i++)
+            {
+                splitInput[i] = splitInput[i].Trim();
+                if (!string.IsNullOrEmpty(splitInput[i]))
+                {
+                    validCount++;
+                }
+            }
+            string[] actors = new string[validCount];
+            int index = 0;
+
+            for (int i = 0; i < splitInput.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(splitInput[i]))
+                {
+                    actors[index++] = splitInput[i];
+                }
+            }
 
             if (actors.Length == 0)
             {
@@ -289,7 +375,11 @@ namespace GUI_DB
 
 
             // Add actors (assuming AddMoviesActors handles potential failures internally or returns status)
-            dbManager.AddMoviesActors(currentMovieID, actors);
+            for (int i = 0; i < actors.Length; i++)
+            {
+                dbManager.AddMoviesActors(currentMovieID, actors[i]);
+                //actors[i] = actors[i].Trim(); // Clean up actor names
+            }
         }
 
         // --- BtnRemoveMovie_Click ---
@@ -551,6 +641,649 @@ namespace GUI_DB
                 MessageBox.Show($"Hall '{hallName}' not found.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        //private void btnUpdateMovie_Click(object sender, EventArgs e)
+        //{
+        //    // Ensure dbManager is ready
+        //    if (dbManager == null) dbManager = new DatabaseManager();
+
+        //    // --- Field Validation ---
+        //    string movieTitle = txtMovieTitle.Text.Trim();
+        //    string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //    string selectedShowtimeStr = cmbShowtimes.SelectedItem?.ToString();
+        //    int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0;
+        //    string director = txtDirector.Text.Trim();
+        //    string actorsInput = txtActors.Text.Trim();
+        //    string genre = cmbGenre.SelectedItem?.ToString();
+        //    DateTime releaseDate = dtpReleaseDate.Value.Date; // Use only Date part
+
+        //    if (string.IsNullOrEmpty(movieTitle) || string.IsNullOrEmpty(selectedHallItem) || ageRating == 0 ||
+        //        string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director) || string.IsNullOrEmpty(actorsInput) ||
+        //        string.IsNullOrEmpty(selectedShowtimeStr))
+        //    {
+        //        MessageBox.Show("Please fill out all movie fields and select all options, including a valid showtime.", "Input Error", MessageBoxButtons.OK, Warning);
+        //        return;
+        //    }
+
+        //    string selectedHallName = selectedHallItem.Split('(')[0].Trim();
+        //    string[] splitInput = actorsInput.Split(',');
+        //    int validCount = 0;
+        //    for (int i = 0; i < splitInput.Length; i++)
+        //    {
+        //        splitInput[i] = splitInput[i].Trim();
+        //        if (!string.IsNullOrEmpty(splitInput[i]))
+        //        {
+        //            validCount++;
+        //        }
+        //    }
+        //    string[] actors = new string[validCount];
+        //    int index = 0;
+
+        //    for (int i = 0; i < splitInput.Length; i++)
+        //    {
+        //        if (!string.IsNullOrEmpty(splitInput[i]))
+        //        {
+        //            actors[index++] = splitInput[i];
+        //        }
+        //    }
+
+        //    if (actors.Length == 0)
+        //    {
+        //        MessageBox.Show("Please enter at least one valid actor name.", "Input Error", MessageBoxButtons.OK, Warning);
+        //        return;
+        //    }
+
+        //    if (!DateTime.TryParse(selectedShowtimeStr, out DateTime parsedShowtime))
+        //    {
+        //        MessageBox.Show("Invalid showtime selected.", "Input Error", MessageBoxButtons.OK, Warning);
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        int selectedHallID = dbManager.GetHallIDByName(selectedHallName);
+        //        if (selectedHallID <= 0)
+        //        {
+        //            MessageBox.Show($"Selected hall '{selectedHallName}' does not exist in the database.", "Data Error", MessageBoxButtons.OK, Error);
+        //            return;
+        //        }
+
+        //        // Fetch movie ID by title and release date
+        //        int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+        //        if (movieID <= 0)
+        //        {
+        //            MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.", "Error", MessageBoxButtons.OK, Error);
+        //            return;
+        //        }
+
+        //        // Optional: Check for showtime conflicts in the DB before updating
+
+        //        // Update movie details in the database
+        //        UpdateMovieinDatabase(movieTitle);
+        //        //dbManager.UpdateMovie(movieID, director, genre, ageRating, releaseDate);
+        //        //dbManager.UpdateShowtime(movieID, selectedHallID, parsedShowtime);
+        //        //dbManager.UpdateMovieActors(movieID, actors);
+
+        //        // Update in-memory representation AFTER successful DB operation
+        //        if (hallOccupancy.TryGetValue(selectedHallName, out HallInfo hallInfo))
+        //        {
+        //            // Update the in-memory movie details
+        //            var existingMovie = hallInfo.Movies.FirstOrDefault(m => m.Movie == movieTitle && m.Showtime.Date == releaseDate);
+        //            if (existingMovie.Movie != null)
+        //            {
+        //                hallInfo.Movies.Remove(existingMovie);
+        //            }
+        //            hallInfo.Movies.Add((Movie: movieTitle, Showtime: parsedShowtime));
+        //        }
+
+        //        MessageBox.Show($"Movie '{movieTitle}' updated successfully!", "Success", MessageBoxButtons.OK, Information);
+        //        ClearMovieFields();
+        //        LoadAvailableShowtimesFromDb(selectedHallName); // Refresh available showtimes for the current hall
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error updating movie: {ex.Message}", "Database Error", MessageBoxButtons.OK, Error);
+        //    }
+        //}
+
+        //private void UpdateMovieinDatabase(string movieTitle)
+        //{
+        //    dbManager = new DatabaseManager();
+        //    dbManager.UpdateMovie(movieID, director, genre, ageRating, releaseDate);
+        //}
+
+        //private void btnUpdateMovie_Click(object sender, EventArgs e)
+        //{
+        //    // Ensure dbManager is ready
+        //    if (dbManager == null) dbManager = new DatabaseManager();
+
+        //    // --- Field Validation ---
+        //    string movieTitle = txtMovieTitle.Text.Trim();
+        //    string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //    string selectedShowtimeStr = cmbShowtimes.SelectedItem?.ToString();
+        //    int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0;
+        //    string director = txtDirector.Text.Trim();
+        //    string actorsInput = txtActors.Text.Trim();
+        //    string genre = cmbGenre.SelectedItem?.ToString();
+        //    DateTime releaseDate = dtpReleaseDate.Value.Date; // Use only Date part
+
+        //    if (string.IsNullOrEmpty(movieTitle) || string.IsNullOrEmpty(selectedHallItem) || ageRating == 0 ||
+        //        string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director) || string.IsNullOrEmpty(actorsInput) ||
+        //        string.IsNullOrEmpty(selectedShowtimeStr))
+        //    {
+        //        MessageBox.Show("Please fill out all movie fields and select all options, including a valid showtime.", "Input Error", MessageBoxButtons.OK, Warning);
+        //        return;
+        //    }
+
+        //    string selectedHallName = selectedHallItem.Split('(')[0].Trim();
+        //    string[] splitInput = actorsInput.Split(',');
+        //    int validCount = 0;
+        //    for (int i = 0; i < splitInput.Length; i++)
+        //    {
+        //        splitInput[i] = splitInput[i].Trim();
+        //        if (!string.IsNullOrEmpty(splitInput[i]))
+        //        {
+        //            validCount++;
+        //        }
+        //    }
+        //    string[] actors = new string[validCount];
+        //    int index = 0;
+
+        //    for (int i = 0; i < splitInput.Length; i++)
+        //    {
+        //        if (!string.IsNullOrEmpty(splitInput[i]))
+        //        {
+        //            actors[index++] = splitInput[i];
+        //        }
+        //    }
+
+        //    if (actors.Length == 0)
+        //    {
+        //        MessageBox.Show("Please enter at least one valid actor name.", "Input Error", MessageBoxButtons.OK, Warning);
+        //        return;
+        //    }
+
+        //    if (!DateTime.TryParse(selectedShowtimeStr, out DateTime parsedShowtime))
+        //    {
+        //        MessageBox.Show("Invalid showtime selected.", "Input Error", MessageBoxButtons.OK, Warning);
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        int selectedHallID = dbManager.GetHallIDByName(selectedHallName);
+        //        if (selectedHallID <= 0)
+        //        {
+        //            MessageBox.Show($"Selected hall '{selectedHallName}' does not exist in the database.", "Data Error", MessageBoxButtons.OK, Error);
+        //            return;
+        //        }
+
+        //        // Fetch movie ID by title and release date
+        //        int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+        //        if (movieID <= 0)
+        //        {
+        //            MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.", "Error", MessageBoxButtons.OK, Error);
+        //            return;
+        //        }
+
+        //        // Update movie details in the database
+        //        UpdateMovieinDatabase(movieID, director, parsedShowtime, genre, ageRating, releaseDate, actors);
+
+        //        // Update in-memory representation AFTER successful DB operation
+        //        if (hallOccupancy.TryGetValue(selectedHallName, out HallInfo hallInfo))
+        //        {
+        //            // Update the in-memory movie details
+        //            var existingMovie = hallInfo.Movies.FirstOrDefault(m => m.Movie == movieTitle && m.Showtime.Date == releaseDate);
+        //            if (existingMovie.Movie != null)
+        //            {
+        //                hallInfo.Movies.Remove(existingMovie);
+        //            }
+        //            hallInfo.Movies.Add((Movie: movieTitle, Showtime: parsedShowtime));
+        //        }
+
+        //        MessageBox.Show($"Movie '{movieTitle}' updated successfully!", "Success", MessageBoxButtons.OK, Information);
+        //        ClearMovieFields();
+        //        LoadAvailableShowtimesFromDb(selectedHallName); // Refresh available showtimes for the current hall
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error updating movie: {ex.Message}", "Database Error", MessageBoxButtons.OK, Error);
+        //    }
+        //}
+
+        //private void UpdateMovieinDatabase(int movieID, string director, DateTime showtime, string genre, int ageRating, DateTime releaseDate, string[] actors)
+        //{
+        //    // Ensure dbManager is ready
+        //    if (dbManager == null) dbManager = new DatabaseManager();
+
+        //    string result = dbManager.UpdateMovie(movieID, director, showtime, genre, ageRating, releaseDate);
+        //    if (!result.Contains("successfully"))
+        //    {
+        //        throw new Exception("Failed to update movie: " + result);
+        //    }
+
+        //    // Update actors for the movie
+        //    dbManager.UpdateMovieActors(movieID, actors); // Ensure this method is implemented in DatabaseManager
+        //}
+        //private void btnUpdateMovie_Click(object sender, EventArgs e)
+        //{
+        //    // Ensure dbManager is ready
+        //    if (dbManager == null) dbManager = new DatabaseManager();
+
+        //    // --- Field Validation ---
+        //    string movieTitle = txtMovieTitle.Text.Trim();
+        //    string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //    string selectedShowtimeStr = cmbShowtimes.SelectedItem?.ToString();
+        //    int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0;
+        //    string director = txtDirector.Text.Trim();
+        //    string genre = cmbGenre.SelectedItem?.ToString();
+        //    DateTime releaseDate = dtpReleaseDate.Value.Date; // Use only Date part
+
+        //    if (string.IsNullOrEmpty(movieTitle) || string.IsNullOrEmpty(selectedHallItem) || ageRating == 0 ||
+        //        string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director) || string.IsNullOrEmpty(selectedShowtimeStr))
+        //    {
+        //        MessageBox.Show("Please fill out all movie fields and select all options, including a valid showtime.",
+        //                        "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    string selectedHallName = selectedHallItem.Split('(')[0].Trim();
+
+        //    if (!DateTime.TryParse(selectedShowtimeStr, out DateTime parsedShowtime))
+        //    {
+        //        MessageBox.Show("Invalid showtime selected.",
+        //                        "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        // Fetch Hall ID
+        //        int selectedHallID = dbManager.GetHallIDByName(selectedHallName);
+        //        if (selectedHallID <= 0)
+        //        {
+        //            MessageBox.Show($"Selected hall '{selectedHallName}' does not exist in the database.",
+        //                            "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Fetch Movie ID
+        //        int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+        //        if (movieID <= 0)
+        //        {
+        //            MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.",
+        //                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Update Movie in Database
+        //        UpdateMovieinDatabase(movieID, director, parsedShowtime, genre, ageRating, releaseDate);
+
+        //        // Update in-memory representation AFTER successful DB operation
+        //        if (hallOccupancy.TryGetValue(selectedHallName, out HallInfo hallInfo))
+        //        {
+        //            // Remove old movie details
+        //            var existingMovie = hallInfo.Movies.FirstOrDefault(m => m.Movie == movieTitle && m.Showtime.Date == releaseDate);
+        //            if (existingMovie.Movie != null)
+        //            {
+        //                hallInfo.Movies.Remove(existingMovie);
+        //            }
+
+        //            // Add updated movie details
+        //            hallInfo.Movies.Add((Movie: movieTitle, Showtime: parsedShowtime));
+        //        }
+
+        //        MessageBox.Show($"Movie '{movieTitle}' updated successfully!",
+        //                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        ClearMovieFields();
+        //        LoadAvailableShowtimesFromDb(selectedHallName); // Refresh available showtimes for the current hall
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error updating movie: {ex.Message}",
+        //                        "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        //private void buttonUpdateMovie_Click(object sender, EventArgs e)
+        //{
+        //    if (dbManager == null) dbManager = new DatabaseManager();
+
+        //    // --- Field Validation ---
+        //    string movieTitle = txtMovieTitle.Text.Trim();
+        //    string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //    string selectedShowtimeStr = cmbShowtimes.SelectedItem?.ToString();
+        //    int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0; // Safer parsing
+        //    string director = txtDirector.Text.Trim();
+        //    string actorsInput = txtActors.Text.Trim();
+        //    string genre = cmbGenre.SelectedItem?.ToString();
+        //    DateTime releaseDate = dtpReleaseDate.Value.Date; // Use only Date part
+
+        //    if (string.IsNullOrEmpty(movieTitle) || string.IsNullOrEmpty(selectedHallItem) || ageRating == 0 ||
+        //        string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director) || string.IsNullOrEmpty(selectedShowtimeStr))
+        //    {
+        //        MessageBox.Show("Please fill out all movie fields and select all options, including a valid showtime.",
+        //                        "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    string selectedHallName = selectedHallItem.Split('(')[0].Trim();
+
+        //    if (!DateTime.TryParse(selectedShowtimeStr, out DateTime parsedShowtime))
+        //    {
+        //        MessageBox.Show("Invalid showtime selected.",
+        //                        "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        // Fetch Hall ID
+        //        int selectedHallID = dbManager.GetHallIDByName(selectedHallName);
+        //        if (selectedHallID <= 0)
+        //        {
+        //            MessageBox.Show($"Selected hall '{selectedHallName}' does not exist in the database.",
+        //                            "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Fetch Movie ID
+        //        int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+        //        if (movieID <= 0)
+        //        {
+        //            MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.",
+        //                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Update Movie in Database
+        //        //UpdateMovieinDatabase(title, director, parsedShowtime, genre, ageRating, releaseDate);
+        //        UpdateMovieinDatabase(movieID, movieTitle, director, parsedShowtime, genre, ageRating, releaseDate, selectedHallID);
+        //        // Update in-memory representation AFTER successful DB operation
+        //        if (hallOccupancy.TryGetValue(selectedHallName, out HallInfo hallInfo))
+        //        {
+        //            // Remove old movie details
+        //            var existingMovie = hallInfo.Movies.FirstOrDefault(m => m.Movie == movieTitle && m.Showtime.Date == releaseDate);
+        //            if (existingMovie.Movie != null)
+        //            {
+        //                hallInfo.Movies.Remove(existingMovie);
+        //            }
+
+        //            // Add updated movie details
+        //            hallInfo.Movies.Add((Movie: movieTitle, Showtime: parsedShowtime));
+        //        }
+
+        //        MessageBox.Show($"Movie '{movieTitle}' updated successfully!",
+        //                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        ClearMovieFields();
+        //        LoadAvailableShowtimesFromDb(selectedHallName); // Refresh available showtimes for the current hall
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error updating movie: {ex.Message}",
+        //                        "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        //private void buttonUpdateMovie_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (dbManager == null) dbManager = new DatabaseManager();
+
+        //        // --- Field Validation ---
+        //        string movieTitle = txtMovieTitle.Text.Trim();
+        //        string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //        string selectedShowtimeStr = cmbShowtimes.SelectedItem?.ToString();
+        //        int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0;
+        //        string director = txtDirector.Text.Trim();
+        //        string genre = cmbGenre.SelectedItem?.ToString();
+        //        DateTime releaseDate = dtpReleaseDate.Value.Date;
+
+        //        if (string.IsNullOrEmpty(movieTitle) || string.IsNullOrEmpty(selectedHallItem) || ageRating == 0 ||
+        //            string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director) || string.IsNullOrEmpty(selectedShowtimeStr))
+        //        {
+        //            MessageBox.Show("Please fill out all movie fields and select all options, including a valid showtime.",
+        //                            "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            return;
+        //        }
+
+        //        string selectedHallName = selectedHallItem.Split('(')[0].Trim();
+
+        //        if (!DateTime.TryParse(selectedShowtimeStr, out DateTime parsedShowtime))
+        //        {
+        //            MessageBox.Show("Invalid showtime selected.",
+        //                            "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            return;
+        //        }
+
+        //        // Fetch Hall ID
+        //        int selectedHallID = dbManager.GetHallIDByName(selectedHallName);
+        //        if (selectedHallID <= 0)
+        //        {
+        //            MessageBox.Show($"Selected hall '{selectedHallName}' does not exist in the database.",
+        //                            "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Fetch Movie ID
+        //        int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+        //        if (movieID <= 0)
+        //        {
+        //            MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.",
+        //                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Update the movie in the database
+        //        UpdateMovieinDatabase(movieID, movieTitle, director, parsedShowtime, genre, ageRating, releaseDate, selectedHallID);
+
+        //        MessageBox.Show($"Movie '{movieTitle}' updated successfully!",
+        //                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        ClearMovieFields();
+        //        LoadAvailableShowtimesFromDb(selectedHallName); // Refresh available showtimes for the current hall
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error updating movie: {ex.Message}",
+        //                        "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        //private void buttonUpdateMovie_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (dbManager == null) dbManager = new DatabaseManager();
+
+        //        // --- Field Validation ---
+        //        string movieTitle = txtMovieTitle.Text.Trim();
+        //        string selectedHallItem = cmbHalls.SelectedItem?.ToString();
+        //        int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0;
+        //        string director = txtDirector.Text.Trim();
+        //        string genre = cmbGenre.SelectedItem?.ToString();
+        //        DateTime releaseDate = dtpReleaseDate.Value.Date;
+
+        //        if (string.IsNullOrEmpty(movieTitle) || string.IsNullOrEmpty(selectedHallItem) || ageRating == 0 ||
+        //            string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director))
+        //        {
+        //            MessageBox.Show("Please fill out all movie fields and select all options.",
+        //                            "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            return;
+        //        }
+
+        //        // Fetch Movie ID
+        //        int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+        //        if (movieID <= 0)
+        //        {
+        //            MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.",
+        //                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            return;
+        //        }
+
+        //        // Update the movie in the database
+        //        UpdateMovieinDatabase(movieID, movieTitle, director, releaseDate, genre, ageRating);
+
+        //        MessageBox.Show($"Movie '{movieTitle}' updated successfully!",
+        //                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        ClearMovieFields();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error updating movie: {ex.Message}",
+        //                        "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        private void buttonUpdateMovie_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dbManager == null) dbManager = new DatabaseManager();
+
+                // --- Field Validation ---
+                string movieTitle = txtMovieTitle.Text.Trim();
+                string selectedReleaseDate = comboBox2.SelectedItem?.ToString(); // Get the selected release date
+                int ageRating = (cmbAgeRating.SelectedItem is string ageStr && int.TryParse(ageStr, out int parsedAge)) ? parsedAge : 0;
+                string director = txtDirector.Text.Trim();
+                string genre = cmbGenre.SelectedItem?.ToString();
+                DateTime releaseDate;
+
+                if (string.IsNullOrEmpty(movieTitle) || ageRating == 0 || string.IsNullOrEmpty(genre) || string.IsNullOrEmpty(director))
+                {
+                    MessageBox.Show("Please fill out all movie fields and select all options, including a valid release date.",
+                                    "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Validate and parse the selected release date
+                if (string.IsNullOrEmpty(selectedReleaseDate) || !DateTime.TryParse(selectedReleaseDate, out releaseDate))
+                {
+                    MessageBox.Show("Invalid release date selected.",
+                                    "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Fetch Movie ID
+                int movieID = dbManager.getMovieID(movieTitle, releaseDate);
+                if (movieID <= 0)
+                {
+                    MessageBox.Show($"Movie '{movieTitle}' with release date '{releaseDate:yyyy-MM-dd}' not found in the database.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Update the movie in the database
+                UpdateMovieinDatabase(movieID, movieTitle, director, releaseDate, genre, ageRating);
+
+                MessageBox.Show($"Movie '{movieTitle}' updated successfully!",
+                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ClearMovieFields();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating movie: {ex.Message}",
+                                "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // End of AdminControl class
+
+        //private void UpdateMovieinDatabase(int movieID,string title, string director, DateTime showtime, string genre, int ageRating, DateTime releaseDate, int hallID)
+        //{
+        //    // Ensure dbManager is ready
+
+        //    if (dbManager == null) dbManager = new DatabaseManager();
+        //    //int CurrentMovieID = dbManager.getMovieID(title, releaseDate)
+        //    string addShowtimeResult = dbManager.AddShowtime(showtime, movieID, hallID);
+        //    string result = dbManager.UpdateMovie(movieID,title, director, showtime, genre, ageRating);
+        //    if (!result.Contains("successfully"))
+        //    {
+        //        throw new Exception("Failed to update movie: " + result);
+        //    }
+        //}
+
+        //private void UpdateMovieinDatabase(int movieID, string title, string director, DateTime showtime, string genre, int ageRating, DateTime releaseDate, int hallID)
+        //{
+        //    try
+        //    {
+        //        // Ensure dbManager is ready
+        //        if (dbManager == null) dbManager = new DatabaseManager();
+
+        //        // Update the movie details
+        //        string updateMovieResult = dbManager.UpdateMovie(movieID, title, director, showtime, genre, ageRating);
+        //        if (!updateMovieResult.Contains("successfully"))
+        //        {
+        //            throw new Exception($"Failed to update movie: {updateMovieResult}");
+        //        }
+
+        //        // Add or Update the showtime for the movie
+        //        string addShowtimeResult = dbManager.AddShowtime(showtime, movieID, hallID);
+        //        if (!addShowtimeResult.Contains("successfully"))
+        //        {
+        //            throw new Exception($"Failed to update showtime: {addShowtimeResult}");
+        //        }
+
+        //        // Update actors
+        //        string[] actors = txtActors.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        //                                        .Select(a => a.Trim())
+        //                                        .Where(a => !string.IsNullOrEmpty(a))
+        //                                        .ToArray();
+
+        //        dbManager.DeleteMovieActor(movieID); // Clear existing actors
+        //        for (int i = 0; i < actors.Length; i++)
+        //        {
+        //            dbManager.AddMoviesActors(movieID, actors[i]);
+        //            //actors[i] = actors[i].Trim(); // Clean up actor names
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log and rethrow the exception with additional context
+        //        throw new Exception($"An error occurred while updating the movie: {ex.Message}", ex);
+        //    }
+        //}
+
+        private void UpdateMovieinDatabase(int movieID, string title, string director, DateTime releaseDate, string genre, int ageRating)
+        {
+            try
+            {
+                // Ensure dbManager is ready
+                if (dbManager == null) dbManager = new DatabaseManager();
+
+                // Update movie
+                string updateMovieResult = dbManager.UpdateMovie(movieID, title, director, releaseDate, genre, ageRating);
+                if (!updateMovieResult.Contains("successfully"))
+                {
+                    throw new Exception(updateMovieResult);
+                }
+
+                // Update actors
+                string[] actors = txtActors.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                .Select(a => a.Trim())
+                                                .Where(a => !string.IsNullOrEmpty(a))
+                                                .ToArray();
+
+                dbManager.DeleteMovieActor(movieID); // Clear existing actors
+                foreach (var actor in actors)
+                {
+                    string addActorResult = dbManager.AddMoviesActors(movieID, actor);
+                    if (!addActorResult.Contains("successfully"))
+                    {
+                        throw new Exception($"Failed to add actor '{actor}' to movie: {addActorResult}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow the exception with additional context
+                throw new Exception($"An error occurred while updating the movie: {ex.Message}", ex);
+            }
+        }
 
         private void RemoveHallFromDatabase(string hallName)
         {
@@ -619,43 +1352,245 @@ namespace GUI_DB
         const MessageBoxIcon Warning = MessageBoxIcon.Warning;
         const MessageBoxIcon Error = MessageBoxIcon.Error;
 
-    } // End of AdminControl class
 
-    // HallInfo class remains the same
-    public class HallInfo
-    {
-        public List<(string Movie, DateTime Showtime)> Movies { get; set; } = new List<(string, DateTime)>();
-        public string ScreenType { get; set; }
-        public int TotalRows { get; set; }
-        public int SeatsPerRow { get; set; }
-        public bool IsFullyPremium { get; set; }
-        public int PremiumRowCount { get; set; } // Number of rows designated as premium (if not fully premium)
 
-        public HallInfo(string screenType, int totalRows, int seatsPerRow, bool isFullyPremium, int premiumRowCount)
+
+        // HallInfo class remains the same
+        public class HallInfo
         {
-            ScreenType = screenType;
-            TotalRows = totalRows;
-            SeatsPerRow = seatsPerRow;
-            IsFullyPremium = isFullyPremium;
-            // If fully premium, PremiumRowCount maybe should be TotalRows or 0 depending on interpretation.
-            // Let's stick to the original: it's the count specified *if not* fully premium.
-            PremiumRowCount = isFullyPremium ? 0 : premiumRowCount;
-            Movies = new List<(string Movie, DateTime Showtime)>(); // Initialize movie list
+            public List<(string Movie, DateTime Showtime)> Movies { get; set; } = new List<(string, DateTime)>();
+            public string ScreenType { get; set; }
+            public int TotalRows { get; set; }
+            public int SeatsPerRow { get; set; }
+            public bool IsFullyPremium { get; set; }
+            public int PremiumRowCount { get; set; } // Number of rows designated as premium (if not fully premium)
+
+            public HallInfo(string screenType, int totalRows, int seatsPerRow, bool isFullyPremium, int premiumRowCount)
+            {
+                ScreenType = screenType;
+                TotalRows = totalRows;
+                SeatsPerRow = seatsPerRow;
+                IsFullyPremium = isFullyPremium;
+                // If fully premium, PremiumRowCount maybe should be TotalRows or 0 depending on interpretation.
+                // Let's stick to the original: it's the count specified *if not* fully premium.
+                PremiumRowCount = isFullyPremium ? 0 : premiumRowCount;
+                Movies = new List<(string Movie, DateTime Showtime)>(); // Initialize movie list
+            }
+
+            public override string ToString()
+            {
+                string details = $"{ScreenType}, {TotalRows}x{SeatsPerRow} seats";
+                if (IsFullyPremium)
+                {
+                    details += ", Fully Premium";
+                }
+                // Show premium row count only if > 0 and NOT fully premium
+                else if (PremiumRowCount > 0)
+                {
+                    details += $", Premium: {PremiumRowCount} row{(PremiumRowCount == 1 ? "" : "s")}";
+                }
+                return details;
+            }
         }
 
-        public override string ToString()
+        //private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    bool isChecked = checkBox1.Checked;
+
+        //    // Toggle visibility of controls based on checkbox state
+        //    dtpReleaseDate.Visible = !isChecked; // Hide release date when updating
+        //    comboBox2.Visible = isChecked;      // Show dropdown for update mode
+
+        //    // Toggle buttons
+        //    btnAddMovie.Visible = !isChecked;
+        //    btnRemoveMovie.Visible = !isChecked;
+        //    btnUpdateMovie.Visible = isChecked;
+
+        //    // Attach or detach the TextChanged event based on checkbox state
+        //    if (isChecked)
+        //    {
+        //        txtMovieTitle.TextChanged += TxtMovieTitle_TextChanged; // Attach event handler
+        //    }
+        //    else
+        //    {
+        //        txtMovieTitle.TextChanged -= TxtMovieTitle_TextChanged; // Detach event handler
+        //    }
+        //}
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            string details = $"{ScreenType}, {TotalRows}x{SeatsPerRow} seats";
-            if (IsFullyPremium)
+            bool isChecked = checkBox1.Checked;
+
+            // Toggle visibility of controls based on checkbox state
+            dtpReleaseDate.Visible = !isChecked; // Hide release date when updating
+            comboBox2.Visible = isChecked;      // Show dropdown for update mode (only appears when checked)
+
+            // Toggle buttons
+            btnAddMovie.Visible = !isChecked;
+            btnRemoveMovie.Visible = !isChecked;
+            btnUpdateMovie.Visible = isChecked;
+
+            // Attach or detach the TextChanged event based on checkbox state
+            if (isChecked)
             {
-                details += ", Fully Premium";
+                txtMovieTitle.TextChanged += TxtMovieTitle_TextChanged; // Attach event handler
             }
-            // Show premium row count only if > 0 and NOT fully premium
-            else if (PremiumRowCount > 0)
+            else
             {
-                details += $", Premium: {PremiumRowCount} row{(PremiumRowCount == 1 ? "" : "s")}";
+                txtMovieTitle.TextChanged -= TxtMovieTitle_TextChanged; // Detach event handler
+                comboBox2.Items.Clear(); // Clear dropdown items when checkbox is unchecked
+                comboBox2.SelectedIndex = -1; // Reset dropdown selection
             }
-            return details;
+        }
+
+        //private void TxtMovieTitle_TextChanged(object sender, EventArgs e)
+        //{
+        //    string movieTitle = txtMovieTitle.Text.Trim();
+        //    if (string.IsNullOrEmpty(movieTitle))
+        //    {
+        //        comboBox2.Items.Clear();
+        //        comboBox2.SelectedIndex = -1;
+        //        return;
+        //    }
+
+        //    LoadReleaseDatesFromDb(movieTitle);
+        //}
+        private void TxtMovieTitle_TextChanged(object sender, EventArgs e)
+        {
+            string movieTitle = txtMovieTitle.Text.Trim();
+
+            // Avoid resetting the dropdown if the text hasn't changed significantly
+            if (string.IsNullOrEmpty(movieTitle))
+            {
+                comboBox2.Items.Clear();
+                comboBox2.SelectedIndex = -1;
+                return;
+            }
+
+            // Load release dates based on the movie title
+            LoadReleaseDatesFromDb(movieTitle);
+        }
+
+
+        //private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    string selectedReleaseDate = comboBox2.SelectedItem?.ToString();
+        //    if (string.IsNullOrEmpty(selectedReleaseDate))
+        //    {
+        //        MessageBox.Show("Please select a movie title.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    LoadReleaseDatesFromDb(selectedMovieTitle);
+        //}
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selectedReleaseDate = comboBox2.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(selectedReleaseDate))
+            {
+                MessageBox.Show("Please select a release date.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Display the selected release date or process it as needed
+            MessageBox.Show($"Selected release date: {selectedReleaseDate}", "Selection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
+        }
+
+        //private void LoadReleaseDatesFromDb(string movieTitle)
+        //{
+        //    cmbShowtimes.Items.Clear(); 
+        //    cmbShowtimes.SelectedIndex = -1; 
+
+        //    try
+        //    {
+        //        DateTime[] releaseDates = dbManager.getReleaseDateByName(movieTitle);
+
+        //        if (releaseDates.Length == 0)
+        //        {
+        //            MessageBox.Show($"No release dates found for the movie '{movieTitle}'.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            return;
+        //        }
+
+
+        //        foreach (var releaseDate in releaseDates)
+        //        {
+        //            cmbShowtimes.Items.Add(releaseDate.ToString("yyyy-MM-dd")); // Format as needed
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading release dates for movie '{movieTitle}': {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+        //private void LoadReleaseDatesFromDb(string movieTitle)
+        //{
+        //    comboBox2.Items.Clear();
+        //    comboBox2.SelectedIndex = -1;
+
+        //    try
+        //    {
+        //        DateTime[] releaseDates = dbManager.getReleaseDateByName(movieTitle);
+
+        //        //if (releaseDates.Length == 0)
+        //        //{
+        //        //    MessageBox.Show($"No release dates found for the movie '{movieTitle}'.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        //    return;
+        //        //}
+
+        //        foreach (var releaseDate in releaseDates)
+        //        {
+        //            comboBox2.Items.Add(releaseDate.ToString("yyyy-MM-dd")); // Format as needed
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading release dates for movie '{movieTitle}': {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+        //private void LoadReleaseDatesFromDb(string movieTitle)
+        //{
+        //    try
+        //    {
+        //        // Fetch release dates from the database
+        //        DateTime[] releaseDates = dbManager.getReleaseDateByName(movieTitle);
+
+        //        // Update the dropdown list only if there are new release dates
+        //        comboBox2.Items.Clear();
+        //        foreach (var releaseDate in releaseDates)
+        //        {
+        //            comboBox2.Items.Add(releaseDate.ToString("yyyy-MM-dd"));
+        //        }
+
+        //        if (releaseDates.Length == 0)
+        //        {
+        //            MessageBox.Show($"No release dates found for the movie '{movieTitle}'.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading release dates for movie '{movieTitle}': {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+
+        private void LoadReleaseDatesFromDb(string movieTitle)
+        {
+            try
+            {
+                DateTime[] releaseDates = dbManager.getReleaseDateByName(movieTitle);
+                comboBox2.Items.Clear();
+
+                foreach (var releaseDate in releaseDates)
+                {
+                    comboBox2.Items.Add(releaseDate.ToString("yyyy-MM-dd"));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading release dates: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
