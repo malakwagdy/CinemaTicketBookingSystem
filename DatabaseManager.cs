@@ -1687,7 +1687,6 @@ namespace GUI_DB
             return bookings.ToArray();
         }
 
-        private string ConvertToSeatId(char rowNumber, int seatNumber)
         
         public string ConvertToSeatId(char rowNumber, int seatNumber)
         {

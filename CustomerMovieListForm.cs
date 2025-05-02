@@ -119,6 +119,19 @@ namespace GUI_DB
             cmbGenre.Items.Add("Drama");
             cmbGenre.Items.Add("Fantasy");
             cmbGenre.Items.Add("Sci-Fi");
+            cmbGenre.Items.Add("Adventure");
+            cmbGenre.Items.Add("Horror");
+            cmbGenre.Items.Add("Animation");
+            cmbGenre.Items.Add("Romance");
+            cmbGenre.Items.Add("Thriller");
+            cmbGenre.Items.Add("Documentary");
+            cmbGenre.Items.Add("Mystery");
+            cmbGenre.Items.Add("Family");
+            cmbGenre.Items.Add("Western");
+            cmbGenre.Items.Add("Music");
+            cmbGenre.Items.Add("War");
+            cmbGenre.Items.Add("History");
+            cmbGenre.Items.Add("Crime");
             cmbGenre.SelectedItem = "All";
         }
 
