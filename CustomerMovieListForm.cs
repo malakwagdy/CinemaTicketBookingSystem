@@ -40,14 +40,7 @@ namespace GUI_DB
             // --- Setup & Add Date Picker ---
             ConfigureAndAddDatePicker(); // Encapsulate date picker setup
 
-            // --- Add Other Filters ---
-            var ageRatingLabels = new Dictionary<int, string>
-            {
-                { -1, "All" },
-                { 10, "PG" },
-                { 13, "PG-13" },
-                { 17, "R" }
-             };
+           
 
             AddFilterControl("Genre", cmbGenre); // cmbGenre is instantiated in Designer
 
@@ -157,32 +150,6 @@ namespace GUI_DB
             panelFilterControlsContainer.Controls.Add(control); // Add control
         }
 
-        private FlowLayoutPanel CreateRadioGroup(int[] options, string tagPrefix)
-        {
-            FlowLayoutPanel radioPanel = new FlowLayoutPanel
-            {
-                FlowDirection = FlowDirection.TopDown,
-                AutoSize = true,
-                WrapContents = false,
-                BackColor = Color.Transparent
-            };
-            bool first = true;
-            foreach (int option in options)
-            {
-                RadioButton rb = new RadioButton
-                {
-                    Text = option.ToString(), // Display the numeric value as text
-                    Tag = tagPrefix + option.ToString(), // Store the numeric value in the tag
-                    ForeColor = Color.White,
-                    AutoSize = true,
-                    Checked = first,
-                    Margin = new Padding(3, 0, 3, 5) // Add some spacing
-                };
-                radioPanel.Controls.Add(rb);
-                first = false;
-            }
-            return radioPanel;
-        }
 
 
         // --- Core Logic ---
@@ -191,9 +158,7 @@ namespace GUI_DB
             if (flowLayoutPanelMovies == null) return;
             flowLayoutPanelMovies.SuspendLayout(); // Suspend layout for performance
             flowLayoutPanelMovies.Controls.Clear();
-
             Movie[] movies = null;
-
             // Handle filtering by genre and numeric age rating
             if (selectedGenre != "All" && currentAgeFilter != "-1")
             {
@@ -232,7 +197,6 @@ namespace GUI_DB
                 // Fetch all movies if no filters are applied
                 movies = dbManager.getAllMovies();
             }
-
             AddMoviesToFlowLayoutPanel(movies); // Populate the UI
         }
 
@@ -440,7 +404,6 @@ namespace GUI_DB
         }
 
 
-        // --- Reservations Logic ---
         private void LoadReservations()
         {
             if (lstReservations == null) return;
@@ -482,19 +445,39 @@ namespace GUI_DB
 
         private void LstReservations_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstReservations.SelectedItem is Booking selectedBooking)
+            // First check if an item is actually selected
+            if (lstReservations.SelectedIndex == -1) return;
+
+            // Get the selected display text from the list box
+            string selectedText = lstReservations.SelectedItem.ToString();
+
+            // Extract the booking ID from the display text (assuming format "Booking #123 - ...")
+            if (int.TryParse(selectedText.Split('#')[1].Split(' ')[0], out int bookingID))
             {
-                if (mainForm != null)
+                // Get the full booking details from the database
+                var dbManager = new DatabaseManager();
+                var booking = dbManager.GetBookingDetails(bookingID);
+
+                if (booking.bookingID != null)
                 {
-                    BookingDetailsForm detailsForm = new BookingDetailsForm(mainForm, selectedBooking);
-                    mainForm.OpenChildForm(detailsForm);
+                    if (mainForm != null)
+                    {
+                        BookingDetailsForm detailsForm = new BookingDetailsForm(mainForm, booking);
+                        mainForm.OpenChildForm(detailsForm);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Navigation unavailable. MainForm reference is missing.",
+                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Navigation unavailable. MainForm reference is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Booking details not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                lstReservations.ClearSelected(); // Deselect after navigating
             }
+
+            lstReservations.ClearSelected(); // Deselect after handling
         }
 
         private void LstReservations_DrawItem(object sender, DrawItemEventArgs e)

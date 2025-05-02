@@ -59,7 +59,7 @@ namespace GUI_DB
                     // Create ticket for each seat (example values used for IDs)
                     Ticket ticket = new Ticket(
                         ticketID: 0,                  // You can generate or assign later
-                        bookingID: "0",               // Replace with actual booking ID
+                        bookingID: 0,               // Replace with actual booking ID
                         startTime: showtime,
                         seatNumber: seatNumber,
                         rowNumber: row,
@@ -69,6 +69,7 @@ namespace GUI_DB
                     );
                     DatabaseManager db = new DatabaseManager();
                     totalprice = db.calculatePrice(ticket) + totalprice;
+                    ticket.Price = db.calculatePrice(ticket);
                     usertickets.Add(ticket);
                     // Update total price
                     // Optionally store or display the ticket

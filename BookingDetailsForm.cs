@@ -1,22 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq; // Needed for Any()
 using System.Windows.Forms;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GUI_DB
 {
     public partial class BookingDetailsForm : Form
     {
         private MainForm mainForm;
-        private Booking currentBooking;
-        private const decimal UnitPrice = 80.00m; // Keep consistent
+        private DatabaseManager.Booking currentBooking;
+        
 
-        public BookingDetailsForm(MainForm mainForm, Booking bookingToShow)
+
+        public BookingDetailsForm(MainForm mainForm, DatabaseManager.Booking bookingToShow)
         {
             InitializeComponent();
 
             this.mainForm = mainForm ?? throw new ArgumentNullException(nameof(mainForm));
-            this.currentBooking = bookingToShow ?? throw new ArgumentNullException(nameof(bookingToShow));
+            this.currentBooking = bookingToShow;
 
             this.btnBack.Click += BtnBack_Click;
 
@@ -25,29 +29,72 @@ namespace GUI_DB
 
         private void RenderBookingDetails()
         {
-            if (currentBooking == null) return;
+            float totalPrice = 0;
+            List<int> ticketIDs = new List<int>();
+            List<string> seatIDs = new List<string>();
+            DateTime startTime = new DateTime();
+            int hallID = 0; // Initialize to a default value
+            List<string> seatTypes = new List<string>(); // Added to include seat types
+
+
+            if (currentBooking.bookingID == null) return;
+
+            DatabaseManager dbManager = new DatabaseManager();
+
+
+            var ticketInfo = dbManager.GetSingleTicketInfo(currentBooking.bookingID);
+
+            if (ticketInfo.Length > 0)
+            {
+                foreach (DatabaseManager.Ticket ticket in ticketInfo)
+                {
+
+                    ticketIDs.Add(ticket.ticketID);
+                    seatIDs.Add(dbManager.ConvertToSeatId(ticket.rowNumber, ticket.seatNumber));
+                    totalPrice += ticket.Price;
+                    startTime = ticket.startTime;
+                    hallID = ticket.hallID;
+                    string seatType = dbManager.GetSeatType(ticket.seatNumber, ticket.rowNumber);
+                    seatTypes.Add(seatType);
+
+                }
+
+
+            }
+            // Check and use the values
+            else
+            {
+                Console.WriteLine("No ticket found for this booking");
+            }
+
+
+            string movieTitle = dbManager.GetMovieNameByBookingID(currentBooking.bookingID);
+            string ticketIDsString = string.Join(", ", ticketIDs);
+            string seatIDsString = string.Join("\n ", seatIDs);
 
             // Populate Labels
-            lblMovie.Text = $"🎬 Movie: {currentBooking.MovieTitle}";
-            lblShowtime.Text = $"🕒 Showtime: {currentBooking.Showtime}";
-            lblReservationDate.Text = $"📅 Reservation Date: {currentBooking.ReservationDate:D}"; // *** Set Date Label text (Long Date) ***
-            lblTicketId.Text = $"🧾 Ticket ID: {currentBooking.TicketId}";
-            lblBookingTime.Text = $"🛒 Booked On: {currentBooking.BookingTime:g}"; // Short date/time
+            lblMovie.Text = $"🎬 Movie: {movieTitle}";
+            lblShowtime.Text = $"🕒 Showtime: {startTime.ToString()}";
+            lblReservationDate.Text = $"📅 Reservation Date: {currentBooking.bookingDate:D}"; // *** Set Date Label text (Long Date) ***
+            lblTicketId.Text = $"🧾 Ticket IDs: {ticketIDsString}";
+            lblTotalPrice.Text = $"💰 Total Price: ${totalPrice.ToString()}"; // Format as currency
+            lblHallID.Text = $"📺 Hall ID: {hallID}";
+
 
             // Populate Seats
             lstSeats.Items.Clear();
-            if (currentBooking.SelectedSeats != null && currentBooking.SelectedSeats.Any())
+            if (seatIDs != null && seatIDs.Any())
             {
-
+                for (int i = 0; i < seatIDs.Count; i++)
+                {
+                    lstSeats.Items.Add($"{seatIDs[i],-5} {seatTypes[i]}"); // Add each seatID to the list box
+                }
             }
             else
             {
                 lstSeats.Items.Add("   No seats listed.");
             }
 
-            // Display Price
-            lblUnitPrice.Text = $"🎟️ Price per seat: {UnitPrice:C2}";
-            lblTotalPrice.Text = $"💰 Total: {currentBooking.TotalPrice:C2}";
         }
 
         private void BtnBack_Click(object sender, EventArgs e)
