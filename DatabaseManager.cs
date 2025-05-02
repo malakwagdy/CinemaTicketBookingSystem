@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Forms;
+using static GUI_DB.DatabaseManager;
 
 namespace GUI_DB
 {
@@ -15,7 +17,7 @@ namespace GUI_DB
     {
         //InitializeComponent();
         public string connectionString =
-            "Data Source=DESKTOP-PD4DI32;Initial Catalog=DatabasBroject;Integrated Security=True;Trust Server Certificate=True";
+            "Data Source=AMR;Initial Catalog=Test_Project_DB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
 
         //SqlConnection con = new SqlConnection(connectionString);
         //con.Open();
@@ -131,14 +133,14 @@ namespace GUI_DB
         public struct Ticket
         {
             public int ticketID;
-            public string bookingID;
+            public int bookingID;
             public DateTime startTime;
             public int seatNumber;
             public char rowNumber;
             public int movieID;
             public int hallID;
             public float Price;
-            public Ticket(int ticketID, string bookingID, DateTime startTime, int seatNumber, char rowNumber, int movieID, int hallID, float price)
+            public Ticket(int ticketID, int bookingID, DateTime startTime, int seatNumber, char rowNumber, int movieID, int hallID, float price)
             {
                 this.ticketID = ticketID;
                 this.bookingID = bookingID;
@@ -147,7 +149,7 @@ namespace GUI_DB
                 this.rowNumber = rowNumber;
                 this.movieID = movieID;
                 this.hallID = hallID;
-                this.Price = 0;
+                this.Price = price;
             }
         }
 
@@ -1659,7 +1661,7 @@ namespace GUI_DB
             return bookings.ToArray();
         }
         
-        private string ConvertToSeatId(char rowNumber, int seatNumber)
+        public string ConvertToSeatId(char rowNumber, int seatNumber)
         {
             return $"{rowNumber}{seatNumber}";
         }
@@ -1736,6 +1738,165 @@ namespace GUI_DB
 
             return seats;
         }
+
+
+
+        public Ticket[] GetSingleTicketInfo(int bookingID)
+        {
+
+            List<Ticket> tickets = new List<Ticket>();
+
+            string query = "SELECT * FROM Ticket WHERE BookingID = @BookingID";
+
+            using (var connection = new SqlConnection(connectionString))
+            using (var command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@BookingID", bookingID);
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Use the constructor to initialize the Movie struct
+                        Ticket ticket = new Ticket(
+                            Convert.ToInt32(reader["TicketID"]),
+                            Convert.ToInt32(reader["BookingID"]),
+                            Convert.ToDateTime(reader["StartTime"]),
+                            Convert.ToInt32(reader["SeatNumber"]),
+                            Convert.ToChar(reader["RowNumber"]),
+                            Convert.ToInt32(reader["MovieID"]),
+                            Convert.ToInt32(reader["HallID"]),
+                            Convert.ToSingle(reader["Price"])
+                        );
+                        tickets.Add(ticket);
+                    }
+                }
+            }
+
+            return tickets.ToArray(); // If no ticket found
+        }
+
+
+
+        
+        public Booking GetBookingDetails(int bookingID)
+        {
+            string query = "SELECT * FROM Booking WHERE bookingID = @BookingID";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@BookingID", bookingID);
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Booking
+                        {
+                            bookingID = reader.GetInt32(reader.GetOrdinal("BookingID")),
+                            customerID = reader.GetString(reader.GetOrdinal("CustomerID")),
+                            bookingDate = reader.GetDateTime(reader.GetOrdinal("BookingDate")),
+                            // Changed from GetString to GetDecimal for numeric fields
+                            totalPrice = Convert.ToSingle(reader["TotalPrice"])
+                        };
+                    }
+                }
+            }
+
+            // Corrected the default return value to use a valid DateTime instance
+            return new Booking(0, 0, new DateTime(2025, 4, 15), "0");
+        }
+
+
+
+        public string GetMovieNameByBookingID(int bookingID)
+        {
+            string movieName = null;
+
+            // Query to get the TicketID and MovieID based on BookingID
+            string ticketQuery = "SELECT TOP 1 TicketID, MovieID FROM Ticket WHERE BookingID = @BookingID";
+
+            // Query to get the Movie Name based on MovieID
+            string movieQuery = "SELECT Title FROM Movie WHERE MovieID = @MovieID";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Step 1: Retrieve TicketID and MovieID
+                int? movieID = null;
+                using (var ticketCommand = new SqlCommand(ticketQuery, connection))
+                {
+                    ticketCommand.Parameters.AddWithValue("@BookingID", bookingID);
+                    using (var reader = ticketCommand.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Retrieve MovieID from the Ticket table
+                            movieID = reader.GetInt32(reader.GetOrdinal("MovieID")); // MovieID is the second column
+                        }
+                    }
+                }
+
+                // Step 2: Retrieve Movie Name based on MovieID
+                if (movieID.HasValue)
+                {
+                    using (var movieCommand = new SqlCommand(movieQuery, connection))
+                    {
+                        movieCommand.Parameters.AddWithValue("@MovieID", movieID.Value);
+                        using (var reader = movieCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Retrieve the movie name from the Movie table
+                                int titleOrdinal = reader.GetOrdinal("Title");
+                                movieName = reader.GetString(titleOrdinal);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return movieName; // Return the movie name (null if not found)
+        }
+
+
+
+
+        public string GetSeatType(int seatNumber, char rowNumber)
+        {
+            string seatType = null;
+
+            string query = "SELECT SeatType FROM Seat WHERE SeatNumber = @SeatNumber AND RowNumber = @RowNumber";
+
+            using (var connection = new SqlConnection(connectionString))
+            using (var command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@SeatNumber", seatNumber);
+                command.Parameters.AddWithValue("@RowNumber", rowNumber);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        seatType = reader.GetString(reader.GetOrdinal("SeatType"));
+                    }
+
+                }
+
+
+            }
+
+
+
+            return seatType ;
+        }
+
+
+
 
     }
 

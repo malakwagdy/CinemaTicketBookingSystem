@@ -440,7 +440,6 @@ namespace GUI_DB
         }
 
 
-        // --- Reservations Logic ---
         private void LoadReservations()
         {
             if (lstReservations == null) return;
@@ -482,19 +481,39 @@ namespace GUI_DB
 
         private void LstReservations_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstReservations.SelectedItem is Booking selectedBooking)
+            // First check if an item is actually selected
+            if (lstReservations.SelectedIndex == -1) return;
+
+            // Get the selected display text from the list box
+            string selectedText = lstReservations.SelectedItem.ToString();
+
+            // Extract the booking ID from the display text (assuming format "Booking #123 - ...")
+            if (int.TryParse(selectedText.Split('#')[1].Split(' ')[0], out int bookingID))
             {
-                if (mainForm != null)
+                // Get the full booking details from the database
+                var dbManager = new DatabaseManager();
+                var booking = dbManager.GetBookingDetails(bookingID);
+
+                if (booking.bookingID != null)
                 {
-                    BookingDetailsForm detailsForm = new BookingDetailsForm(mainForm, selectedBooking);
-                    mainForm.OpenChildForm(detailsForm);
+                    if (mainForm != null)
+                    {
+                        BookingDetailsForm detailsForm = new BookingDetailsForm(mainForm, booking);
+                        mainForm.OpenChildForm(detailsForm);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Navigation unavailable. MainForm reference is missing.",
+                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Navigation unavailable. MainForm reference is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Booking details not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                lstReservations.ClearSelected(); // Deselect after navigating
             }
+
+            lstReservations.ClearSelected(); // Deselect after handling
         }
 
         private void LstReservations_DrawItem(object sender, DrawItemEventArgs e)
