@@ -49,9 +49,9 @@ The application is split into two main interfaces: a user-facing view for bookin
 
 ## 💻 Technology Stack
 
--   **Application Framework**: [.NET Framework with Windows Forms / WPF]
--   **Programming Language**: [C#]
--   **Database**: [SQL Server]
+-   **Application Framework**: .NET Framework with Windows Forms / WPF
+-   **Programming Language**: C#
+-   **Database**: SQL Server
 
 ---
 
@@ -61,9 +61,9 @@ Follow these instructions to set up the project on your local machine for develo
 
 ### Prerequisites
 
--   **IDE**: [Visual Studio 2019 or later]
--   **Framework**: [.NET Framework 4.7.2 or higher]
--   **Database Server**: [Microsoft SQL Server Management Studio]
+-   **IDE**: Visual Studio 2019 or later
+-   **Framework**: .NET Framework 4.7.2 or higher
+-   **Database Server**: Microsoft SQL Server Management Studio
 
 ### Setup Instructions
 
@@ -74,7 +74,7 @@ Follow these instructions to set up the project on your local machine for develo
     ```
 
 2.  **Set up the Database:**
-    -   A SQL script to create the required database schema is included in the project (e.g., `FullDBCreation.sql`).
+    -   A SQL script to create the required database schema is included in the project (`FullDBCreation.sql`).
     -   Open your database management tool (like SQL Server Management Studio).
     -   Create a new, empty database.
     -   Run the provided SQL script against your new database. This will create all the necessary tables and relationships.
